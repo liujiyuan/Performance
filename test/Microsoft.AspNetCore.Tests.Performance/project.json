@@ -7,7 +7,13 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0-*"
   },
   "frameworks": {
-    "dnx451": {
+    "dnxcore50": {
+      "dependencies": {
+        "dotnet-test-xunit": "1.0.0-dev-*"
+      },
+      "imports": "portable-net451+win8"
+    },
+    "net451": {
       "frameworkAssemblies": {
         "System.Runtime": ""
       },
@@ -15,11 +21,10 @@
         "xunit.runner.console": "2.1.0"
       }
     },
-    "dnxcore50": {
+    "dnx451": {
       "dependencies": {
         "xunit.runner.aspnet": "2.0.0-aspnet-*"
-      },
-      "imports": "portable-net451+win8"
+      }
     }
   },
   "testRunner": "xunit",
@@ -27,7 +32,6 @@
     "test": "xunit.runner.aspnet"
   },
   "content": [
-    "config.json",
-    "xunit.runner.json"
+    "config.json"
   ]
 }

@@ -17,13 +17,18 @@
   "frameworks": {
     "dnxcore50": {
       "dependencies": {
-        "xunit.runner.aspnet": "2.0.0-aspnet-*"
+        "dotnet-test-xunit": "1.0.0-dev-*"
       },
       "imports": "portable-net451+win8"
     },
-    "dnx451": {
+    "net451": {
       "dependencies": {
         "xunit.runner.console": "2.1.0"
+      }
+    },
+    "dnx451": {
+      "dependencies": {
+        "xunit.runner.aspnet": "2.0.0-aspnet-*"
       }
     }
   },
@@ -31,7 +36,6 @@
     "dotnet-razor-tooling": "1.0.0-*"
   },
   "content": [
-    "config.json",
-    "xunit.runner.json"
+    "config.json"
   ]
 }

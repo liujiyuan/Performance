@@ -1,7 +1,6 @@
 ﻿{
   "version": "1.0.0-*",
   "commands": {
-    "run": "xunit.runner.aspnet",
     "test": "xunit.runner.aspnet"
   },
   "dependencies": {
@@ -18,17 +17,17 @@
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
     "Microsoft.Extensions.DependencyInjection.Abstractions": "1.0.0-*",
-    "System.Net.Http": "4.0.1-beta-*",
-    "xunit.runner.aspnet": "2.0.0-aspnet-*"
+    "System.Net.Http": "4.0.1-beta-*"
   },
   "frameworks": {
     "dnx451": {
+      "dependencies": {
+        "xunit.runner.aspnet": "2.0.0-aspnet-*"
+      },
       "frameworkAssemblies": {
         "System.Reflection": ""
       }
     }
   },
-  "content": [
-    "xunit.runner.json" 
-  ]
+  "testRunner": "xunit"
 }
