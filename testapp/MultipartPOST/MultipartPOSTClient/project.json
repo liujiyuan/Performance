@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0-*",
+  "compilationOptions": {
+    "emitEntryPoint": true
+  },
+  "frameworks": {
+    "dnxcore50": {
+      "imports": "portable-net451+win8"
+    }
+  },
+  "dependencies": {
+    "Microsoft.AspNetCore.Mvc": "1.0.0-*",
+    "NETStandard.Library": "1.0.0-*",
+    "System.Net.Http": "4.0.1-*",
+    "System.Console": "4.0.0-*"
+  },
+  "commands": {
+    "run": "MultipartPOSTClient"
+  }
+}
