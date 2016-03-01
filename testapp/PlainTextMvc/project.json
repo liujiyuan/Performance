@@ -4,11 +4,14 @@
     "emitEntryPoint": true
   },
   "frameworks": {
-    "dnxcore50": {
+    "netstandardapp1.5": {
       "dependencies": {
         "NETStandard.Library": "1.0.0-*"
       },
-      "imports": "portable-net451+win8"
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
     },
     "dnx451": {}
   },

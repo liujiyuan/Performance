@@ -8,12 +8,15 @@
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0-*"
   },
   "frameworks": {
-    "dnxcore50": {
+    "netstandardapp1.5": {
       "dependencies": {
         "System.Data.SqlClient": "4.0.0-*",
         "System.Threading.Timer": "4.0.1-*"
       },
-      "imports": "portable-net451+win8"
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
     },
     "net451": {
       "frameworkAssemblies": {

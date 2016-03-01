@@ -5,7 +5,6 @@
     "emitEntryPoint": true,
     "preserveCompilationContext": true
   },
-
   "dependencies": {
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-*",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0-*",
@@ -24,20 +23,19 @@
     "Microsoft.NETCore.Platforms": "1.0.1-*",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-*"
   },
-
   "compile": "..\\..\\src\\Benchmarks.Framework\\Model\\*.cs",
-
   "content": "**/*",
   "contentExclude": "bin/**;obj/**;*.kproj",
-
   "commands": {
     "web": "PerformanceDashboard"
   },
-
   "frameworks": {
-    "dnx451": { },
-    "dnxcore50": {
-      "imports": "portable-net451+win8"
+    "dnx451": {},
+    "netstandardapp1.5": {
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
     }
   },
   "tools": {
@@ -53,6 +51,11 @@
     "global.json"
   ],
   "scripts": {
-    "prepublish": [ "npm install", "bower install", "gulp clean", "gulp min" ]
+    "prepublish": [
+      "npm install",
+      "bower install",
+      "gulp clean",
+      "gulp min"
+    ]
   }
 }

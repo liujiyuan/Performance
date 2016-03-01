@@ -33,12 +33,15 @@
     "ef": "Microsoft.EntityFrameworkCore.Commands"
   },
   "frameworks": {
-    "dnx451": { },
-    "dnxcore50": {
+    "dnx451": {},
+    "netstandardapp1.5": {
       "dependencies": {
         "NETStandard.Library": "1.0.0-*"
       },
-      "imports": "portable-net451+win8"
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
     }
   },
   "exclude": [
@@ -57,5 +60,8 @@
       "gulp min"
     ]
   },
-  "content": [ "appsettings.json", "Views" ]
+  "content": [
+    "appsettings.json",
+    "Views"
+  ]
 }

@@ -1,35 +1,33 @@
-﻿{
+{
   "version": "1.0.0-*",
-
   "compilationOptions": {
     "emitEntryPoint": true,
     "warningsAsErrors": true
   },
-
   "dependencies": {
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
     "Microsoft.AspNetCore.Server.WebListener": "0.1.0-*"
   },
-
   "commands": {
     "web": "BigModelBinding"
   },
-
   "frameworks": {
     "dnx451": {
       "frameworkAssemblies": {
         "System.ComponentModel.DataAnnotations": ""
       }
     },
-    "dnxcore50": {
+    "netstandardapp1.5": {
       "dependencies": {
         "NETStandard.Library": "1.0.0-*"
       },
-      "imports": "portable-net451+win8"
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
     }
   },
-
   "publishExclude": [
     "node_modules",
     "bower_components",
@@ -37,7 +35,6 @@
     "**.user",
     "**.vspscc"
   ],
-
   "exclude": [
     "wwwroot",
     "node_modules",

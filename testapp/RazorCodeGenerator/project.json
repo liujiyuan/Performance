@@ -1,25 +1,24 @@
-﻿{
+{
   "version": "1.0.0-*",
-
   "compilationOptions": {
     "emitEntryPoint": true
   },
-
   "dependencies": {
     "Microsoft.AspNetCore.Mvc.Razor": "1.0.0-*"
   },
-
   "commands": {
     "run": "RazorCodeGenerator"
   },
-
   "frameworks": {
     "dnx451": {},
-    "dnxcore50": {
+    "netstandardapp1.5": {
       "dependencies": {
         "NETStandard.Library": "1.0.0-*"
       },
-      "imports": "portable-net451+win8"
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
     }
   }
 }

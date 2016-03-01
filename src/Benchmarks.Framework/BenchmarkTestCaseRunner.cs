@@ -133,7 +133,7 @@ namespace Benchmarks.Framework
 
         private static string GetMachineName()
         {
-#if DNXCORE50
+#if NETSTANDARDAPP1_5
             var config = new ConfigurationBuilder()
                 .SetBasePath(".")
                 .AddEnvironmentVariables()
