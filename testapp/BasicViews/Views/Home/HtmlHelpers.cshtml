@@ -3,7 +3,7 @@
 
 @Html.ValidationSummary()
 
-@using (Html.BeginForm(antiforgery: false))
+@using (Html.BeginForm())
 {
     <div>
         @Html.LabelFor(p => p.Name)
@@ -18,4 +18,6 @@
         @Html.EditorFor(p => p.BirthDate)
     </div>
     <input type="submit" />
+
+    @Html.AntiForgeryToken()
 }

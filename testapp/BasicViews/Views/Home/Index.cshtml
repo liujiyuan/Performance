@@ -1,23 +1,21 @@
 ﻿@using BasicViews
 @model Person
 
-@Html.ValidationSummary()
+<div asp-validation-summary="All">
+</div>
 
-@using (Html.BeginForm())
-{
+<form asp-action="Index" asp-controller="Home">
     <div>
-        @Html.LabelFor(p => p.Name)
-        @Html.EditorFor(p => p.Name)
+        <label asp-for="Name"></label>
+        <input asp-for="Name" />
     </div>
     <div>
-        @Html.LabelFor(p => p.Age)
-        @Html.EditorFor(p => p.Age)
+        <label asp-for="Age"></label>
+        <input asp-for="Age" />
     </div>
     <div>
-        @Html.LabelFor(p => p.BirthDate)
-        @Html.EditorFor(p => p.BirthDate)
+        <label asp-for="BirthDate"></label>
+        <input asp-for="BirthDate" />
     </div>
     <input type="submit" />
-
-    @Html.AntiForgeryToken()
-}
+</form>

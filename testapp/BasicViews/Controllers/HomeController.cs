@@ -7,12 +7,14 @@ namespace BasicViews.Controllers
 {
     public class HomeController : Controller
     {
+        [ValidateAntiForgeryToken]
         public IActionResult Index(Person person)
         {
             return View(person);
         }
 
-        public IActionResult SuppressAntiforgery(Person person)
+        [ValidateAntiForgeryToken]
+        public IActionResult HtmlHelpers(Person person)
         {
             return View(person);
         }

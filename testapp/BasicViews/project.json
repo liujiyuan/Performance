@@ -20,17 +20,24 @@
   },
 
   "frameworks": {
-    "dnx451": { },
+    "dnx451": {
+      "dependencies": {
+        "Microsoft.AspNetCore.Mvc.Dnx": "1.0.0-*"
+      }
+    },
+    "net451": { },
     "dnxcore50": {
+      "imports": "portable-net451+win8",
       "dependencies": {
         "NETStandard.Library": "1.0.0-*"
-      },
-      "imports": "portable-net451+win8"
+      }
     }
   },
+  
   "tools": {
     "dotnet-razor-tooling": "1.0.0-*"
   },
+  
   "publishExclude": [
     "node_modules",
     "bower_components",
