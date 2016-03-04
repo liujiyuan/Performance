@@ -174,7 +174,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
             }
             else if (string.Equals(runtimeType, "coreclr", StringComparison.OrdinalIgnoreCase))
             {
-                return "dnxcore50";
+                return "netstandardapp1.5";
             }
             else
             {
