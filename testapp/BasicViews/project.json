@@ -6,22 +6,16 @@
     "preserveCompilationContext": true
   },
   "dependencies": {
+    "Microsoft.EntityFrameworkCore.InMemory": "1.0.0-*",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-*",
+    "Microsoft.AspNetCore.IISPlatformHandler": "1.0.0-*",
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
     "Microsoft.AspNetCore.Server.WebListener": "0.1.0-*",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0-*"
   },
-  "commands": {
-    "web": "BasicViews"
-  },
   "frameworks": {
-    "dnx451": {
-      "dependencies": {
-        "Microsoft.AspNetCore.Mvc.Dnx": "1.0.0-*"
-      }
-    },
-    "net451": {},
     "netstandardapp1.5": {
       "imports": [
         "dnxcore50",
@@ -30,7 +24,8 @@
       "dependencies": {
         "NETStandard.Library": "1.0.0-*"
       }
-    }
+    },
+    "net451": { }
   },
   "tools": {
     "dotnet-razor-tooling": "1.0.0-*"
@@ -48,6 +43,7 @@
     "bower_components"
   ],
   "content": [
-    "Views"
+    "Views",
+    "appsettings.json"
   ]
 }

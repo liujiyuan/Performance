@@ -4,19 +4,43 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace BasicViews
 {
     public class Startup
     {
+        public Startup(IHostingEnvironment hosting)
+        {
+            Configuration = 
+                new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
+                .Build();
+        }
+
+        public IConfiguration Configuration { get; }
+
         public void ConfigureServices(IServiceCollection services)
         {
+            var connectionString = Configuration["Data:DefaultConnection:ConnectionString"];
+            services
+                .AddEntityFramework()
+                .AddSqlServer()
+                .AddDbContext<BasicViewsContext>(c => c.UseSqlServer(connectionString));
+
             services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app)
         {
+            CreateDatabase(app.ApplicationServices);
+
+            app.UseIISPlatformHandler();
+
             app.Use(next => async (context) =>
             {
                 try
@@ -32,6 +56,16 @@ namespace BasicViews
 
             app.UseStaticFiles();
             app.UseMvcWithDefaultRoute();
+        }
+
+        private void CreateDatabase(IServiceProvider services)
+        {
+            using (var serviceScope = services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+            {
+                var dbContext = services.GetRequiredService<BasicViewsContext>();
+                dbContext.Database.EnsureDeleted();
+                dbContext.Database.EnsureCreated();
+            }
         }
 
         public static void Main(string[] args)
