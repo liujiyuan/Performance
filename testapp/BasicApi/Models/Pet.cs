@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace MediumApi.Models
+namespace BasicApi.Models
 {
     public class Pet
     {

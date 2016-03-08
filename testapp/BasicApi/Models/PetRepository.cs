@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace MediumApi.Models
+namespace BasicApi.Models
 {
     public class PetRepository
     {

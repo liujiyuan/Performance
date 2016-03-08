@@ -4,7 +4,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MediumApi.Controllers
+namespace BasicApi.Controllers
 {
     [Route("/store")]
     public class StoreController : BaseController

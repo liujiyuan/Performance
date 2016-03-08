@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace MediumApi
+namespace BasicApi
 {
     public class BaseController
     {

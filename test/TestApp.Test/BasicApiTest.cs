@@ -12,7 +12,7 @@ using Xunit;
 
 namespace MvcBenchmarks.InMemory
 {
-    public class MediumApiTest
+    public class BasicApiTest
     {
         private static readonly TestServer Server;
         private static readonly HttpClient Client;
@@ -27,17 +27,17 @@ namespace MvcBenchmarks.InMemory
   ""status"" : ""available""
 }");
 
-        static MediumApiTest()
+        static BasicApiTest()
         {
             var builder = new WebHostBuilder();
-            builder.UseStartup<MediumApi.Startup>();
-            builder.UseProjectOf<MediumApi.Startup>();
+            builder.UseStartup<BasicApi.Startup>();
+            builder.UseProjectOf<BasicApi.Startup>();
             Server = new TestServer(builder);
             Client = Server.CreateClient();
         }
 
         [Fact]
-        public async Task MediumApi()
+        public async Task BasicApi()
         {
             var request = new HttpRequestMessage(HttpMethod.Post, "/pet");
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json", .9));

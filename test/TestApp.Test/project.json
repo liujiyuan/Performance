@@ -4,12 +4,12 @@
     "test": "xunit.runner.aspnet"
   },
   "dependencies": {
+    "BasicApi": "1.0.0-*",
     "BasicViews": "1.0.0-*",
     "BigModelBinding": "1.0.0-*",
     "BigViews": "1.0.0-*",
     "LargeStaticView": "1.0.0-*",
     "LocalizedViews": "1.0.0-*",
-    "MediumApi": "1.0.0-*",
     "RazorCodeGenerator": "1.0.0-*",
 
     "Microsoft.AspNetCore.TestHost": "1.0.0-*",

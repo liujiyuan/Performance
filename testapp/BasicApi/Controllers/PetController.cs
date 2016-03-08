@@ -2,11 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
-using MediumApi.Models;
+using BasicApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MediumApi.Controllers
+namespace BasicApi.Controllers
 {
     [Route("/pet")]
     public class PetController : BaseController
