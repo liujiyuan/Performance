@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BasicApi.Controllers
 {
     [Route("/store")]
-    public class StoreController : BaseController
+    public class StoreController : ControllerBase
     {
         [HttpGet("inventory")]
         public IActionResult GetInventory()

@@ -15,7 +15,7 @@ namespace BasicApi.Models
         [Required]
         public string Name { get; set; }
 
-        public List<string> Urls { get; set; }
+        public List<Image> Images { get; set; }
 
         public List<Tag> Tags { get; set; }
 
