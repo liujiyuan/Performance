@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BasicApi.Controllers
 {
     [Route("/user")]
-    public class UserController : BaseController
+    public class UserController : ControllerBase
     {
         [HttpPost]
         public IActionResult CreateUser()

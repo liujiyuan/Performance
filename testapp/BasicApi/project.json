@@ -2,30 +2,34 @@
   "version": "1.0.0-*",
   "compilationOptions": {
     "emitEntryPoint": true,
-    "warningsAsErrors": true
+    "warningsAsErrors": true,
+    "preserveCompilationContext": true
   },
   "dependencies": {
+    "Microsoft.AspNetCore.Authentication.JwtBearer": "1.0.0-*",
     "Microsoft.AspNetCore.Mvc.Core": "1.0.0-*",
     "Microsoft.AspNetCore.Mvc.DataAnnotations": "1.0.0-*",
     "Microsoft.AspNetCore.Mvc.Formatters.Json": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
-    "Microsoft.AspNetCore.Server.WebListener": "0.1.0-*",
-    "Newtonsoft.Json": "8.0.2"
+    "Microsoft.EntityFrameworkCore": "1.0.0-*",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-*",
+    "Microsoft.Extensions.Logging.Console": "1.0.0-*"
   },
   "commands": {
     "web": "BasicApi"
   },
   "frameworks": {
-    "net451": {},
     "netstandardapp1.5": {
       "dependencies": {
-        "NETStandard.Library": "1.0.0-*"
+        "NETStandard.Library": "1.0.0-*",
+        "System.Security.Cryptography.Csp": "4.0.0-*"
       },
       "imports": [
         "dnxcore50",
         "portable-net451+win8"
       ]
-    }
+    },
+    "net451": { }
   },
   "exclude": [
     "wwwroot",
@@ -35,5 +39,9 @@
   "publishExclude": [
     "**.user",
     "**.vspscc"
+  ],
+  "content": [
+    "Views",
+    "appsettings.json"
   ]
 }

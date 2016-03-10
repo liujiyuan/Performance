@@ -1,8 +1,25 @@
 {
-  "category" : {
-    "id" : 2,
-    "name" : "Cats"
+  "category": {
+    "name": "Cats"
   },
-  "name" : "fluffy",
-  "status" : "available"
+  "images": [
+    {
+        "url": "http://example.com/images/fluffy1.png"
+    },
+    {
+        "url": "http://example.com/images/fluffy2.png"
+    },
+  ],
+  "tags": [
+    {
+        "name": "orange"
+    },
+    {
+        "name": "kitty"
+    }
+  ],
+  "age": 2,
+  "hasVaccinations": "true",
+  "name": "fluffy",
+  "status": "available"
 }
