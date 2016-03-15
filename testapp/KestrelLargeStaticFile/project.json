@@ -5,7 +5,7 @@
   },
   "frameworks": {
     "dnxcore50": { },
-    "dnx451": { }
+    "net451": { }
   },
   "dependencies": {
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
