@@ -52,21 +52,38 @@ scenario
 	 	url="/";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Home/About";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Home/Contact";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Home/Error";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
+
         branch
         {
         	goto
@@ -98,6 +115,10 @@ scenario
 	 	url="/Account/Login";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/Login";
@@ -105,11 +126,19 @@ scenario
 		postdata="email=" + rand("0","1000") + "@test.com&Password=123456&RememberMe=true";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/Register";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/Register";
@@ -117,6 +146,10 @@ scenario
 		postdata="email=" + rand("0","1000") + "@test.com&Password=123456&ConfirmPassword=123456";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/LogOff";
@@ -124,7 +157,10 @@ scenario
 		postdata="";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ExternalLogin";
@@ -132,13 +168,19 @@ scenario
 		postdata="provider=testprovider";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ExternalLoginCallback";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ExternalLoginConfirmation";
@@ -146,19 +188,28 @@ scenario
 		postdata="email=" + rand("0","1000") + "@test.com";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ConfirmEmail?userId=testid&code=testcode";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ForgotPassword";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ForgotPassword";
@@ -166,16 +217,28 @@ scenario
 		postdata="email=" + rand("0","1000") + "@test.com";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ForgotPasswordConfirmation";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ResetPassword?code=testcode";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ResetPassword";
@@ -183,16 +246,28 @@ scenario
 		postdata="email=" + rand("0","1000") + "@test.com&Password=123456&ConfirmPassword=123456&code=testcode";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/ResetPasswordConfirmation";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/SendCode";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/SendCode";
@@ -200,12 +275,19 @@ scenario
 		postdata="selectedProvider=testprovider&returnurl=testurl&rememberme=false";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/VerifyCode";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Account/VerifyCode";
@@ -213,7 +295,10 @@ scenario
 		postdata="provider=testprovider&code=testcode&returnurl=testurl&rememberme=false&rememberbrowser=true";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
         branch
         {
         	goto
@@ -245,6 +330,10 @@ scenario
 	 	url="/Manage";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/RemoveLogin";
@@ -253,11 +342,19 @@ scenario
                 port=FAKEPORT;
                 statuscode=302;               //we can use redirect=true to follow redirection. However wcat has a bug to always redirect to :80 port
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/AddPhoneNumber";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/AddPhoneNumber";
@@ -265,6 +362,10 @@ scenario
 		postdata="phonenumber=" + rand("10000","20000");
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/EnableTwoFactorAuthentication";
@@ -273,6 +374,10 @@ scenario
                 port=FAKEPORT;
                 statuscode=302;               //we can use redirect=true to follow redirection. However wcat has a bug to always redirect to :80 port
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/DisableTwoFactorAuthentication";
@@ -281,11 +386,19 @@ scenario
                 port=FAKEPORT;
                 statuscode=302;               //we can use redirect=true to follow redirection. However wcat has a bug to always redirect to :80 port
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/VerifyPhoneNumber?phoneNumber=123456";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/VerifyPhoneNumber";
@@ -293,16 +406,28 @@ scenario
 		postdata="code=123&phoneNumber=123456";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/RemovePhoneNumber";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/ChangePassword";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/ChangePassword";
@@ -310,11 +435,19 @@ scenario
 		postdata="oldPassword=123666&newPassword=123456&confirmPassword=123456";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/SetPassword";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/SetPassword";
@@ -322,12 +455,19 @@ scenario
 		postdata="newPassword=123456&confirmPassword=123456";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/ManageLogins?ManageMessageId=1";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/LinkLogin";
@@ -336,12 +476,20 @@ scenario
                 port=FAKEPORT;
                 statuscode=302;               //we can use redirect=true to follow redirection. However wcat has a bug to always redirect to :80 port
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/Manage/LinkLoginCallback";
                 port=FAKEPORT;
                 statuscode=302;               //we can use redirect=true to follow redirection. However wcat has a bug to always redirect to :80 port
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 
         branch
         {
@@ -375,16 +523,28 @@ scenario
 	 	url="/TextContent/Get500B";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/Get2KB";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/Get500KB";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/GetContent?size=1000000";
@@ -395,12 +555,19 @@ scenario
 	 	url="/TextContent/GetContent?size=3000000";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
-	 	url="/TextContent/GetContent?size=FAKEPORT000";
+		url="/TextContent/GetContent?size=8000000";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/AddContent";
@@ -409,38 +576,64 @@ scenario
                 port=FAKEPORT;
                 statuscode=201;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/Get500B";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/Get2KB";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/Get500KB";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/GetContent?size=1000000";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/GetContent?size=3000000";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
-	 	url="/TextContent/GetContent?size=FAKEPORT000";
+		url="/TextContent/GetContent?size=8000000";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/AddContent";
@@ -449,7 +642,10 @@ scenario
                 port=FAKEPORT;
                 statuscode=201;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/AddContent";
@@ -458,6 +654,10 @@ scenario
                 port=FAKEPORT;
                 statuscode=201;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 
         branch
         {
@@ -491,22 +691,37 @@ scenario
 	 	url="/JsonContent/GetObjects?count=1";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/JsonContent/GetObjects?count=10";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/JsonContent/GetObjects?count=100";
                 port=FAKEPORT;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/JsonContent/GetObjects?count=1000";
                 port=FAKEPORT;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/JsonContent/AddObjects";
@@ -515,6 +730,10 @@ scenario
 		postdata="objects=" + <testjsonsmall.data>;
                 statuscode=201;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/JsonContent/AddObjects";
@@ -523,7 +742,10 @@ scenario
 		postdata="objects=" + <testjsonsmall.data>;
                 statuscode=201;
 	}
-
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/JsonContent/AddObjects";
@@ -532,6 +754,10 @@ scenario
 		postdata="objects=" + <testjsonlarge.data>;
                 statuscode=201;
 	}
+        sleep
+        {
+		delay=FAKEDELAYTIME;
+        }
 
         branch
         {

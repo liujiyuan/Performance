@@ -11,26 +11,33 @@ set SETTINGS_TEMPLATE=./settings_template.ubr
 set SCENARIO_TEMPLATE=./scenario_template.ubr
 
 set SETTINGS_FILE=./settings.ubr
-set SCENARIO_FILE=./scenario.ubr
+set SCENARIO_STRESS_FILE=./scenario_stress.ubr
+set SCENARIO_RELIABILITY_FILE=./scenario_reliability.ubr
 
 set OLD_SERVER_NAME=FAKEHOSTNAME
 set OLD_SERVER_PORT=FAKEPORT
+set OLD_REQUEST_DELAY=FAKEDELAYTIME
 
 set NEW_SERVER_NAME=%1
 set NEW_SERVER_PORT=%2
+set NEW_REQUEST_DELAY=5000
 
 ECHO %NEW_SERVER_NAME%
 ECHO %NEW_SERVER_PORT%
 
 ECHO //Generated setting file > %SETTINGS_FILE%
-ECHO //Generated scenario file > %SCENARIO_FILE%
+ECHO //Generated stress scenario file targetting at 100 perc CPU usage on an A2 VM > %SCENARIO_STRESS_FILE%
+ECHO //Generated reliability scenario file targetting at less than 80 perc CPU usage on an A2 VM > %SCENARIO_RELIABILITY_FILE%
 
 ECHO. > %TEST_DATA_SMALL_FILE%
 ECHO. > %TEST_DATA_LARGE_FILE%
 ECHO. > %TEST_JSON_SMALL_FILE%
 ECHO. > %TEST_JSON_LARGE_FILE%
 
-CALL :ReplaceStringInFile %SCENARIO_TEMPLATE% %SCENARIO_FILE%
+CALL :ReplaceStringInFile %SCENARIO_TEMPLATE% %SCENARIO_RELIABILITY_FILE%
+REM for stress scenario no wait after each request
+set NEW_REQUEST_DELAY=0
+CALL :ReplaceStringInFile %SCENARIO_TEMPLATE% %SCENARIO_STRESS_FILE%
 CALL :ReplaceStringInFile %SETTINGS_TEMPLATE% %SETTINGS_FILE%
 
 
@@ -69,6 +76,7 @@ for /f "tokens=* delims=¶" %%i in ( %1 ) do (
         set str=%%i
         set str=!str:%OLD_SERVER_NAME%=%NEW_SERVER_NAME%!
         set str=!str:%OLD_SERVER_PORT%=%NEW_SERVER_PORT%!
+        set str=!str:%OLD_REQUEST_DELAY%=%NEW_REQUEST_DELAY%!
         echo !str! >> %2
     ) else (
         echo. >> %2
