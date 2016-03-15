@@ -13,7 +13,7 @@
         "portable-net451+win8"
       ]
     },
-    "dnx451": {}
+    "net451": {}
   },
   "dependencies": {
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
