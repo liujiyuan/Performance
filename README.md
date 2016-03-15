@@ -7,7 +7,7 @@ Travis:   [![Travis](https://travis-ci.org/aspnet/Performance.svg?branch=dev)](h
 
 Performance tests and infrastructure for ASP.NET.
 
-This project is part of ASP.NET 5. You can find samples, documentation and getting started instructions for ASP.NET 5 at the [Home](https://github.com/aspnet/home) repo.
+This project is part of ASP.NET Core. You can find samples, documentation and getting started instructions for ASP.NET Core at the [Home](https://github.com/aspnet/home) repo.
 
 ## Dependencies
 Your system must have `gulp`, `bower` and `loadtest` readily available from the command line. Feel free to install them in any way you want. If you don't know how to go about it, here are some suggestions.
