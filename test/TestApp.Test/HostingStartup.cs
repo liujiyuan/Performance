@@ -40,12 +40,12 @@ namespace MvcBenchmarks.InMemory
 
                 var hostingEnvironment = new HostingEnvironment();
                 hostingEnvironment.Initialize(
+                    applicationName,
                     webRoot,
                     new WebHostOptions
                     {
                         Environment = "Production",
-                    },
-                    configuration: null);
+                    });
                 services.AddSingleton<IHostingEnvironment>(hostingEnvironment);
 
                 services.AddSingleton<IAssemblyProvider>(assemblyProvider);

@@ -28,8 +28,7 @@ namespace BasicViews
         {
             var connectionString = Configuration["Data:DefaultConnection:ConnectionString"];
             services
-                .AddEntityFramework()
-                .AddSqlServer()
+                .AddEntityFrameworkSqlServer()
                 .AddDbContext<BasicViewsContext>(c => c.UseSqlServer(connectionString));
 
             services.AddMvc();

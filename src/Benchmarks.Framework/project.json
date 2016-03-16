@@ -22,12 +22,6 @@
       ]
     },
     "net451": {
-      "frameworkAssemblies": {
-        "System.Data": "",
-        "System.Reflection": "",
-        "System.Runtime": "",
-        "System.Threading.Tasks": ""
-      },
       "dependencies": {
         "xunit.runner.reporters": "2.1.0"
       }
