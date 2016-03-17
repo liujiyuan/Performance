@@ -19,6 +19,9 @@
   "commands": {
     "test": "xunit.runner.aspnet"
   },
+  "compilationOptions": {
+    "preserveCompilationContext": true
+  },
   "frameworks": {
     "netstandardapp1.5": {
       "dependencies": {
@@ -29,11 +32,7 @@
         "portable-net451+win8"
       ]
     },
-    "net451": {
-      "dependencies": {
-        "xunit.runner.console": "2.1.0"
-      }
-    },
+    "net451": {},
     "dnx451": {
       "dependencies": {
         "xunit.runner.aspnet": "2.0.0-aspnet-*"

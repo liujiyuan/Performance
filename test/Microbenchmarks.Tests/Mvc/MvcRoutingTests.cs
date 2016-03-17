@@ -2,12 +2,14 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Benchmarks.Framework;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Microbenchmarks.Tests.Mvc
 {
@@ -16,8 +18,12 @@ namespace Microbenchmarks.Tests.Mvc
         [Benchmark]
         public async Task RouteToAction()
         {
+            var contentRoot = PlatformServices.Default.Application.ApplicationBasePath;
+            contentRoot = Path.GetFullPath(Path.Combine(contentRoot, "..", "..", "..", ".."));
+
             var builder = new WebHostBuilder()
                 .Configure(app => app.UseMvcWithDefaultRoute())
+                .UseContentRoot(contentRoot)
                 .ConfigureServices(services => services.AddMvc());
             using (var testServer = new TestServer(builder))
             {
