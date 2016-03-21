@@ -7,7 +7,8 @@
   [int]$endVC=60000,
   [int]$duration=20,
   [int]$repeat=3,
-  [string]$logdir
+  [string]$logdir,
+  [int]$runid=0
 )
 
 # Only one of the following should be $true
@@ -87,7 +88,7 @@ function runTest
     $cmd = "`"$($wcatpath)\wcclient.exe`"" ;
     Start-Process "`"$cmd`""  -ArgumentList "localhost -b"
 
-    $cmd = "`"$($wcatpath)\wcctl.exe`" -t $scenarioFile -s $server -p $port -c 1 -v $virtualClients -u $duration -o `"$logdir\result$virtualClients.xml`" -x -k `"$scenario`"";
+    $cmd = "`"$($wcatpath)\wcctl.exe`" -t $scenarioFile -s $server -p $port -c 1 -v $virtualClients -u $duration -o `"$logdir\result$virtualClients.xml`" -x -k `"$scenario`" > $logdir\wcat-output.log";
     cmd /c "`"$cmd`""
 }
 
@@ -125,8 +126,8 @@ cleanupPreviousRun;
 
 if(!($logdir))
 {
-    $tstamp=$(((get-date).ToUniversalTime()).ToString("yyyyMMddThhmmssZ"));
-    $logdir="C:\$scenario\$tstamp";
+    $tstamp=$(((get-date).ToUniversalTime()).ToString("yyyy-MM-dd"));
+    $logdir = "c:\$tstamp-$scenario";
 }
 mkdir $logdir
 

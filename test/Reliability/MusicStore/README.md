@@ -24,4 +24,3 @@ Configuration and Additional steps
 - Host it in IIS - See [this](../README.md)
 Tests
 - MusicStoreBasic.ubr
-    
