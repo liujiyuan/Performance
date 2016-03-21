@@ -580,6 +580,23 @@ scenario
         {
 		delay=FAKEDELAYTIME;
         }
+        request
+        {
+                url="/TextContent/AddContent";
+                setheader
+                {
+                    name = "Content-Type";
+                    value = "multipart/form-data; boundary=FAKEBOUNDARY";
+                }
+                verb=POST;
+                postdata=<testdata_multipartform.data>;
+                port=FAKEPORT;
+                statuscode=201;
+        }
+        sleep
+        {
+                delay=FAKEDELAYTIME;
+        }
 	request
 	{
 	 	url="/TextContent/Get500B";
@@ -658,7 +675,23 @@ scenario
         {
 		delay=FAKEDELAYTIME;
         }
-
+        request
+        {
+                url="/TextContent/AddContent";
+                setheader
+                {
+                    name = "Content-Type";
+                    value = "multipart/form-data; boundary=FAKEBOUNDARY";
+                }
+                verb=POST;
+                postdata=<testdata_multipartform.data>;
+                port=FAKEPORT;
+                statuscode=201;
+        }
+        sleep
+        {
+                delay=FAKEDELAYTIME;
+        }
         branch
         {
         	goto
