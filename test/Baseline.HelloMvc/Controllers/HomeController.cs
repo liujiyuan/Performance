@@ -9,7 +9,7 @@ namespace HelloMvc.Controllers
     {
         public ActionResult Index()
         {
-            return Content("Hello world", "text/plain");
+            return View();
         }
     }
 }
