@@ -15,7 +15,7 @@ namespace MultipartPost.Controllers
     {
         private const int DefaultBufferSize = 4096;
 
-        public async Task<IActionResult> Post()
+        public IActionResult Post()
         {
             if (!HasMultipartFormContentType(Request.ContentType))
             {
@@ -24,27 +24,11 @@ namespace MultipartPost.Controllers
 
             PrintLine("Processing a POST request to /api/upload");
 
-            var buffer = new byte[DefaultBufferSize];
-            var boundary = GetBoundary(Request.ContentType);
-            var reader = new MultipartReader(boundary, Request.Body);
-            while (true)
+            var form = Request.Form;
+            PrintLine($"File count: { form.Files.Count }");
+            foreach(var file in form.Files)
             {
-                var section = await reader.ReadNextSectionAsync();
-                if (section == null)
-                {
-                    break;
-                }
-                PrintLine("Reading section");
-                PrintLine($"Content-Disposition:{ section.ContentDisposition }");
-                long bytesRead = 0;
-                //try reading the entire message
-                while (true)
-                {
-                    var length = section.Body.Read(buffer, 0, buffer.Length);
-                    if (length <= 0) break;
-                    bytesRead += length;
-                }
-                PrintLine($"Read { bytesRead } bytes");
+                PrintLine($"Read { file.Length } bytes");
             }
 
             PrintLine("Done");
@@ -55,19 +39,6 @@ namespace MultipartPost.Controllers
         private static bool HasMultipartFormContentType(string contentType)
         {
             return contentType != null && contentType.StartsWith("multipart/", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private static string GetBoundary(string contentType)
-        {
-            var elements = contentType.Split(' ');
-            var element = elements.First(entry => entry.StartsWith("boundary="));
-            var boundary = element.Substring("boundary=".Length);
-            // Remove quotes if present
-            if (boundary.Length >= 2 && boundary[0] == '"' && boundary[boundary.Length - 1] == '"')
-            {
-                boundary = boundary.Substring(1, boundary.Length - 2);
-            }
-            return boundary;
         }
 
         private void PrintLine(string input, params object[] paramStrings)
