@@ -6,6 +6,7 @@ set TEST_DATA_LARGE_FILE=./testdatalarge.data
 set TEST_JSON_SMALL_FILE=./testjsonsmall.data
 set TEST_JSON_LARGE_FILE=./testjsonlarge.data
 set TEST_MULTIPART_FORM_FILE=./testdata_multipartform.data
+set TEST_MULTIPART_FORM_SMALL_FILE=./testdata_multipartform_small.data
 
 set SETTINGS_TEMPLATE=./settings_template.ubr
 set SCENARIO_TEMPLATE=./scenario_template.ubr
@@ -36,6 +37,7 @@ ECHO. > %TEST_DATA_LARGE_FILE%
 ECHO. > %TEST_JSON_SMALL_FILE%
 ECHO. > %TEST_JSON_LARGE_FILE%
 ECHO. > %TEST_MULTIPART_FORM_FILE%
+ECHO. > %TEST_MULTIPART_FORM_SMALL_FILE%
 
 CALL :ReplaceStringInFile %SCENARIO_TEMPLATE% %SCENARIO_RELIABILITY_FILE%
 REM for stress scenario no wait after each request
@@ -57,13 +59,14 @@ GOTO :PREPARE_INITDATA
 
 REM generate test data file
 REM About 4KB for small file, and 20MB for large file
-REM For multipart form data, it's 5 sections with about 4MB for each section
+REM For multipart form large data, it's 5 sections with about 4MB on average for each section; for small data, it's 100 sections with about 40KB on average for each section.
 :START_GEN
 CALL :GenerateTestTextData 10 %TEST_DATA_SMALL_FILE%
 CALL :GenerateTestTextData 5000 %TEST_DATA_LARGE_FILE%
 CALL :GenerateTestDataJson 10 %TEST_JSON_SMALL_FILE%
 CALL :GenerateTestDataJson 5000 %TEST_JSON_LARGE_FILE%
 CALL :GenerateTestDataMultiPartForm 5 1000 %TEST_MULTIPART_FORM_FILE%
+CALL :GenerateTestDataMultiPartForm 100 10 %TEST_MULTIPART_FORM_SMALL_FILE%
 
 GOTO :EOF
 
@@ -133,7 +136,7 @@ if %LOOPIDX%==0 (
 ECHO.>> %3
 
 SET /A BLOCKLOOPIDX=0
-SET /A BLOCKLOOPCOUNT=%2
+SET /A BLOCKLOOPCOUNT=%RANDOM% * %2 * 2 / 32768 + 1
 :GEN_SECTIONBLOCK
 ECHO %TESTDATA_CONTENT% >>%3
 SET /A BLOCKLOOPIDX=BLOCKLOOPIDX+1

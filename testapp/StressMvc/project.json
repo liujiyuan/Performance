@@ -1,5 +1,5 @@
 {
-  "userSecretsId": "aspnet5-StressMvc-a41e748d-679d-48cc-a9f2-81b486f3512c",
+  "userSecretsId": "aspnet5-StressMvc-5DBBBCB5-8596-4127-A617-D01F81A70F7F",
   "version": "1.0.0",
   "compilationOptions": {
     "emitEntryPoint": true,
@@ -25,9 +25,6 @@
     "Microsoft.Extensions.Logging": "1.0.0-*",
     "Microsoft.Extensions.Logging.Console": "1.0.0-*",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-*"
-  },
-  "tools": {
-    "dotnet-razor-tooling": "1.0.0-*"
   },
   "commands": {
     "web": "StarterMvc",
