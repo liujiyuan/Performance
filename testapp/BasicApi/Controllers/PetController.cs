@@ -24,9 +24,9 @@ namespace BasicApi.Controllers
         public BasicApiContext DbContext { get; }
 
         [HttpGet("{id}", Name = "FindPetById")]
-        public IActionResult FindById(int id)
+        public async Task<IActionResult> FindById(int id)
         {
-            var pet = DbContext.Pets
+            var pet = await DbContext.Pets
                 .Include(p => p.Category)
                 .Include(p => p.Images)
                 .Include(p => p.Tags)
@@ -40,9 +40,9 @@ namespace BasicApi.Controllers
         }
 
         [HttpGet("findByStatus")]
-        public IActionResult FindByStatus(string status)
+        public async Task<IActionResult> FindByStatus(string status)
         {
-            var pet = DbContext.Pets
+            var pet = await DbContext.Pets
                 .Include(p => p.Category)
                 .Include(p => p.Images)
                 .Include(p => p.Tags)
@@ -56,13 +56,13 @@ namespace BasicApi.Controllers
         }
 
         [HttpGet("findByTags")]
-        public IActionResult FindByTags(string[] tags)
+        public async Task<IActionResult> FindByTags(string[] tags)
         {
-            var pet = DbContext.Pets
+            var pet = await DbContext.Pets
                 .Include(p => p.Category)
                 .Include(p => p.Images)
                 .Include(p => p.Tags)
-                .AllAsync(p => p.Tags.Any(t => tags.Contains(t.Name)));
+                .FirstOrDefaultAsync(p => p.Tags.Any(t => tags.Contains(t.Name)));
             if (pet == null)
             {
                 return new NotFoundResult();

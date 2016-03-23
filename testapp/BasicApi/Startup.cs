@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using BasicApi.Models;
@@ -111,6 +112,15 @@ namespace BasicApi
                 var dbContext = services.GetRequiredService<BasicApiContext>();
                 dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
+
+                using (var connection = dbContext.Database.GetDbConnection())
+                {
+                    connection.Open();
+
+                    var command = connection.CreateCommand();
+                    command.CommandText = File.ReadAllText("seed.sql");
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
