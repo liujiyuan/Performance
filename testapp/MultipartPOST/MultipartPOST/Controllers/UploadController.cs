@@ -13,8 +13,6 @@ namespace MultipartPost.Controllers
     [Route("api/upload")]
     public class UploadController : Controller
     {
-        private const int DefaultBufferSize = 4096;
-
         public IActionResult Post()
         {
             if (!HasMultipartFormContentType(Request.ContentType))
