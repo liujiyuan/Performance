@@ -24,7 +24,7 @@ namespace BigViews
             var application = new WebHostBuilder()
                 .UseServer("Microsoft.AspNetCore.Server.Kestrel")
                 .UseUrls("http://+:5000")
-                .UseDefaultConfiguration(args)
+                .UseDefaultHostingConfiguration(args)
                 .UseIISPlatformHandlerUrl()
                 .UseStartup<Startup>()
                 .Build();

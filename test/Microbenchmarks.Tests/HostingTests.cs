@@ -27,7 +27,7 @@ namespace Microbenchmarks.Tests
             using (Collector.StartCollection())
             {
                 var builder = new WebHostBuilder()
-                    .UseDefaultConfiguration(args)
+                    .UseDefaultHostingConfiguration(args)
                     .UseStartup(typeof(TestStartup))
                     .ConfigureServices(ConfigureTestServices);
 
@@ -57,7 +57,7 @@ namespace Microbenchmarks.Tests
             public static void Main(string[] args)
             {
                 var host = new WebHostBuilder()
-                    .UseDefaultConfiguration(args)
+                    .UseDefaultHostingConfiguration(args)
                     .UseStartup<TestStartup>()
                     .Build();
 
