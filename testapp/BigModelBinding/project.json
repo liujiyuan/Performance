@@ -2,22 +2,15 @@
   "version": "1.0.0-*",
   "compilationOptions": {
     "emitEntryPoint": true,
-    "warningsAsErrors": true
+    "warningsAsErrors": true,
+    "preserveCompilationContext": true
   },
   "dependencies": {
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
-    "Microsoft.AspNetCore.Server.WebListener": "0.1.0-*"
-  },
-  "commands": {
-    "web": "BigModelBinding"
+    "Microsoft.AspNetCore.StaticFiles": "1.0.0-*"
   },
   "frameworks": {
-    "net451": {
-      "frameworkAssemblies": {
-        "System.ComponentModel.DataAnnotations": ""
-      }
-    },
     "netstandardapp1.5": {
       "dependencies": {
         "NETStandard.Library": "1.5.0-*"
@@ -26,7 +19,8 @@
         "dnxcore50",
         "portable-net451+win8"
       ]
-    }
+    },
+    "net451": { }
   },
   "publishExclude": [
     "node_modules",
@@ -39,5 +33,9 @@
     "wwwroot",
     "node_modules",
     "bower_components"
+  ],
+  "content": [
+    "Views",
+    "appsettings.json"
   ]
 }

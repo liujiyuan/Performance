@@ -26,6 +26,18 @@ namespace BigModelBinding
 
         public void Configure(IApplicationBuilder app)
         {
+            app.Use(next => async (context) =>
+            {
+                try
+                {
+                    await next(context);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            });
+
             app.UseMvcWithDefaultRoute();
         }
 
