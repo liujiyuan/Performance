@@ -1,3 +1,6 @@
+// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,6 +77,10 @@ namespace StarterMvc
 
             app.UseIdentity();
 
+            app.UseWebSockets(new WebSocketOptions
+            {
+                ReplaceFeature = Boolean.Parse(Configuration["WebSocketOptions:ReplaceFeature"])
+            });
             // To configure external authentication please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc(routes =>
