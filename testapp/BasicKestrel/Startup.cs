@@ -4,6 +4,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Filter;
+
+using System.Security.Cryptography.X509Certificates;
+using Microsoft.Extensions.PlatformAbstractions;
+using System.IO;
 using System.Text;
 
 namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
@@ -12,8 +17,20 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
     {
         private static readonly byte[] _helloWorldPayload = Encoding.UTF8.GetBytes("Hello, World!");
 
-        public void Configure(IApplicationBuilder app)
-        {
+        public void Configure(IApplicationBuilder app, IApplicationEnvironment env)
+        {            
+            System.Console.WriteLine("Loading cert.");
+             var testCertPath = Path.Combine(
+                env.ApplicationBasePath,
+                @"../../../../testCert.pfx".Replace('/', System.IO.Path.DirectorySeparatorChar));
+            
+            bool exists =  File.Exists(testCertPath);
+            System.Console.WriteLine($"Cert {testCertPath} exists:" + exists );
+            if(exists)
+            { 
+                var cert = new X509Certificate2(testCertPath, "testPassword");
+                //app.UseKestrelHttps(cert);
+            }                   
             app.Run(context =>
             {
                 context.Response.StatusCode = 200;
