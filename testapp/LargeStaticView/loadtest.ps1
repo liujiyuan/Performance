@@ -1,5 +1,18 @@
-param([int] $iterations = 3000)
+param(
+    [int] $iterations = 3000,
+    [int] $rps = 50,
+    [string][ValidateSet("taghelpers", "notaghelpers")] $variation = "taghelpers")
 
-$url = "http://127.0.0.1:5000/"
+if ($variation -eq "notaghelpers")
+{
+    $url = "http://127.0.0.1:5000/"
+}
+elseif ($variation -eq "taghelpers")
+{
+    $url = "http://127.0.0.1:5000/TagHelpers"
+}
 
-& loadtest -k -n $iterations -c 16 --rps 250 $url
+Write-Host -ForegroundColor Green loadtest -k -n $iterations -c 16 --rps $rps $url
+Write-Host
+
+& loadtest -k -n $iterations -c 16 --rps $rps $url
