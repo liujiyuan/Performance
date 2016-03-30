@@ -19,12 +19,13 @@
   "dependencies": {
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
-    "Microsoft.AspNetCore.IISPlatformHandler": "1.0.0-*"
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-*"
   },
   "commands": {
     "web": "HelloWorldMvc"
   },
   "content": [
-    "Views"
+    "Views",
+    "wwwroot"
   ]
 }

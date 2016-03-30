@@ -44,7 +44,7 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.LowAlloc
                 .UseServer("Microsoft.AspNetCore.Server.Kestrel")
                 .UseDefaultHostingConfiguration(args)
                 .UseConfiguration(_configuration)
-                .UseIISPlatformHandlerUrl()
+                .UseIIS()
                 .UseStartup<Startup>()
                 .Build();
 

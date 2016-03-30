@@ -34,7 +34,7 @@ namespace MultipartPost
             var host = new WebHostBuilder()
                 .UseServer("Microsoft.AspNetCore.Server.Kestrel")
                 .UseDefaultHostingConfiguration(args)
-                .UseIISPlatformHandlerUrl()
+                .UseIIS()
                 .UseStartup<Startup>()
                 .Build();
 

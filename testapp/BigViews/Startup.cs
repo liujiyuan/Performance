@@ -25,7 +25,7 @@ namespace BigViews
                 .UseServer("Microsoft.AspNetCore.Server.Kestrel")
                 .UseUrls("http://+:5000")
                 .UseDefaultHostingConfiguration(args)
-                .UseIISPlatformHandlerUrl()
+                .UseIIS()
                 .UseStartup<Startup>()
                 .Build();
 

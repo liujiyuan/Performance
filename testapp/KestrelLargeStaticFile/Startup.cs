@@ -25,7 +25,7 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
             var host = new WebHostBuilder()
                 .UseServer("Microsoft.AspNetCore.Server.Kestrel")
                 .UseDefaultHostingConfiguration(args)
-                .UseIISPlatformHandlerUrl()
+                .UseIIS()
                 .UseStartup<Startup>()
                 .Build();
 
