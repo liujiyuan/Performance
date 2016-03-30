@@ -59,9 +59,7 @@ namespace PerformanceDashboard
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
-            app.UseIISPlatformHandler();
-
+            
             app.UseStaticFiles();
 
             app.UseMvc(routes =>

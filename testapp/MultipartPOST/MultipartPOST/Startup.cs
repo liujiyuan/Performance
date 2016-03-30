@@ -16,9 +16,7 @@ namespace MultipartPost
         }
 
         public void Configure(IApplicationBuilder app)
-        {
-            app.UseIISPlatformHandler();
-
+        {            
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -37,9 +37,7 @@ namespace BasicViews
         public void Configure(IApplicationBuilder app)
         {
             CreateDatabase(app.ApplicationServices);
-
-            app.UseIISPlatformHandler();
-
+           
             app.Use(next => async (context) =>
             {
                 try
