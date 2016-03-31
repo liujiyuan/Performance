@@ -30,7 +30,7 @@ namespace MultipartPost
             Console.WriteLine($"Running in { IntPtr.Size * 8 } bits");
 
             var host = new WebHostBuilder()
-                .UseServer("Microsoft.AspNetCore.Server.Kestrel")
+                .UseKestrel()
                 .UseDefaultHostingConfiguration(args)
                 .UseIIS()
                 .UseStartup<Startup>()
@@ -40,3 +40,4 @@ namespace MultipartPost
         }
     }
 }
+

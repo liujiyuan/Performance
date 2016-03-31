@@ -1,4 +1,4 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
@@ -68,7 +68,7 @@ namespace BasicViews
         public static void Main(string[] args)
         {
             var application = new WebHostBuilder()
-                .UseServer("Microsoft.AspNetCore.Server.Kestrel")
+                .UseKestrel()
                 .UseUrls("http://+:5000")
                 .UseDefaultHostingConfiguration(args)
                 .UseStartup<Startup>()
@@ -78,3 +78,4 @@ namespace BasicViews
         }
     }
 }
+
