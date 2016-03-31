@@ -1,5 +1,6 @@
 ﻿Param(
   [string]$scenarioFile, # Mandatory
+  [string]$server, # Mandatory
   [bool]$TestPerformance=$false,
   [bool]$TestConnectionDensity=$false,
   [bool]$TestReliability=$false,
@@ -16,7 +17,7 @@
 # if $TestConnectionDensity is $true, you dont' need to specify any other argument. $vc, $endVC and $duration are used.
 # if $TestReliability is $true, you need to specify $vc (# of virtual clients) and $duration. $vc and $duration are used.
 
-function extractParamsFromScenariofile
+function ProcessScenariofile
 {
     $content = (Get-Content $scenarioFile | Out-String);
 
@@ -25,11 +26,8 @@ function extractParamsFromScenariofile
         $global:scenario= $matches[1];
     }
 
-    if($content -match  'name\s*=\s*"Host";\s*value\s*=\s*"\s*(.*)\s*"\s*;')
-    {
-        $global:server= $matches[1];
-    }
-
+        (Get-Content $scenarioFile).Replace('<Your-Server>', $server) | Set-Content $scenarioFile;       
+        
     if($content -match  'port\s*=\s*(.*)\s*;')
     {
         $global:port= $matches[1];
@@ -57,7 +55,8 @@ function cleanupPreviousRun
 function printResults
 {
     param(
-    [string]$resultFile
+    [string]$resultFile,
+    [string]$summaryFile
     )
 
     [xml] $content = (Get-Content $resultFile | Out-String);
@@ -76,7 +75,7 @@ function printResults
         $reliability = 0;
     }
     $txt = $("$vc,$throughput,$medianlatency,$p95latency,$reliability");
-    $txt | Out-File $("$logdir\ConnectionDensity.csv") -Append;    
+    $txt | Out-File $summaryFile -Append;    
 }
 
 function runTest
@@ -121,7 +120,7 @@ function incrementVirtualClients
     return $virtualClients;
 }
 
-extractParamsFromScenariofile;
+ProcessScenariofile;
 cleanupPreviousRun;
 
 if(!($logdir))
@@ -132,13 +131,14 @@ if(!($logdir))
 mkdir $logdir
 
 $txt = "Virtualclients,Throughput,MedianLatency,P95Latency,Reliability";
-$txt | Out-File $("$logdir\ConnectionDensity.csv");
+$summaryFile = $("$logdir\summary.csv");
+$txt | Out-File $summaryFile;
 
 $virtualClients = $vc;
 For($i=1;;$i++)
 {
     runTest $virtualClients;
-    printResults $("$logdir\result$virtualClients.xml");
+    printResults $("$logdir\result$virtualClients.xml") $summaryFile;
 
     if($TestReliability -eq $true)
     {

@@ -33,6 +33,7 @@ scenario
         setheader
         {
             name    = "Host";
+            value   = "<Your-Server>";
         }
 
         version     = HTTP11;
@@ -45,12 +46,12 @@ scenario
         id = "home request";
         weight = 50;
        
-	request
-	{
-                id="RequestRandom";
-	 	url="/";
-                port=5000;
-	}
+        request
+        {
+            id="RequestRandom";
+            url="/";
+            port=8080;
+        }
 
         branch
         {
@@ -67,7 +68,7 @@ scenario
         } 
         sleep
         {
-		id = "ClientIdle";
+		    id = "ClientIdle";
         	delay=0;
         }      
     }

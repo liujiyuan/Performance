@@ -33,7 +33,7 @@ scenario
         setheader
         {
             name    = "Host";
-            value   = "sivag-dailylnx1";
+            value   = "<Your-Server>";
         }
 
         version     = HTTP11;
@@ -46,12 +46,12 @@ scenario
         id = "home request";
         weight = 50;
        
-	request
-	{
-                id="RequestRandom";
-	 	url="/";
-                port=8080;
-	}
+        request
+        {
+            id="RequestRandom";
+            url="/";
+            port=8080;
+        }
 
         branch
         {

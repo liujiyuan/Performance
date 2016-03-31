@@ -77,10 +77,11 @@ This setup is intended for reliability & performance tests for Kestrel and ASP.N
         Goto Programs and Features and Uninstall Dotnet CLI  
         Delete folders
             rmdir -Recurse -Path testapp\HelloWorldMvc\bin\release
-          rmdir -Recurse -Path $env:LOCALAPPDATA\NUGET\v3-cache\
-          rmdir -Recurse -Path $env:USERPROFILE\.dnx\packages\
-          rmdir -Recurse -Path $env:USERPROFILE\.nuget\packages\
-          rmdir -Recurse -Path $env:LOCALAPPDATA\Microsoft\dotnet
-            rmdir -Recurse -Path $env:ProgramW6432\dotnet
+              rmdir -Recurse -Path $env:LOCALAPPDATA\NUGET\v3-cache\
+              rmdir -Recurse -Path $env:USERPROFILE\.dnx
+              rmdir -Recurse -Path $env:USERPROFILE\.dnu
+              rmdir -Recurse -Path $env:USERPROFILE\.nuget
+              rmdir -Recurse -Path $env:LOCALAPPDATA\Microsoft\dotnet
+                rmdir -Recurse -Path $env:ProgramW6432\dotnet
         cd <RepoFolder>
         git clean -xdf
