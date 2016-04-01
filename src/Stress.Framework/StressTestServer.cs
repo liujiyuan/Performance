@@ -153,7 +153,7 @@ namespace Stress.Framework
 
         private class NullLogger : ILogger
         {
-            public IDisposable BeginScopeImpl(object state)
+            public IDisposable BeginScope<TState>(TState state)
             {
                 return null;
             }
