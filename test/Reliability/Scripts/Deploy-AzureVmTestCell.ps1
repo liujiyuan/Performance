@@ -6,7 +6,6 @@ Param(
     [string] [Parameter(Mandatory=$true)] $SubscriptionId,
     [string] [Parameter(Mandatory=$true)] $ResourceGroupLocation,
     [string] [Parameter(Mandatory=$true)] $ResourceGroupName,
-    [string] [Parameter(Mandatory=$true)] $DnsNamePrefix,
     [string] [Parameter(Mandatory=$true)] $AdminPassword,
     [string] [Parameter(Mandatory=$true)] $TemplateFile
 )
@@ -21,7 +20,7 @@ New-AzureRmResourceGroup -Name $ResourceGroupName -Location $ResourceGroupLocati
 New-AzureRmResourceGroupDeployment -Name ((Get-ChildItem $TemplateFile).BaseName + '-' + ((Get-Date).ToUniversalTime()).ToString('MMdd-HHmm')) `
                                    -ResourceGroupName $ResourceGroupName `
                                    -TemplateFile $TemplateFile `
-                                   -dnsNamePrefix $DnsNamePrefix `
+                                   -dnsNamePrefix $ResourceGroupName `
                                    -adminUserName "asplab" `
                                    -adminPassword $AdminPassword `
                                    -Force -Verbose

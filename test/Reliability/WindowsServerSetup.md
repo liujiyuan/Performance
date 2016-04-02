@@ -7,7 +7,7 @@ This setup is intended for reliability & performance tests for Kestrel and ASP.N
 - Clone the Performance repo
 
         git clone https://github.com/aspnet/Performance.git
-- Run Build.cmd
+- Run Build.cmd clean
 - Make sure of ASPNetVNext Feed in Nuget.Config    
     
         <add key="AspNetVNext" value="https://www.myget.org/F/aspnetcidev/api/v3/index.json" />
@@ -58,6 +58,9 @@ This setup is intended for reliability & performance tests for Kestrel and ASP.N
             <runtime>
             <gcServer enabled="true"/>
       
+# Edit hosts file
+        Add
+        127.0.0.1 <machineName>
 
 # Monitor Server machines
 
