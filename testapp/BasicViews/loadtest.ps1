@@ -25,6 +25,8 @@ if ($status_code -ne 200)
     return;
 }
 
+$user_agent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"
+
 Write-Host -ForegroundColor Green Got token
 
 $set_cookie = $response.Headers["Set-Cookie"]
@@ -38,7 +40,7 @@ $body = "name=Joey^^^&age=15^^^&birthdate=9-9-1985^^^&$form_name=$form_value"
 $content_type = "application/x-www-form-urlencoded"
 
 Write-Host -ForegroundColor Green Beginning workload
-Write-Host "`& loadtest -k -n $iterations -c 16 --rps $rps -P $body -T $content_type -C $cookie_name=$cookie_value $url"
+Write-Host "`& loadtest -k -n $iterations -c 16 --rps $rps -P $body -T $content_type -C $cookie_name=$cookie_value -H User-Agent: $user_agent $url"
 Write-Host
 
-& loadtest -k -n $iterations -c 16 --rps $rps -P $body -T $content_type -C $cookie_name=$cookie_value $url
+& loadtest -k -n $iterations -c 16 --rps $rps -P $body -T $content_type -C $cookie_name=$cookie_value -H "User-Agent: $user_agent" $url
