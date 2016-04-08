@@ -74,7 +74,7 @@ namespace PerformanceDashboard
         {
             var host = new WebHostBuilder()
                 .UseDefaultHostingConfiguration(args)
-                .UseIIS()
+                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .UseServer(new ServerFactory(new ApplicationLifetime(), new LoggerFactory()))
                 .Build();

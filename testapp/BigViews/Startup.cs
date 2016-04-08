@@ -25,7 +25,7 @@ namespace BigViews
                 .UseKestrel()
                 .UseUrls("http://+:5000")
                 .UseDefaultHostingConfiguration(args)
-                .UseIIS()
+                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 

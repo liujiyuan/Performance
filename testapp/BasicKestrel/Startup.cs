@@ -30,7 +30,7 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseDefaultHostingConfiguration(args)
-                .UseIIS()
+                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 
