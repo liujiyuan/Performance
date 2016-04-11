@@ -7,10 +7,12 @@
     $Debug
 )
 
-.\SetEnv.ps1
+# Set targetApp name and workspace
+& (Join-Path $PSScriptRoot SetEnv.ps1)
+$curlPath = which curl.exe; 
 
-if (! (Test-Path (Join-Path $global:toolsPath "curl.exe"))) {
-    Write-Error "Please edit `global:toolsPath to a directory containing curl.exe"
+if (!(Test-Path($curlPath))) {
+    Write-Error "Ensure you have curl on the path";
     Exit -1
 }
 
@@ -32,8 +34,6 @@ function RunScenario {
 
     $timer = [System.Diagnostics.Stopwatch]::StartNew()
 
-    $curlPath = Join-Path $global:toolsPath curl.exe
-
     $env:HTTP_PLATFORM_PORT = $port
 
     if ($PerfView) {
@@ -49,7 +49,7 @@ function RunScenario {
             Read-Host
         }
 
-        ## for some reason we need to use full path for app dll
+        ## Provide fullpath to AppDLL.
         $appDllLocation = Join-Path $appLocation "${global:targetApp}.dll"
         $process = Start-Process "dotnet" -ArgumentList "$appDllLocation server.urls=http://+:$port/" -PassThru -WorkingDirectory $appLocation
 
@@ -84,9 +84,9 @@ function RunScenario {
 }
 
 if ($PerfView) {
-    $PerfViewExe = (Join-Path $global:toolsPath "PerfView.exe")
+    $PerfViewExe = which PerfView.exe
     if (! (Test-Path $PerfViewExe)) {
-        Write-Error "For -PerfView option, please edit `$global:toolsPath in SetEnv.ps1 to a directory containing PerfView.exe"
+        Write-Error "Ensure you have perfview on the path or set $env:PERFTOOLS environment variable"
         Exit -1
     }
 }

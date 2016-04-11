@@ -1,7 +1,7 @@
 #Prerequisites:
     * Install git command line client
     * Install curl
-        - For Windows, edit "SetEnv.ps1" and set $global:toolsPath to the folder where curl.exe is
+        - For Windows, edit "SetEnv.ps1" and set $env:PERFTOOLS to the folder where curl.exe/perfview.exe and other tools are is
         - For Linux, curl should be in PATH
     * Install libuv
 

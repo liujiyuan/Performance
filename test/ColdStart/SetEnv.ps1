@@ -1,9 +1,13 @@
 $global:targetApp = "HelloWorldMvc"
-$global:toolsPath = "C:\Program Files (x86)\Git\bin"  ## CHANGE ME: point to where curl is
 $global:workspace = [System.IO.Path]::Combine($env:USERPROFILE, "aspnet", "tests", "workspace")
 
 if (! (Test-Path $global:workspace)) {
     mkdir $global:workspace
+}
+
+if(($env:PERFTOOLS) -and (Test-Path $env:PERFTOOLS) -and !($env:PATH.StartsWith($env:PERFTOOLS + ";"))){
+    $env:PATH = $env:PERFTOOLS + ";" +  $env:PATH 
+    Write-Host "Adding TOOLS PATH $env:PERFTOOLS"
 }
 
 $outputDir = [System.IO.Path]::Combine($global:workspace, "tests", "current")

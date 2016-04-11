@@ -1,6 +1,10 @@
-..\..\build.cmd clean
 
-.\SetEnv.ps1
+# install dotnet using build.ps1 at the root.
+$repoRoot = $(git rev-parse --show-toplevel)
+& (Join-Path $repoRoot build.ps1) pre-clean
+
+# Set targetApp name and workspace
+& (Join-Path $PSScriptRoot SetEnv.ps1)
 
 if (! (Test-Path variable:global:targetApp)) {
     Write-Error "Target application is not set"
@@ -22,7 +26,7 @@ if (! (Test-Path $global:workspace)) {
     Exit -1
 }
 
-$appLocation = [System.IO.Path]::Combine("..", "..", "testapp" , $global:targetApp)
+$appLocation = [System.IO.Path]::Combine($repoRoot, "testapp" , $global:targetApp)
 
 if (! (Test-Path $appLocation) )
 {
