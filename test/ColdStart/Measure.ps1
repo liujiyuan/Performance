@@ -1,8 +1,19 @@
 ﻿param (
     ## If -PerfView option is on, PerfView.exe needs to be in the tools folder specified by $global:toolsPath
     [switch]
-    $PerfView
+    $PerfView,
+
+    [switch]
+    $Debug
 )
+
+.\SetEnv.ps1
+
+if (! (Test-Path (Join-Path $global:toolsPath "curl.exe"))) {
+    Write-Error "Please edit `global:toolsPath to a directory containing curl.exe"
+    Exit -1
+}
+
 ## interval of calling curl in seconds
 $curlInterval = 0.01
 ## number of retries
@@ -33,7 +44,14 @@ function RunScenario {
     }
 
     try {
-        $process = Start-Process -FilePath (Join-Path $appLocation "${global:targetApp}.exe") -PassThru
+        if ($Debug) {
+            Write-Host "Debug flag is on, waiting for user input to start service..."
+            Read-Host
+        }
+
+        ## for some reason we need to use full path for app dll
+        $appDllLocation = Join-Path $appLocation "${global:targetApp}.dll"
+        $process = Start-Process "dotnet" -ArgumentList "$appDllLocation server.urls=http://+:$port/" -PassThru -WorkingDirectory $appLocation
 
         Write-Host Process started with PID $process.Id
 
@@ -96,21 +114,29 @@ if (! (Test-Path variable:global:outputFile)) {
 
 if (! (Test-Path $global:outputFile)) {
     ## File does not exist yet, write output file header
-    "Cold,Warm" | Out-File $global:outputFile
+    "Cold,Warm,NoCache" | Out-File $global:outputFile
 }
 
 ## TODO: This is not a good logic, we should name the folder with timestamp and have a $global:outputFolder variable instead
 $outputFolder = Split-Path $global:outputFile
 
-$coldSitePort = 5000
-$warmSitePort = 5001
+$coldSitePort = 5001
+$warmSitePort = 5002
+$warmNoCachePort = 5003
 
+$publishLocation = [System.IO.Path]::Combine($global:workspace, "publish", $global:targetApp)
 $coldSiteLocation = [System.IO.Path]::Combine($global:workspace, "publish", $global:targetApp + "0")
 $warmSiteLocation = [System.IO.Path]::Combine($global:workspace, "publish", $global:targetApp + "1")
+$warmNoCacheLocation = [System.IO.Path]::Combine($global:workspace, "publish", $global:targetApp + "2")
+
+if ((! (Test-Path $publishLocation)) -and (! (Test-Path $coldSiteLocation))) {
+    Write-Error "App does not exist in ${publishLocation}, did you run SetupPerfApp.ps1?"
+    Exit -1
+}
 
 if (! (Test-Path $coldSiteLocation)) {
-    Write-Error "Cold site does not exist in ${coldSiteLocation}, did you run SetupPerfApp.ps1?"
-    Exit -1
+    Write-Host "Moving published app ${publishLocation} to test location ${coldSiteLocation}..."
+    Move-Item $publishLocation $coldSiteLocation
 }
 
 if (! (Test-Path $warmSiteLocation)) {
@@ -118,21 +144,45 @@ if (! (Test-Path $warmSiteLocation)) {
     Copy-Item $coldSiteLocation $warmSiteLocation -Force -Recurse
 }
 
+if (! (Test-Path $warmNoCacheLocation)) {
+    Write-Host "Warm site, no cache, location ${warmNoCacheLocation} does not exist, copying..."
+    Copy-Item $coldSiteLocation $warmNoCacheLocation -Force -Recurse
+}
+
 try {
-    $warmPID = RunScenario -appLocation $coldSiteLocation -port $coldSitePort
+    $env:DOTNET_PACKAGES_CACHE="${env:USERPROFILE}\.nuget\packages"
+
+    $coldPID = RunScenario -appLocation $coldSiteLocation -port $coldSitePort
     [System.IO.File]::AppendAllText("$global:outputFile", ",", [System.Text.Encoding]::Unicode)
     if ($PerfView) {
         Start-Sleep 120    # It takes a while to process the profile even after command finishs
     }
-    $coldPID = RunScenario -appLocation $warmSiteLocation -port $warmSitePort
+
+    $warmPID = RunScenario -appLocation $warmSiteLocation -port $warmSitePort
+    [System.IO.File]::AppendAllText("$global:outputFile", ",", [System.Text.Encoding]::Unicode)
+    if ($PerfView) {
+        Start-Sleep 120    # It takes a while to process the profile even after command finishs
+    }
+
+    Remove-Item Env:\DOTNET_PACKAGES_CACHE
+
+    $nocachePID = RunScenario -appLocation $warmNoCacheLocation -port $warmNoCachePort
     [System.IO.File]::AppendAllText("$global:outputFile", "`r`n", [System.Text.Encoding]::Unicode)
 }
 finally {
     try {
         Stop-Process $warmPID
     }
-    finally {
+    catch {}
+
+    try {
         Stop-Process $coldPID
     }
+    catch {}
+
+    try {
+        Stop-Process $nocachePID
+    }
+    catch {}
 }
 
