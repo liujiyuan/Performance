@@ -18,8 +18,7 @@ namespace StarterMvc
     {
 
         public static bool UseSingletonClient = true;
-
-        private static HttpClient singletonTestClient = new HttpClient();
+        private static HttpClient singletonTestClient = new HttpClient(new HttpClientHandler { ServerCertificateCustomValidationCallback = delegate { return true; } }); //Ignore server cert error
         private List<IDisposable> _objsToDispose = new List<IDisposable>(); //Objects to be desposed when the request finishes
         bool disposed = false;
 
@@ -269,7 +268,7 @@ namespace StarterMvc
                 }
                 else
                 {
-                    newContent = new FormUrlEncodedContent((IEnumerable<KeyValuePair<string, string>>)formCollection);
+                    newContent = new FormUrlEncodedContent(formCollection.Select(item => new KeyValuePair<string, string> (item.Key, item.Value.ToString())));
                 }
             }
             else
@@ -301,7 +300,7 @@ namespace StarterMvc
             if (UseSingletonClient)
                 testClient = singletonTestClient;
             else
-                testClient = new HttpClient();
+                testClient = new HttpClient(new HttpClientHandler { ServerCertificateCustomValidationCallback = delegate { return true; } });
             return testClient;
         }
         #endregion HELPERS

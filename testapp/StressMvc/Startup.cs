@@ -14,11 +14,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StarterMvc.Models;
 using StarterMvc.Services;
+using System.IO;
+using Microsoft.AspNetCore.Server.Kestrel.Filter;
+using System.Security.Cryptography.X509Certificates;
+using System.Runtime;
 
 namespace StarterMvc
 {
     public class Startup
     {
+        static readonly string _httpsCertFile = "stressmvc.pfx";
+        static readonly string _httpsCertPwd = "stressmvc";
         public Startup(IHostingEnvironment env)
         {
             // Set up configuration sources.
@@ -105,12 +111,26 @@ namespace StarterMvc
                 .Build();
 
             var host = new WebHostBuilder()
-                .UseKestrel()
+                .UseKestrel(options =>
+                {
+                    //options.ThreadCount = 4;
+                    //options.NoDelay = true;
+                    //options.UseConnectionLogging();
+                    options.UseHttps(_httpsCertFile, _httpsCertPwd);
+                })
                 .UseConfiguration(config)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 
+            if (GCSettings.IsServerGC)
+            {
+                Console.WriteLine("Server GC");
+            }
+            else
+            {
+                Console.WriteLine("Workstation GC");
+            }
             host.Run();
         }
     }
