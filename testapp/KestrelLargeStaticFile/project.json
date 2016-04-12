@@ -15,5 +15,10 @@
   },
   "commands": {
     "web": "KestrelLargeStaticFile"
+  },
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
   }
 }

@@ -49,5 +49,10 @@
     "**.user",
     "**.vspscc"
   ],
-  "content": [ "appsettings.json", "Views", "wwwroot" ]
+  "content": [ "appsettings.json", "Views", "wwwroot" ],
+    "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  }
 }

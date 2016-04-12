@@ -22,5 +22,10 @@
   },
   "commands": {
     "web": "PlainTextMvc"
+  },
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
   }
 }

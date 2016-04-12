@@ -21,5 +21,10 @@
   },
   "commands": {
     "web": "BasicKestrelJson"
+  },
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
   }
 }

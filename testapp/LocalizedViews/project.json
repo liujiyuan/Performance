@@ -44,5 +44,10 @@
   ],
   "content": [
     "Views"
-  ]
+  ],
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  }
 }

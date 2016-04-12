@@ -44,5 +44,10 @@
     "Views",
     "appsettings.json",
     "seed.sql"
-  ]
+  ],
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  }
 }

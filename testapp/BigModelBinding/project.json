@@ -37,5 +37,10 @@
   "content": [
     "Views",
     "appsettings.json"
-  ]
+  ],
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  }
 }

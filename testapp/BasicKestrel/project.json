@@ -24,5 +24,10 @@
   "content": [
     "Views",
     "wwwroot"
-  ]
+  ],
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
+  }
 }
