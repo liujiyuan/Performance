@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25029.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{39290E57-4492-4F65-89D6-64C95DE73976}"
 EndProject
@@ -73,6 +73,26 @@ EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "BasicApi", "testapp\BasicApi\BasicApi.xproj", "{67598949-B2F2-4E43-8D89-431712978A48}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "HelloWorldMvcCore", "testapp\HelloWorldMvcCore\HelloWorldMvcCore.xproj", "{D3F47B0C-2CA7-409B-9951-586876B2A868}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LargeJsonApi", "LargeJsonApi", "{A6468B67-1ED9-461E-8926-2C5C8C8ECF58}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LargeJsonApi", "testapp\LargeJsonApi\LargeJsonApi\LargeJsonApi.xproj", "{EB3E02EB-CB0D-413C-87A6-1BF88AA0B69F}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LargeJsonApiClient", "testapp\LargeJsonApi\LargeJsonApiClient\LargeJsonApiClient.xproj", "{DDE8C1F4-4E4B-40AF-B940-C2828385458C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{025E537C-B512-492C-97FE-C185FDB3BDA8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{1277A3EE-159C-43C0-9B58-DFA6EEBBF9FA}"
+	ProjectSection(SolutionItems) = preProject
+		testapp\LargeJsonApi\Shared\Data\DataFactory.cs = testapp\LargeJsonApi\Shared\Data\DataFactory.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{5FA83898-239E-4B1A-A86E-FBC95A9DA059}"
+	ProjectSection(SolutionItems) = preProject
+		testapp\LargeJsonApi\Shared\Model\Movies.cs = testapp\LargeJsonApi\Shared\Model\Movies.cs
+		testapp\LargeJsonApi\Shared\Model\Seasons.cs = testapp\LargeJsonApi\Shared\Model\Seasons.cs
+		testapp\LargeJsonApi\Shared\Model\Series.cs = testapp\LargeJsonApi\Shared\Model\Series.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -188,6 +208,14 @@ Global
 		{D3F47B0C-2CA7-409B-9951-586876B2A868}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3F47B0C-2CA7-409B-9951-586876B2A868}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3F47B0C-2CA7-409B-9951-586876B2A868}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EB3E02EB-CB0D-413C-87A6-1BF88AA0B69F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EB3E02EB-CB0D-413C-87A6-1BF88AA0B69F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EB3E02EB-CB0D-413C-87A6-1BF88AA0B69F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EB3E02EB-CB0D-413C-87A6-1BF88AA0B69F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDE8C1F4-4E4B-40AF-B940-C2828385458C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDE8C1F4-4E4B-40AF-B940-C2828385458C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDE8C1F4-4E4B-40AF-B940-C2828385458C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDE8C1F4-4E4B-40AF-B940-C2828385458C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -220,5 +248,11 @@ Global
 		{F14C584D-3175-43B8-996F-59046629CD27} = {93AB896C-D117-4DBB-9DB1-24903022E21B}
 		{67598949-B2F2-4E43-8D89-431712978A48} = {93AB896C-D117-4DBB-9DB1-24903022E21B}
 		{D3F47B0C-2CA7-409B-9951-586876B2A868} = {93AB896C-D117-4DBB-9DB1-24903022E21B}
+		{A6468B67-1ED9-461E-8926-2C5C8C8ECF58} = {93AB896C-D117-4DBB-9DB1-24903022E21B}
+		{EB3E02EB-CB0D-413C-87A6-1BF88AA0B69F} = {A6468B67-1ED9-461E-8926-2C5C8C8ECF58}
+		{DDE8C1F4-4E4B-40AF-B940-C2828385458C} = {A6468B67-1ED9-461E-8926-2C5C8C8ECF58}
+		{025E537C-B512-492C-97FE-C185FDB3BDA8} = {A6468B67-1ED9-461E-8926-2C5C8C8ECF58}
+		{1277A3EE-159C-43C0-9B58-DFA6EEBBF9FA} = {025E537C-B512-492C-97FE-C185FDB3BDA8}
+		{5FA83898-239E-4B1A-A86E-FBC95A9DA059} = {025E537C-B512-492C-97FE-C185FDB3BDA8}
 	EndGlobalSection
 EndGlobal
