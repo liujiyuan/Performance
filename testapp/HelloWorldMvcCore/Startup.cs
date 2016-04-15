@@ -1,6 +1,7 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +17,19 @@ namespace HelloWorldMvcCore
 
         public void Configure(IApplicationBuilder app)
         {
+            app.Use(next => async (context) =>
+            {
+                try
+                {
+                    await next(context);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    throw;
+                }
+            });
+            
             app.UseMvcWithDefaultRoute();
         }
 
@@ -23,6 +37,7 @@ namespace HelloWorldMvcCore
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
+                .UseUrls("http://+:5000")
                 .UseDefaultHostingConfiguration(args)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
