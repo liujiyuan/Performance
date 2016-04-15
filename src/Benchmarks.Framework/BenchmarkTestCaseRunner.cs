@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -135,7 +136,7 @@ namespace Benchmarks.Framework
         {
 #if NETSTANDARDAPP1_5
             var config = new ConfigurationBuilder()
-                .SetBasePath(".")
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables()
                 .Build();
 

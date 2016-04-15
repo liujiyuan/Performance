@@ -222,7 +222,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
         {
 #if NETSTANDARDAPP1_5
             var config = new ConfigurationBuilder()
-                .SetBasePath(".")
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddEnvironmentVariables()
                 .Build();
 

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,7 @@ namespace Benchmarks.Framework
         private static readonly Lazy<BenchmarkConfig> _instance = new Lazy<BenchmarkConfig>(() =>
             {
                 var config = new ConfigurationBuilder()
-                    .SetBasePath(".")
+                    .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("config.json")
                     .AddEnvironmentVariables()
                     .Build();

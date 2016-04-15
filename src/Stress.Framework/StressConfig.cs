@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
@@ -13,7 +14,7 @@ namespace Stress.Framework
         private static readonly Lazy<StressConfig> _instance = new Lazy<StressConfig>(() =>
             {
                 var config = new ConfigurationBuilder()
-                    .SetBasePath(".")
+                    .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("config.json")
                     .AddEnvironmentVariables()
                     .Build();

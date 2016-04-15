@@ -170,7 +170,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
         {
             if (string.Equals(runtimeType, "clr", StringComparison.OrdinalIgnoreCase))
             {
-                return "dnx451";
+                return "net451";
             }
             else if (string.Equals(runtimeType, "coreclr", StringComparison.OrdinalIgnoreCase))
             {

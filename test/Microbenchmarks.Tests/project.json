@@ -9,11 +9,6 @@
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-*",
     "Microsoft.AspNetCore.TestHost": "1.0.0-*",
     "Microsoft.AspNetCore.Testing": "1.0.0-*",
-    "System.Collections": "4.0.11-*",
-    "System.IO": "4.1.0-*",
-    "System.Reflection": "4.1.0-*",
-    "System.Runtime": "4.1.0-*",
-    "System.Threading": "4.0.11-*"
   },
   "testRunner": "xunit",
   "compilationOptions": {
@@ -30,12 +25,7 @@
         "portable-net451+win8"
       ]
     },
-    "net451": {},
-    "dnx451": {
-      "dependencies": {
-        "xunit.runner.aspnet": "2.0.0-aspnet-*"
-      }
-    }
+    "net451": {}
   },
   "tools": {
     "dotnet-razor-tooling": "1.0.0-*"

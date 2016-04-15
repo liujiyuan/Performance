@@ -26,7 +26,7 @@ namespace Microsoft.AspNetCore.Tests.Stress
             await client.GetAsync("/Manage");
         }
 
-        [Stress("StarterMvc", WarmupMethodName = nameof(StarterMvc_Warmup))]
+        //[Stress("StarterMvc", WarmupMethodName = nameof(StarterMvc_Warmup))]
         public void StarterMvc()
         {
             IterateAsync(client =>
