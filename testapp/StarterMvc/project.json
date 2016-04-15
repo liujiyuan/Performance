@@ -9,6 +9,7 @@
     "Microsoft.EntityFrameworkCore.Commands": "1.0.0-*",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-*",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0-*",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0-*",
     "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0-*",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0-*",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-*",
@@ -28,10 +29,6 @@
   "tools": {
     "dotnet-razor-tooling": "1.0.0-*"
   },
-  "commands": {
-    "web": "StarterMvc",
-    "ef": "Microsoft.EntityFrameworkCore.Commands"
-  },
   "frameworks": {
     "net451": {},
     "netstandardapp1.5": {
@@ -44,14 +41,6 @@
       ]
     }
   },
-  "exclude": [
-    "wwwroot",
-    "node_modules"
-  ],
-  "publishExclude": [
-    "**.user",
-    "**.vspscc"
-  ],
   "scripts": {
     "prepublish": [
       "npm install",
@@ -62,7 +51,9 @@
   },
   "content": [
     "appsettings.json",
-    "Views"
+    "Views",
+    "wwwroot",
+    "web.config"
   ],
   "runtimeOptions": {
     "configProperties": {

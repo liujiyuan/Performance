@@ -10,9 +10,6 @@
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*"
   },
-  "commands": {
-    "web": "LargeStaticView"
-  },
   "frameworks": {
     "net451": {},
     "netstandardapp1.5": {

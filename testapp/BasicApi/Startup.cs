@@ -26,8 +26,8 @@ namespace BasicApi
         {
             Configuration =
                 new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
-                .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
                 .Build();
         }
 

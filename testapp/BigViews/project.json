@@ -11,9 +11,6 @@
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*"
   },
-  "commands": {
-    "web": "BigViews"
-  },
   "frameworks": {
     "net451": {},
     "netstandardapp1.5": {
@@ -29,19 +26,8 @@
   "tools": {
     "dotnet-razor-tooling": "1.0.0-*"
   },
-  "publishExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ],
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
   "content": [
+    "web.config",
     "Views"
   ],
   "runtimeOptions": {

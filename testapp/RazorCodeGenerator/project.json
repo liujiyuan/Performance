@@ -6,9 +6,6 @@
   "dependencies": {
     "Microsoft.AspNetCore.Mvc.Razor": "1.0.0-*"
   },
-  "commands": {
-    "run": "RazorCodeGenerator"
-  },
   "frameworks": {
     "net451": {},
     "netstandardapp1.5": {
@@ -20,5 +17,9 @@
         "portable-net451+win8"
       ]
     }
-  }
+  },
+  "content": [
+    "LargePage.cshtml",
+    "MSN.cshtml"
+  ]
 }

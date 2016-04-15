@@ -15,9 +15,6 @@
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-*",
     "Microsoft.Extensions.Logging.Console": "1.0.0-*"
   },
-  "commands": {
-    "web": "BasicApi"
-  },
   "frameworks": {
     "netstandardapp1.5": {
       "dependencies": {
@@ -31,16 +28,8 @@
     },
     "net451": { }
   },
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
-  "publishExclude": [
-    "**.user",
-    "**.vspscc"
-  ],
   "content": [
+    "web.config",
     "Views",
     "appsettings.json",
     "seed.sql"

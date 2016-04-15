@@ -38,7 +38,7 @@ namespace RazorCodeGenerator
             }
             else
             {
-                Console.WriteLine("usage: dnx run <file.cshtml>");
+                Console.WriteLine("usage: dotnet run <file.cshtml>");
                 return -1;
             }
         }

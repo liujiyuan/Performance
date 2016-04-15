@@ -17,7 +17,4 @@
     "System.Net.Http": "4.0.1-*",
     "System.Console": "4.0.0-*"
   },
-  "commands": {
-    "run": "MultipartPOSTClient"
-  }
 }

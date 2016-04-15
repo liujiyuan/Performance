@@ -26,10 +26,6 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0-*",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-*"
   },
-  "commands": {
-    "web": "StarterMvc",
-    "ef": "Microsoft.EntityFrameworkCore.Commands"
-  },
   "frameworks": {
     "netstandardapp1.5": {
       "dependencies": {
@@ -41,16 +37,13 @@
       ]
     }
   },
-  "exclude": [
+  "content": [ 
+    "appsettings.json", 
+    "Views", 
     "wwwroot",
-    "node_modules"
+    "web.config"
   ],
-  "publishExclude": [
-    "**.user",
-    "**.vspscc"
-  ],
-  "content": [ "appsettings.json", "Views", "wwwroot" ],
-    "runtimeOptions": {
+  "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true
     }

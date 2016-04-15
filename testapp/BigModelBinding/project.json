@@ -22,21 +22,11 @@
     },
     "net451": { }
   },
-  "publishExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ],
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
   "content": [
     "Views",
-    "appsettings.json"
+    "wwwroot",
+    "appsettings.json",
+    "postdata.txt"
   ],
   "runtimeOptions": {
     "configProperties": {
