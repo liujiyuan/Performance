@@ -39,7 +39,6 @@ namespace Microbenchmarks.Tests
 
         private void ConfigureTestServices(IServiceCollection services)
         {
-            services.AddTransient<IServerLoader, TestServerLoader>();
             services.AddSingleton(Collector);
         }
 
@@ -62,59 +61,6 @@ namespace Microbenchmarks.Tests
                     .Build();
 
                 host.Run();
-            }
-        }
-
-        private class TestServerLoader : IServerLoader
-        {
-            private readonly IServerLoader _wrappedServerLoader;
-
-            public TestServerLoader(IServiceProvider services)
-            {
-                _wrappedServerLoader = new ServerLoader(services);
-            }
-
-            public IServerFactory LoadServerFactory(string assemblyName)
-            {
-                var factory = _wrappedServerLoader.LoadServerFactory(assemblyName);
-
-                return new TestServerFactory(factory);
-            }
-
-            private class TestServerFactory : IServerFactory
-            {
-                private readonly IServerFactory _wrappedServerFactory;
-
-                public TestServerFactory(IServerFactory wrappedServerFactory)
-                {
-                    _wrappedServerFactory = wrappedServerFactory;
-                }
-
-                public IServer CreateServer(IConfiguration configuration)
-                {
-                    var server = _wrappedServerFactory.CreateServer(configuration);
-
-                    return new TestServer(server);
-                }
-
-                private class TestServer : IServer
-                {
-                    private readonly IServer _wrappedServer;
-
-                    public TestServer(IServer wrappedServer)
-                    {
-                        _wrappedServer = wrappedServer;
-                    }
-
-                    public IFeatureCollection Features => _wrappedServer.Features;
-
-                    public void Dispose() => _wrappedServer.Dispose();
-
-                    public void Start<TContext>(IHttpApplication<TContext> application)
-                    {
-                        // No-op, we don't want to actually start the server.
-                    }
-                }
             }
         }
     }

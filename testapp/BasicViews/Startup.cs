@@ -67,14 +67,14 @@ namespace BasicViews
 
         public static void Main(string[] args)
         {
-            var application = new WebHostBuilder()
+            var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://+:5000")
                 .UseDefaultHostingConfiguration(args)
                 .UseStartup<Startup>()
                 .Build();
 
-            application.Run();
+            host.Run();
         }
     }
 }

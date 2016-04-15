@@ -31,9 +31,8 @@ namespace MvcBenchmarks.InMemory
 
         static BigModelBindingTest()
         {
-            var builder = new WebHostBuilder();
-            builder.UseStartup<BigModelBinding.Startup>();
-            builder.UseProjectOf<BigModelBinding.Startup>();
+            var builder = new WebHostBuilder()
+                .UseStartup<BigModelBinding.Startup>();
             Server = new TestServer(builder);
             Client = Server.CreateClient();
 

@@ -1,8 +1,5 @@
 ﻿{
   "version": "1.0.0-*",
-  "commands": {
-    "test": "xunit.runner.aspnet"
-  },
   "dependencies": {
     "BasicApi": "1.0.0-*",
     "BasicViews": "1.0.0-*",
@@ -33,6 +30,5 @@
         "System.Reflection": ""
       }
     }
-  },
-  "testRunner": "xunit"
+  }
 }

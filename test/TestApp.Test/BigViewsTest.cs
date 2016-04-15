@@ -17,9 +17,8 @@ namespace MvcBenchmarks.InMemory
 
         static BigViewsTest()
         {
-            var builder = new WebHostBuilder();
-            builder.UseStartup<BigViews.Startup>();
-            builder.UseProjectOf<BigViews.Startup>();
+            var builder = new WebHostBuilder()
+                .UseStartup<BigViews.Startup>();
             Server = new TestServer(builder);
             Client = Server.CreateClient();
         }

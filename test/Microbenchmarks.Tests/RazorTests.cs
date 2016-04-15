@@ -54,10 +54,7 @@ namespace Microbenchmarks.Tests.Razor
         {
             // Arrange
             var chunkTreeCache = new DefaultChunkTreeCache(new TestFileProvider());
-            var razorHost = new MvcRazorHost(chunkTreeCache)
-            {
-                DesignTimeMode = designTime
-            };
+            var razorHost = new MvcRazorHost(chunkTreeCache, new TagHelperDescriptorResolver(designTime: designTime));
             var assembly = typeof(RazorTests).GetTypeInfo().Assembly;
             var assemblyName = assembly.GetName().Name;
             var stream = assembly.GetManifestResourceStream($"{assemblyName}.compiler.resources.RazorTests.TestFile.cshtml");

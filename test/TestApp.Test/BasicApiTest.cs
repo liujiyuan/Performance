@@ -29,9 +29,8 @@ namespace MvcBenchmarks.InMemory
 
         static BasicApiTest()
         {
-            var builder = new WebHostBuilder();
-            builder.UseStartup<BasicApi.Startup>();
-            builder.UseProjectOf<BasicApi.Startup>();
+            var builder = new WebHostBuilder()
+                .UseStartup<BasicApi.Startup>();
             Server = new TestServer(builder);
             Client = Server.CreateClient();
         }

@@ -4,8 +4,7 @@
     "emitEntryPoint": true
   },
   "dependencies": {
-    "Microsoft.AspNetCore.Mvc.Razor": "1.0.0-*",
-    "System.Runtime": "4.1.0-*"
+    "Microsoft.AspNetCore.Mvc.Razor": "1.0.0-*"
   },
   "commands": {
     "run": "RazorCodeGenerator"

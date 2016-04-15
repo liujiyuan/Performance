@@ -20,9 +20,8 @@ namespace MvcBenchmarks.InMemory
 
         static LocalizedViewsTest()
         {
-            var builder = new WebHostBuilder();
-            builder.UseStartup<LocalizedViews.Startup>();
-            builder.UseProjectOf<LocalizedViews.Startup>();
+            var builder = new WebHostBuilder()
+                .UseStartup<LocalizedViews.Startup>();
             Server = new TestServer(builder);
             Client = Server.CreateClient();
         }

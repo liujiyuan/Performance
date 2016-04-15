@@ -31,9 +31,6 @@
     }
   },
   "testRunner": "xunit",
-  "commands": {
-    "test": "xunit.runner.aspnet"
-  },
   "content": [
     "config.json"
   ]

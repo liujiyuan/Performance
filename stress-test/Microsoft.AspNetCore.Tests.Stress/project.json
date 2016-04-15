@@ -27,8 +27,5 @@
       ]
     }
   },
-  "testRunner": "xunit",
-  "commands": {
-    "test": "xunit.runner.aspnet"
-  }
+  "testRunner": "xunit"
 }

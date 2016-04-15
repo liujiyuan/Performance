@@ -20,9 +20,8 @@ namespace MvcBenchmarks.InMemory
 
         static BasicViewsTest()
         {
-            var builder = new WebHostBuilder();
-            builder.UseStartup<BasicViews.Startup>();
-            builder.UseProjectOf<BasicViews.Startup>();
+            var builder = new WebHostBuilder()
+                .UseStartup<BasicViews.Startup>();
             Server = new TestServer(builder);
             Client = Server.CreateClient();
         }

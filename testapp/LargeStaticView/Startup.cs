@@ -28,7 +28,7 @@ namespace LargeStaticView
 
         public static void Main(string[] args)
         {
-            var application = new WebHostBuilder()
+            var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://+:5000")
                 .UseContentRoot(Directory.GetCurrentDirectory())
@@ -36,7 +36,7 @@ namespace LargeStaticView
                 .UseStartup<Startup>()
                 .Build();
 
-            application.Run();
+            host.Run();
         }
     }
 }
