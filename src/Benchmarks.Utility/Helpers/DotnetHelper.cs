@@ -35,7 +35,7 @@ namespace Benchmarks.Utility.Helpers
         {
             var psi = new ProcessStartInfo(GetDotnetExecutable())
             {
-                Arguments = "restore" + (quiet ? " --quiet" : ""),
+                Arguments = "restore --infer-runtimes" + (quiet ? " --quiet" : ""),
                 WorkingDirectory = workingDir,
                 UseShellExecute = false
             };
