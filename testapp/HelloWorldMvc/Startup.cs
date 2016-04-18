@@ -26,6 +26,7 @@ namespace HelloWorldMvc
         {
             var host = new WebHostBuilder()
                 .UseKestrel()
+                .UseUrls("http://+:5000")
                 .UseDefaultHostingConfiguration(args)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
