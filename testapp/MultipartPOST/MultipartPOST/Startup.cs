@@ -32,7 +32,7 @@ namespace MultipartPost
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseDefaultHostingConfiguration(args)
-                .UseIIS()
+                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 

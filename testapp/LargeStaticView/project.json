@@ -10,14 +10,15 @@
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*"
   },
-  "commands": {
-    "web": "LargeStaticView"
-  },
   "frameworks": {
     "net451": {},
-    "netstandardapp1.5": {
+    "netcoreapp1.0": {
       "dependencies": {
-        "NETStandard.Library": "1.5.0-*"
+        "Microsoft.NETCore.App":
+        {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
       },
       "imports": [
         "dnxcore50",

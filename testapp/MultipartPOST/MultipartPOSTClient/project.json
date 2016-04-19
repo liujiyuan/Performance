@@ -4,7 +4,14 @@
     "emitEntryPoint": true
   },
   "frameworks": {
-    "netstandardapp1.5": {
+    "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App":
+        {
+          "version": "1.0.0-*",
+          "type": "platform"
+        },
+      },
       "imports": [
         "dnxcore50",
         "portable-net451+win8"
@@ -13,11 +20,7 @@
   },
   "dependencies": {
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
-    "NETStandard.Library": "1.5.0-*",
     "System.Net.Http": "4.0.1-*",
     "System.Console": "4.0.0-*"
-  },
-  "commands": {
-    "run": "MultipartPOSTClient"
   }
 }
