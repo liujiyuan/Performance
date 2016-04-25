@@ -2,11 +2,13 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Directives;
 using Microsoft.AspNetCore.Razor;
+using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using Microsoft.Extensions.FileProviders;
 
 namespace RazorCodeGenerator
@@ -15,67 +17,99 @@ namespace RazorCodeGenerator
     {
         public static int Main(string[] args)
         {
-            if (args.Length > 0 && File.Exists(args[0]))
+            if (args.Length == 0)
             {
-                var dump = false;
-                var iterations = 15;
-                if (args.Length > 1 && args[1] == "--dump")
-                {
-                    dump = true;
-                    iterations = 1;
-                }
-                else if (args.Length > 1)
-                {
-                    iterations = int.Parse(args[1]);
-                }
-
-                GenerateCodeFile(Path.GetFullPath(args[0]), "Test", iterations, dump);
-
-                Console.WriteLine("Press the ANY key to exit.");
-                Console.ReadLine();
-                return 0;
-            }
-            else
-            {
-                Console.WriteLine("usage: dnx run <file.cshtml>");
+                Usage();
                 return -1;
             }
-        }
 
-        private static void GenerateCodeFile(string file, string @namespace, int iterations, bool dump)
-        {
-            var basePath = Path.GetDirectoryName(file);
-            var fileName = Path.GetFileName(file);
+            var files = new List<string>();
+            var iterations = 100;
+            var dump = false;
 
-            var fileNameNoExtension = Path.GetFileNameWithoutExtension(fileName);
-            var codeLang = new CSharpRazorCodeLanguage();
+            foreach (var arg in args)
+            {
+                if (arg == "--dump")
+                {
+                    dump = true;
+                    break;
+                }
 
-            var host = new MvcRazorHost(new DefaultChunkTreeCache(new PhysicalFileProvider(basePath)));
-            var engine = new RazorTemplateEngine(host);
+                int parsed;
+                if (int.TryParse(arg, out parsed))
+                {
+                    iterations = parsed;
+                    continue;
+                }
+
+                files.Add(arg);
+            }
+
+            if (files.Count == 0)
+            {
+                Usage();
+                return -2;
+            }
+
+            for (var i = 0; i < files.Count; i++)
+            {
+                files[i] = Path.GetFullPath(files[i]);
+            }
+
+            var basePath = Directory.GetCurrentDirectory();
 
             Console.WriteLine("Press the ANY key to start.");
             Console.ReadLine();
 
-            Console.WriteLine($"Starting Code Generation: {file}");
+            GenerateCodeFile(basePath, files.ToArray(), iterations, dump);
+
+            Console.WriteLine("Press the ANY key to exit.");
+            Console.ReadLine();
+            return 0;
+        }
+
+        private static void Usage()
+        {
+            Console.WriteLine("usage: dotnet run <file1.cshtml> <file2.cshtml> <iterations = 100> <--dump?>");
+        }
+
+        private static void GenerateCodeFile(string basePath, string[] files, int iterations, bool dump)
+        {
+            var codeLang = new CSharpRazorCodeLanguage();
+
+            var host = new MvcRazorHost(
+                new DefaultChunkTreeCache(new PhysicalFileProvider(basePath)),
+                new TagHelperDescriptorResolver(new TagHelperTypeResolver(), new TagHelperDescriptorFactory(designTime: false)));
+            var engine = new RazorTemplateEngine(host);
+
+            Console.WriteLine($"Warm Starting Code Generation: {string.Join(", ", files)}");
             var timer = Stopwatch.StartNew();
+
             for (var i = 0; i < iterations; i++)
             {
-                using (var fileStream = File.OpenText(file))
+                for (var j = 0; j < files.Length; j++)
                 {
-                    var code = engine.GenerateCode(
-                        input: fileStream,
-                        className: fileNameNoExtension,
-                        rootNamespace: Path.GetFileName(@namespace),
-                        sourceFileName: fileName);
-                    
-                    if (dump)
+                    var file = files[j];
+                    var fileName = Path.GetFileName(file);
+                    var fileNameNoExtension = Path.GetFileNameWithoutExtension(fileName);
+
+                    using (var fileStream = File.OpenText(file))
                     {
-                        File.WriteAllText(Path.ChangeExtension(file, ".cs"), code.GeneratedCode);
+                        var code = engine.GenerateCode(
+                            input: fileStream,
+                            className: fileNameNoExtension,
+                            rootNamespace: "Test",
+                            sourceFileName: fileName);
+
+                        if (dump)
+                        {
+                            File.WriteAllText(Path.ChangeExtension(file, ".cs"), code.GeneratedCode);
+                        }
                     }
                 }
-
                 Console.WriteLine("Completed iteration: " + (i + 1));
             }
+
             Console.WriteLine($"Completed after {timer.Elapsed}");
         }
     }
