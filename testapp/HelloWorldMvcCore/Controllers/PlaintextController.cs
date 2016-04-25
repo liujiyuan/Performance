@@ -16,7 +16,7 @@ namespace HelloWorldMvcCore
         {
             Response.StatusCode = StatusCodes.Status200OK;
             Response.ContentType = "text/plain";
-            Response.ContentLength = _bytes.Length;
+            Response.Headers["Content-Length"] = "13";
             return Response.Body.WriteAsync(_bytes, 0, _bytes.Length);
         }
     }
