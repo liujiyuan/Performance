@@ -26,8 +26,14 @@
     "Microsoft.NETCore.Platforms": "1.0.1-*"
   },
   "tools": {
-    "dotnet-razor-tooling": "1.0.0-*"
-  },
+    "dotnet-razor-tooling": {
+      "version": "1.0.0-*",
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
+    }
+   },
   "commands": {
     "web": "StarterMvc",
     "ef": "Microsoft.EntityFrameworkCore.Commands"
