@@ -126,10 +126,14 @@ namespace BasicApi
 
         public static void Main(string[] args)
         {
+			var config = new ConfigurationBuilder()
+                   .AddCommandLine(args)
+                   .Build();
+
             var application = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://+:5000")
-                .UseDefaultHostingConfiguration(args)
+				.UseConfiguration(config)
                 .UseStartup<Startup>()
                 .Build();
 

@@ -1,12 +1,12 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Runtime;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HelloWorldMvc
 {
@@ -24,9 +24,13 @@ namespace HelloWorldMvc
 
         public static void Main(string[] args)
         {
+            var config = new ConfigurationBuilder()
+                   .AddCommandLine(args)
+                   .Build();
+
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseDefaultHostingConfiguration(args)
+                .UseConfiguration(config)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();

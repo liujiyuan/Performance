@@ -37,12 +37,12 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.LowAlloc
         public static void Main(string[] args)
         {
             _configuration = new ConfigurationBuilder()
+                .AddCommandLine(args)
                 .AddJsonFile("hosting.json", optional: true)
                 .Build();
 
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseDefaultHostingConfiguration(args)
                 .UseConfiguration(_configuration)
                 .UseIISIntegration()
                 .UseStartup<Startup>()

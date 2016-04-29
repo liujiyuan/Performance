@@ -23,17 +23,26 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0-*",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-*",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-*",
-    "Microsoft.NETCore.Platforms": "1.0.1-*"
+    "Microsoft.NETCore.Platforms": "1.0.1-*",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0-*"
   },
   "tools": {
-    "dotnet-razor-tooling": "1.0.0-*"
+    "dotnet-razor-tooling": {
+      "version": "1.0.0-*",
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
+    }
   },
   "commands": {
     "web": "StarterMvc",
     "ef": "Microsoft.EntityFrameworkCore.Commands"
   },
   "frameworks": {
-    "net451": {},
+    "net451": { },
     "netstandardapp1.5": {
       "dependencies": {
         "NETStandard.Library": "1.5.0-*"

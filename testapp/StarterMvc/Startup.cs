@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -40,7 +41,7 @@ namespace StarterMvc
         {
             // Add framework services.
             services.AddEntityFramework()
-                .AddSqlServer()
+                .AddEntityFrameworkSqlServer()
                 .AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
 
@@ -84,10 +85,6 @@ namespace StarterMvc
                 }
             }
 
-            var options = new IISPlatformHandlerOptions();
-            options.AuthenticationDescriptions.Clear();
-            app.UseIISPlatformHandler(options);
-
             app.UseStaticFiles();
 
             app.UseIdentity();
@@ -104,9 +101,13 @@ namespace StarterMvc
 
         public static void Main(string[] args)
         {
+            var config = new ConfigurationBuilder()
+                   .AddCommandLine(args)
+                   .Build();
+
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseDefaultHostingConfiguration(args)
+                .UseConfiguration(config)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();

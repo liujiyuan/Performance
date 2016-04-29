@@ -10,7 +10,8 @@
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
     "Microsoft.AspNetCore.Server.WebListener": "0.1.0-*",
-    "Microsoft.AspNetCore.StaticFiles": "1.0.0-*"
+    "Microsoft.AspNetCore.StaticFiles": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*"
   },
   "commands": {
     "web": "LocalizedViews"
@@ -28,7 +29,13 @@
     }
   },
   "tools": {
-    "dotnet-razor-tooling": "1.0.0-*"
+    "dotnet-razor-tooling": {
+      "version": "1.0.0-*",
+      "imports": [
+        "dnxcore50",
+        "portable-net451+win8"
+      ]
+    }
   },
   "publishExclude": [
     "node_modules",
