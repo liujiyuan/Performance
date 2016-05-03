@@ -1,0 +1,1 @@
+This is a ASPNET 4.6 app with a raw http handler
