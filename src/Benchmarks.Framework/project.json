@@ -7,24 +7,25 @@
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0-*",
     "Microsoft.AspNetCore.Testing": "1.0.0-*",
     "Microsoft.NETCore.Platforms": "1.0.1-*",
-    "xunit": "2.1.0"
+    "xunit": "2.1.0",
+    "xunit.runner.reporters": "2.1.0"
   },
   "frameworks": {
-    "netstandardapp1.5": {
+    "netcoreapp1.0": {
       "dependencies": {
-        "xunit.runner.reporters": "2.1.0",
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        },
         "System.Console": "4.0.0-*",
-        "System.Data.SqlClient": "4.0.0-*"
+        "System.Data.SqlClient": "4.1.0-*"
       },
       "imports": [
         "dnxcore50",
-        "portable-net451+win8"
+        "portable-net451+win8",
+        "netstandardapp1.5"
       ]
     },
-    "net451": {
-      "dependencies": {
-        "xunit.runner.reporters": "2.1.0"
-      }
-    }
+    "net451": {}
   }
 }

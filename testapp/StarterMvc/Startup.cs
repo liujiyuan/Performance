@@ -39,8 +39,7 @@ namespace StarterMvc
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddEntityFramework()
-                .AddSqlServer()
+            services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
 
@@ -84,10 +83,6 @@ namespace StarterMvc
                 }
             }
 
-            var options = new IISPlatformHandlerOptions();
-            options.AuthenticationDescriptions.Clear();
-            app.UseIISPlatformHandler(options);
-
             app.UseStaticFiles();
 
             app.UseIdentity();
@@ -104,9 +99,14 @@ namespace StarterMvc
 
         public static void Main(string[] args)
         {
+            var config = new ConfigurationBuilder()
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .Build();
+                
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseDefaultHostingConfiguration(args)
+                .UseConfiguration(config)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();

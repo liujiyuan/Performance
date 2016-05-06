@@ -1,7 +1,7 @@
 {
   "userSecretsId": "aspnet5-PerformanceDashboard-06b64eaf-0d24-4465-ad57-c9d7a5c5a511",
   "version": "1.0.0-*",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true,
     "preserveCompilationContext": true
   },
@@ -20,7 +20,6 @@
     "Microsoft.Extensions.Logging": "1.0.0-*",
     "Microsoft.Extensions.Logging.Console": "1.0.0-*",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-*",
-    "Microsoft.NETCore.Platforms": "1.0.1-*",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-*",
     "System.Runtime": "4.1.0-*"
   },
@@ -32,15 +31,24 @@
   },
   "frameworks": {
     "dnx451": {},
-    "netstandardapp1.5": {
+    "netcoreapp1.0": {
       "imports": [
-        "dnxcore50",
+        "portable-dnxcore50+net45+win8+wp8+wpa81",
         "portable-net451+win8"
-      ]
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
+      }
     }
   },
   "tools": {
-    "dotnet-razor-tooling": "1.0.0-*"
+    "dotnet-razor-tooling": {
+      "version": "1.0.0-*",
+      "imports":["portable-net40+sl5+win8+wp8+wpa81"]
+    }
   },
   "exclude": [
     "wwwroot",

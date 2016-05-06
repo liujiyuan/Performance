@@ -4,9 +4,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.PlatformAbstractions;
 using Newtonsoft.Json.Serialization;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace LargeJsonApi
 {
@@ -20,7 +20,7 @@ namespace LargeJsonApi
                 .AddDataAnnotations();
         }
 
-        public void Configure(IApplicationBuilder app, IApplicationEnvironment applicationEnvironment)
+        public void Configure(IApplicationBuilder app)
         {
             app.Use(next => async context =>
             {
@@ -40,9 +40,16 @@ namespace LargeJsonApi
 
         public static void Main(string[] args)
         {
+            
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("hosting.json", optional: true)
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .Build();
+
             var application = new WebHostBuilder()
                 .UseKestrel()
-                .UseDefaultHostingConfiguration(args)
+                .UseConfiguration(config)
                 .UseStartup<Startup>()
                 .Build();
 

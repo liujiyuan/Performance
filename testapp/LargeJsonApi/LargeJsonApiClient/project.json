@@ -1,7 +1,10 @@
 {
   "version": "1.0.0-*",
-  "compilationOptions": {
-    "emitEntryPoint": true
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "compile": {
+      "include": ["../Shared/**/*.cs"]
+    }
   },
   "dependencies": {
     "Newtonsoft.Json": "8.0.3",
@@ -24,7 +27,6 @@
     },
     "net451": { }
   },
-  "compile": "../Shared/**/*.cs",
   "commands": {
     "run": "LargeJsonApiClient"
   },

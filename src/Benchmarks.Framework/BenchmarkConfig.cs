@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Benchmarks.Framework
 {
@@ -13,7 +14,7 @@ namespace Benchmarks.Framework
         private static readonly Lazy<BenchmarkConfig> _instance = new Lazy<BenchmarkConfig>(() =>
             {
                 var config = new ConfigurationBuilder()
-                    .SetBasePath(".")
+                    .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
                     .AddJsonFile("config.json")
                     .AddEnvironmentVariables()
                     .Build();

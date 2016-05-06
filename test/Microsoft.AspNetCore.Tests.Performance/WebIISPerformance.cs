@@ -8,6 +8,7 @@ using System.Net.Http;
 using Benchmarks.Framework;
 using Benchmarks.Utility.Helpers;
 using Microsoft.AspNetCore.Server.Testing;
+using Microsoft.AspNetCore.Testing.xunit;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
@@ -32,7 +33,9 @@ namespace Microsoft.AspNetCore.Tests.Performance
 
         public IMetricCollector Collector { get; set; } = new NullMetricCollector();
 
-        [Benchmark(Iterations = 1, WarmupIterations = 0)]
+        [OSSkipCondition(OperatingSystems.Linux)]
+        [OSSkipCondition(OperatingSystems.MacOSX)]
+        [Benchmark(Iterations = 1, WarmupIterations = 0, Skip = "ApplicationDeployer.DotnetPublish fails on deployment")]
         [BenchmarkVariation("StarterMvc_IISScenario", "StarterMvc", RuntimeFlavor.Clr, Framework = "DNX.Clr")]
         [BenchmarkVariation("StarterMvc_IISScenario", "StarterMvc", RuntimeFlavor.CoreClr, Framework = "DNX.CoreClr")]
         public void Startup(string sampleName, RuntimeFlavor runtimeFlavor)

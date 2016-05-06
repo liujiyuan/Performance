@@ -2,33 +2,28 @@
   "version": "1.0.0-*",
   "dependencies": {
     "Benchmarks.Utility": "1.0.0-*",
+    "Microsoft.NETCore.Platforms": "1.0.1-*",
     "Microsoft.Extensions.Logging": "1.0.0-*",
     "Microsoft.Extensions.Logging.Console": "1.0.0-*",
-    "Microsoft.NETCore.Platforms": "1.0.1-*",
-    "Stress.Framework": "1.0.0-*"
+    "Stress.Framework": "1.0.0-*",
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-*"
   },
   "frameworks": {
-    "dnx451": {
-      "frameworkAssemblies": {
-        "System.Runtime": "",
-        "System.Xml.Linq": ""
-      },
+    "net451": {},
+    "netcoreapp1.0": {
       "dependencies": {
-        "xunit.runner.console": "2.1.0"
-      }
-    },
-    "netstandardapp1.5": {
-      "dependencies": {
-        "xunit.runner.aspnet": "2.0.0-aspnet-*"
+	      "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
       },
       "imports": [
         "dnxcore50",
-        "portable-net451+win8"
+        "portable-net451+win8",
+        "netstandardapp1.5"
       ]
     }
   },
-  "testRunner": "xunit",
-  "commands": {
-    "test": "xunit.runner.aspnet"
-  }
+  "testRunner": "xunit"
 }
