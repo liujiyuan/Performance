@@ -8,14 +8,19 @@
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0-*"
   },
   "frameworks": {
-    "netstandardapp1.5": {
+    "netcoreapp1.0": {
       "dependencies": {
+	    "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        },
         "System.Data.SqlClient": "4.0.0-*",
         "System.Threading.Timer": "4.0.1-*"
       },
       "imports": [
         "dnxcore50",
-        "portable-net451+win8"
+        "portable-net451+win8",
+        "netstandardapp1.5"
       ]
     },
     "net451": {

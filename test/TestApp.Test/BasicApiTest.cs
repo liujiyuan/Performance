@@ -20,9 +20,26 @@ namespace MvcBenchmarks.InMemory
         private static readonly byte[] ValidBytes = new UTF8Encoding(false).GetBytes(@"
 {
   ""category"" : {
-    ""id"" : 2,
     ""name"" : ""Cats""
   },
+  ""images"": [
+    {
+        ""url"": ""http://example.com/images/fluffy1.png""
+    },
+    {
+        ""url"": ""http://example.com/images/fluffy2.png""
+    },
+  ],
+  ""tags"": [
+    {
+        ""name"": ""orange""
+    },
+    {
+        ""name"": ""kitty""
+    }
+  ],
+  ""age"": 2,
+  ""hasVaccinations"": ""true"",
   ""name"" : ""fluffy"",
   ""status"" : ""available""
 }");
@@ -35,14 +52,26 @@ namespace MvcBenchmarks.InMemory
             Server = new TestServer(builder);
             Client = Server.CreateClient();
         }
+        
+        public async Task<string> GetAuthorizationToken()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, "/token?username=writer@example.com");
+            request.Headers.Add("Cache-Control", new [] {"no-cache"});
+            var response = await Client.SendAsync(request);
+            
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsStringAsync();
+        }
 
         [Fact]
         public async Task BasicApi()
         {
+            var authToken = await GetAuthorizationToken();
             var request = new HttpRequestMessage(HttpMethod.Post, "/pet");
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json", .9));
             request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml", .6));
             request.Headers.AcceptCharset.Add(new StringWithQualityHeaderValue("utf-8"));
+            request.Headers.Add("Authorization", new [] {"Bearer " + authToken});
 
             request.Content = new ByteArrayContent(ValidBytes);
             request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");

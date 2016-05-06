@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 using BasicApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -26,8 +27,8 @@ namespace BasicApi
         {
             Configuration =
                 new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
                 .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
+                .AddJsonFile("appsettings.json")
                 .Build();
         }
 
@@ -53,7 +54,7 @@ namespace BasicApi
 
             services.AddEntityFrameworkSqlServer().AddDbContext<BasicApiContext>(options =>
             {
-                var connectionString = Configuration["Data:DefaultConnection:ConnectionString"];
+                var connectionString = Configuration["Data:DefaultConnection:ConnectionStringBasicApi"];
                 options.UseSqlServer(connectionString);
             });
 
@@ -111,6 +112,7 @@ namespace BasicApi
             {
                 var dbContext = services.GetRequiredService<BasicApiContext>();
                 dbContext.Database.EnsureDeleted();
+                Task.Delay(TimeSpan.FromSeconds(3)).Wait();
                 dbContext.Database.EnsureCreated();
 
                 using (var connection = dbContext.Database.GetDbConnection())
@@ -118,7 +120,7 @@ namespace BasicApi
                     connection.Open();
 
                     var command = connection.CreateCommand();
-                    command.CommandText = File.ReadAllText("seed.sql");
+                    command.CommandText = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "seed.sql"));
                     command.ExecuteNonQuery();
                 }
             }
@@ -126,14 +128,17 @@ namespace BasicApi
 
         public static void Main(string[] args)
         {
-			var config = new ConfigurationBuilder()
-                   .AddCommandLine(args)
-                   .Build();
-
+            var configuration =
+                new ConfigurationBuilder()
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
+                .Build();
+                
             var application = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://+:5000")
-				.UseConfiguration(config)
+                .UseConfiguration(configuration)
                 .UseStartup<Startup>()
                 .Build();
 

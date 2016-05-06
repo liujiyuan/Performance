@@ -1,9 +1,22 @@
 {
   "version": "1.0.0-*",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true,
     "warningsAsErrors": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "compile": {
+      "exclude": [
+        "wwwroot",
+        "node_modules",
+        "bower_components"
+      ]
+    },
+    "copyToOutput": {
+      "include": [
+        "Views",
+        "appsettings.json"
+      ]
+    }
   },
   "dependencies": {
     "Microsoft.EntityFrameworkCore.InMemory": "1.0.0-*",
@@ -14,8 +27,9 @@
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
     "Microsoft.AspNetCore.Server.WebListener": "0.1.0-*",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0-*",
-    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
-    "Microsoft.Extensions.Configuration.Json": "1.0.0-*"
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*"
   },
   "frameworks": {
     "netcoreapp1.0": {
@@ -38,22 +52,15 @@
       "imports": "portable-net45+wp80+win8+wpa81+dnxcore50"
     }
   },
-  "publishExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ],
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
-  "content": [
-    "Views",
-    "appsettings.json"
-  ],
+  "publishOptions": {
+    "exclude": [
+      "node_modules",
+      "bower_components",
+      "**.xproj",
+      "**.user",
+      "**.vspscc"
+    ]
+  },
   "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true

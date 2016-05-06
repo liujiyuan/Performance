@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,8 +11,7 @@ namespace Benchmarks.Utility.Helpers
     public class DotnetHelper
     {
         private static readonly DotnetHelper _default = new DotnetHelper();
-        private readonly string _executablePath = Path.Combine("cli", "bin", "dotnet.exe");
-        private readonly string _defaultDotnetHome = Path.Combine(Environment.GetEnvironmentVariable("LocalAppData"), "Microsoft", "dotnet");
+        private readonly string _executablePath = "dotnet";
 
         public static DotnetHelper GetDefaultInstance() => _default;
 
@@ -21,8 +21,8 @@ namespace Benchmarks.Utility.Helpers
             string appbasePath,
             string argument)
         {
-            var dnxPath = GetDotnetExecutable();
-            var psi = new ProcessStartInfo(dnxPath, argument)
+            var dotnetPath = GetDotnetExecutable();
+            var psi = new ProcessStartInfo(dotnetPath, argument)
             {
                 WorkingDirectory = appbasePath,
                 UseShellExecute = false
@@ -33,7 +33,8 @@ namespace Benchmarks.Utility.Helpers
 
         public bool Restore(string workingDir, bool quiet = false)
         {
-            var psi = new ProcessStartInfo(GetDotnetExecutable())
+            var dotnet = GetDotnetExecutable();
+            var psi = new ProcessStartInfo(dotnet)
             {
                 Arguments = "restore" + (quiet ? " --quiet" : ""),
                 WorkingDirectory = workingDir,
@@ -74,30 +75,48 @@ namespace Benchmarks.Utility.Helpers
 
         public string GetDotnetPath()
         {
-            var envDotnetHome = Environment.GetEnvironmentVariable("DOTNET_INSTALL_DIR");
-            var dotnetHome = envDotnetHome != null ? Environment.ExpandEnvironmentVariables(envDotnetHome) : _defaultDotnetHome;
+            string path;
+            var envDotnetHomeVariable = Environment.GetEnvironmentVariable("DOTNET_INSTALL_DIR");
+            if (envDotnetHomeVariable != null && Directory.Exists(path = Environment.ExpandEnvironmentVariables(envDotnetHomeVariable)))
+            {
+                return path;
+            }
 
-            if (Directory.Exists(dotnetHome))
+
+            path = Path.Combine("~", ".dotnet");
+            if(Directory.Exists(path))
             {
-                return dotnetHome;
+                return path;
             }
-            else
+            
+            var envLocalAppData = Environment.GetEnvironmentVariable("LocalAppData");
+            if (envLocalAppData != null && Directory.Exists(path = Path.Combine(envLocalAppData, "Microsoft", "dotnet")))
             {
-                return null;
+                return path;
             }
+            
+            return null;
         }
 
         public string GetDotnetExecutable()
         {
-            var dnxPath = GetDotnetPath();
-            if (dnxPath != null)
+            var dotnetPath = GetDotnetPath();
+            if (dotnetPath != null)
             {
-                return Path.Combine(dnxPath, _executablePath);
+                return Path.Combine(dotnetPath, _executablePath);
             }
-            else
+            return null;
+        }
+
+        public string BuildGlobalJson()
+        {
+            return JsonConvert.SerializeObject(new
             {
-                return null;
-            }
+                projects = new[]
+                {
+                    "."
+                }
+            });
         }
     }
 }

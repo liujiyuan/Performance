@@ -1,16 +1,23 @@
 {
   "version": "1.0.0-*",
   "dependencies": {
-    "Benchmarks.Utility": "1.0.0-*"
+    "Benchmarks.Utility": "1.0.0-*",
+    "Microsoft.NETCore.Platforms": "1.0.1-*",
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-*"
   },
   "frameworks": {
-    "netstandardapp1.5": {
+    "netcoreapp1.0": {
       "dependencies": {
-        "dotnet-test-xunit": "1.0.0-dev-*"
+	      "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
       },
       "imports": [
         "dnxcore50",
-        "portable-net451+win8"
+        "portable-net451+win8",
+        "netstandardapp1.5"
       ]
     }
   }

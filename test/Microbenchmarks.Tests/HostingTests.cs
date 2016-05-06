@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Testing.xunit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Microbenchmarks.Tests
 {
@@ -26,8 +27,14 @@ namespace Microbenchmarks.Tests
 
             using (Collector.StartCollection())
             {
+                var config = new ConfigurationBuilder()
+                    .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                    .AddCommandLine(args)
+                    .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
+                    .Build();
+                
                 var builder = new WebHostBuilder()
-                    .UseDefaultHostingConfiguration(args)
+                    .UseConfiguration(config)
                     .UseStartup(typeof(TestStartup))
                     .ConfigureServices(ConfigureTestServices);
 
@@ -39,7 +46,7 @@ namespace Microbenchmarks.Tests
 
         private void ConfigureTestServices(IServiceCollection services)
         {
-            services.AddTransient<IServerLoader, TestServerLoader>();
+            services.AddSingleton(new TestServer());
             services.AddSingleton(Collector);
         }
 
@@ -56,8 +63,14 @@ namespace Microbenchmarks.Tests
 
             public static void Main(string[] args)
             {
+                var config = new ConfigurationBuilder()
+                    .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                    .AddCommandLine(args)
+                    .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
+                    .Build();
+                    
                 var host = new WebHostBuilder()
-                    .UseDefaultHostingConfiguration(args)
+                    .UseConfiguration(config)
                     .UseStartup<TestStartup>()
                     .Build();
 
@@ -65,56 +78,21 @@ namespace Microbenchmarks.Tests
             }
         }
 
-        private class TestServerLoader : IServerLoader
+        private class TestServer : IServer
         {
-            private readonly IServerLoader _wrappedServerLoader;
-
-            public TestServerLoader(IServiceProvider services)
+            public TestServer()
             {
-                _wrappedServerLoader = new ServerLoader(services);
+            }
+        
+            public void Dispose()
+            {
             }
 
-            public IServerFactory LoadServerFactory(string assemblyName)
+            public IFeatureCollection Features { get; }
+
+            public void Start<TContext>(IHttpApplication<TContext> application)
             {
-                var factory = _wrappedServerLoader.LoadServerFactory(assemblyName);
-
-                return new TestServerFactory(factory);
-            }
-
-            private class TestServerFactory : IServerFactory
-            {
-                private readonly IServerFactory _wrappedServerFactory;
-
-                public TestServerFactory(IServerFactory wrappedServerFactory)
-                {
-                    _wrappedServerFactory = wrappedServerFactory;
-                }
-
-                public IServer CreateServer(IConfiguration configuration)
-                {
-                    var server = _wrappedServerFactory.CreateServer(configuration);
-
-                    return new TestServer(server);
-                }
-
-                private class TestServer : IServer
-                {
-                    private readonly IServer _wrappedServer;
-
-                    public TestServer(IServer wrappedServer)
-                    {
-                        _wrappedServer = wrappedServer;
-                    }
-
-                    public IFeatureCollection Features => _wrappedServer.Features;
-
-                    public void Dispose() => _wrappedServer.Dispose();
-
-                    public void Start<TContext>(IHttpApplication<TContext> application)
-                    {
-                        // No-op, we don't want to actually start the server.
-                    }
-                }
+                // No-op, we don't want to actually start the server.
             }
         }
     }

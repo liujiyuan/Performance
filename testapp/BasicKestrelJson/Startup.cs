@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
 {
@@ -28,8 +29,10 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
         public static void Main(string[] args)
         {
             var config = new ConfigurationBuilder()
-                   .AddCommandLine(args)
-                   .Build();
+                .AddJsonFile("hosting.json", optional: true)
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .Build();
 
             var host = new WebHostBuilder()
                 .UseKestrel()

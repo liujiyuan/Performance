@@ -1,9 +1,18 @@
 {
   "userSecretsId": "aspnet5-StressMvc-5DBBBCB5-8596-4127-A617-D01F81A70F7F",
   "version": "1.0.0",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "compile": {
+      "exclude": [
+        "wwwroot",
+        "node_modules"
+      ]
+    },
+    "copyToOutput": {
+      "include": [ "appsettings.json", "Views", "wwwroot" ]
+    }
   },
   "dependencies": {
     "Microsoft.EntityFrameworkCore.Commands": "1.0.0-*",
@@ -22,6 +31,8 @@
     "Microsoft.Extensions.Configuration.FileProviderExtensions": "1.0.0-*",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
     "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
     "Microsoft.Extensions.Logging": "1.0.0-*",
     "Microsoft.Extensions.Logging.Console": "1.0.0-*",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-*",
@@ -33,26 +44,26 @@
     "ef": "Microsoft.EntityFrameworkCore.Commands"
   },
   "frameworks": {
-    "netstandardapp1.5": {
-      "dependencies": {
-        "NETStandard.Library": "1.5.0-*"
-      },
+    "netcoreapp1.0": {
       "imports": [
         "dnxcore50",
         "portable-net451+win8"
-      ]
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
+      }
     }
   },
-  "exclude": [
-    "wwwroot",
-    "node_modules"
-  ],
-  "publishExclude": [
-    "**.user",
-    "**.vspscc"
-  ],
-  "content": [ "appsettings.json", "Views", "wwwroot" ],
-    "runtimeOptions": {
+  "publishOptions": {
+    "exclude": [
+      "**.user",
+      "**.vspscc"
+    ]
+  },
+  "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true
     }

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,8 @@ namespace BasicViews
         {
             Configuration = 
                 new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
                 .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
+                .AddJsonFile("appsettings.json")
                 .Build();
         }
 
@@ -26,7 +27,7 @@ namespace BasicViews
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration["Data:DefaultConnection:ConnectionString"];
+            var connectionString = Configuration["Data:DefaultConnection:ConnectionStringBasicViews"];
             services
                 .AddEntityFrameworkSqlServer()
                 .AddDbContext<BasicViewsContext>(c => c.UseSqlServer(connectionString));
@@ -61,6 +62,7 @@ namespace BasicViews
             {
                 var dbContext = services.GetRequiredService<BasicViewsContext>();
                 dbContext.Database.EnsureDeleted();
+                Task.Delay(TimeSpan.FromSeconds(3)).Wait();
                 dbContext.Database.EnsureCreated();
             }
         }
@@ -68,9 +70,11 @@ namespace BasicViews
         public static void Main(string[] args)
         {
             var config = new ConfigurationBuilder()
-                   .AddCommandLine(args)
-                   .Build();
-
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .SetBasePath(PlatformServices.Default.Application.ApplicationBasePath)
+                .Build();
+                
             var application = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://+:5000")

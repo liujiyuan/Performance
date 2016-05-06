@@ -40,8 +40,7 @@ namespace StarterMvc
         public void ConfigureServices(IServiceCollection services)
         {
             // Add framework services.
-            services.AddEntityFramework()
-                .AddEntityFrameworkSqlServer()
+            services.AddEntityFrameworkSqlServer()
                 .AddDbContext<ApplicationDbContext>(options =>
                     options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
 
@@ -102,9 +101,10 @@ namespace StarterMvc
         public static void Main(string[] args)
         {
             var config = new ConfigurationBuilder()
-                   .AddCommandLine(args)
-                   .Build();
-
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .Build();
+                
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseConfiguration(config)

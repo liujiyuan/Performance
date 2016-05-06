@@ -45,9 +45,10 @@ namespace BigModelBinding
         public static void Main(string[] args)
         {
             var config = new ConfigurationBuilder()
-                   .AddCommandLine(args)
-                   .Build();
-
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .Build();
+                
             var application = new WebHostBuilder()
                 .UseKestrel()
                 .UseUrls("http://+:5000")

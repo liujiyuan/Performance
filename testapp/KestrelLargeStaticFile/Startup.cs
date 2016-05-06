@@ -4,6 +4,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
 {
@@ -22,10 +23,16 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
 
         public static void Main(string[] args)
         {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile("hosting.json", optional: true)
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .Build();
+                
             var host = new WebHostBuilder()
                 .UseKestrel()
-                .UseDefaultHostingConfiguration(args)
-                .UseIIS()
+                .UseConfiguration(config)
+                .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
 

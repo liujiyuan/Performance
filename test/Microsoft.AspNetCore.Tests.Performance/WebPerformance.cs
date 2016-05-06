@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Benchmarks.Framework;
 using Benchmarks.Utility.Helpers;
 using Benchmarks.Utility.Logging;
+using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.PlatformAbstractions;
 using Xunit;
@@ -43,28 +44,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
             Assert.True(testProject != null, $"Fail to set up test project.");
             logger.LogInformation($"Test project is set up at {testProject}");
 
-            var testAppStartInfo = DnxHelper.GetDefaultInstance().BuildStartInfo(testProject, framework, "run");
-
-            RunStartup(5000, logger, testAppStartInfo);
-        }
-
-        [Benchmark(Iterations = 10, WarmupIterations = 0)]
-        [BenchmarkVariation("BasicKestrel_ProductionScenario", "BasicKestrel")]
-        [BenchmarkVariation("StarterMvc_ProductionScenario", "StarterMvc")]
-        public void Production_Startup(string sampleName)
-        {
-            var framework = PlatformServices.Default.Runtime.RuntimeType;
-            var appliationFramework = GetFrameworkName(framework);
-            var testName = $"{sampleName}.{framework}.{nameof(Production_Startup)}";
-            var logger = LogUtility.LoggerFactory.CreateLogger(testName);
-
-            var testProject = _sampleManager.GetDnxPublishedSample(sampleName, appliationFramework);
-            Assert.True(testProject != null, $"Fail to set up test project.");
-            logger.LogInformation($"Test project is set up at {testProject}");
-
-            // --project "%~dp0packages\BasicKestrel\1.0.0\root"
-            var root = Path.Combine(testProject, "approot", "packages", sampleName, "1.0.0", "root");
-            var testAppStartInfo = DnxHelper.GetDefaultInstance().BuildStartInfo(testProject, framework, $"--project {root} run");
+            var testAppStartInfo = DotnetHelper.GetDefaultInstance().BuildStartInfo(testProject, "run");
 
             RunStartup(5000, logger, testAppStartInfo);
         }
@@ -82,7 +62,22 @@ namespace Microsoft.AspNetCore.Tests.Performance
             Assert.True(testProject != null, $"Fail to set up test project.");
             logger.LogInformation($"Test project is set up at {testProject}");
 
-            var startInfo = new ProcessStartInfo(Path.Combine(testProject, $"{sampleName}.exe")) { UseShellExecute = false };
+            ProcessStartInfo startInfo;
+            if (File.Exists(Path.Combine(testProject, $"{sampleName}.exe")))
+            {
+                startInfo = new ProcessStartInfo(Path.Combine(testProject, $"{sampleName}.exe"))
+                {
+                    UseShellExecute = false
+                };
+            }
+            else
+            {
+                startInfo = new ProcessStartInfo(DotnetHelper.GetDefaultInstance().GetDotnetExecutable())
+                {
+                    UseShellExecute = false,
+                    Arguments = Path.Combine(testProject, $"{sampleName}.dll")
+                };
+            }
             RunStartup(5000, logger, startInfo);
         }
 
@@ -99,22 +94,36 @@ namespace Microsoft.AspNetCore.Tests.Performance
             Assert.True(testProject != null, $"Fail to set up test project.");
             logger.LogInformation($"Test project is set up at {testProject}");
 
-            var startInfo = new ProcessStartInfo(Path.Combine(testProject, $"{sampleName}.exe"))
+            ProcessStartInfo startInfo;
+            if (File.Exists(Path.Combine(testProject, $"{sampleName}.exe")))
             {
-                UseShellExecute = false,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
+                startInfo = new ProcessStartInfo(Path.Combine(testProject, $"{sampleName}.exe"))
+                {
+                    UseShellExecute = false,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+            }
+            else
+            {
+                startInfo = new ProcessStartInfo(DotnetHelper.GetDefaultInstance().GetDotnetExecutable())
+                {
+                    UseShellExecute = false,
+                    RedirectStandardInput = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    Arguments = Path.Combine(testProject, $"{sampleName}.dll")
+                };
+            }
             var process = Process.Start(startInfo);
 
             var client = new HttpClient();
             client.GetAsync("http://localhost:5000/").Result.EnsureSuccessStatusCode();
 
-            using (Collector.StartCollection())
+            if(process != null && !process.HasExited)
             {
-                process.StandardInput.Write("\x3");
-                Assert.True(process.WaitForExit((int)TimeSpan.FromSeconds(30).TotalMilliseconds));
+                process.KillTree();
             }
         }
 
@@ -130,11 +139,10 @@ namespace Microsoft.AspNetCore.Tests.Performance
             Assert.True(testProject != null, $"Fail to set up test project.");
             logger.LogInformation($"Test project is set up at {testProject}");
 
-            var testAppStartInfo = DnxHelper.GetDefaultInstance().BuildStartInfo(testProject, framework, "run");
-
+            var testAppStartInfo = DotnetHelper.GetDefaultInstance().BuildStartInfo(testProject, "run");
             var process = Process.Start(testAppStartInfo);
             Thread.Sleep(1000);
-            process.Kill();
+            process.KillTree();
             logger.LogInformation("Run server before updating");
 
             // update source code
@@ -170,17 +178,14 @@ namespace Microsoft.AspNetCore.Tests.Performance
         {
             if (string.Equals(runtimeType, "clr", StringComparison.OrdinalIgnoreCase))
             {
-                return "dnx451";
+                return "net451";
             }
-            else if (string.Equals(runtimeType, "coreclr", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(runtimeType, "coreclr", StringComparison.OrdinalIgnoreCase))
             {
-                return "netstandardapp1.5";
+                return "netcoreapp1.0";
             }
-            else
-            {
-                Assert.False(true, $"Unknown framework {runtimeType}");
-                return null;
-            }
+            Assert.False(true, $"Unknown framework {runtimeType}");
+            return null;
         }
 
         private void RunStartup(int port, ILogger logger, ProcessStartInfo testAppStartInfo)
@@ -191,7 +196,6 @@ namespace Microsoft.AspNetCore.Tests.Performance
             var url = $"http://localhost:{port}/";
 
             var client = new HttpClient();
-
             using (Collector.StartCollection())
             {
                 process = Process.Start(testAppStartInfo);
@@ -218,11 +222,11 @@ namespace Microsoft.AspNetCore.Tests.Performance
                     }
                 }
             }
-
             if (process != null && !process.HasExited)
             {
-                logger.LogDebug($"Kill process {process.Id}");
-                process.Kill();
+                var processId = process.Id;
+                process.KillTree();
+                logger.LogDebug($"Kill process {processId}");
             }
 
             if (responseRetrived)

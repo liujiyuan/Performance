@@ -1,9 +1,21 @@
 {
   "version": "1.0.0-*",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true,
     "warningsAsErrors": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "copyToOutput": {
+      "include": [
+        "Views"
+      ]
+    },
+    "compile": {
+      "exclude": [
+        "wwwroot",
+        "node_modules",
+        "bower_components"
+      ]
+    }
   },
   "dependencies": {
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
@@ -11,6 +23,8 @@
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
     "Microsoft.AspNetCore.Server.WebListener": "0.1.0-*",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
     "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*"
   },
   "commands": {
@@ -18,14 +32,17 @@
   },
   "frameworks": {
     "net451": {},
-    "netstandardapp1.5": {
-      "dependencies": {
-        "NETStandard.Library": "1.5.0-*"
-      },
+    "netcoreapp1.0": {
       "imports": [
         "dnxcore50",
         "portable-net451+win8"
-      ]
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
+      }
     }
   },
   "tools": {
@@ -37,21 +54,15 @@
       ]
     }
   },
-  "publishExclude": [
-    "node_modules",
-    "bower_components",
-    "**.xproj",
-    "**.user",
-    "**.vspscc"
-  ],
-  "exclude": [
-    "wwwroot",
-    "node_modules",
-    "bower_components"
-  ],
-  "content": [
-    "Views"
-  ],
+  "publishOptions": {
+    "exclude": [
+      "node_modules",
+      "bower_components",
+      "**.xproj",
+      "**.user",
+      "**.vspscc"
+    ]
+  },
   "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true

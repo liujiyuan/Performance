@@ -2,39 +2,37 @@
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true,
-    "warningsAsErrors": true,
-    "preserveCompilationContext": true,
-    "copyToOutput": {
-      "include": [
-        "Views"
-      ]
+    "compile": {
+      "include": ["../Shared/**/*.cs"]
     }
   },
   "dependencies": {
-    "Microsoft.AspNetCore.Mvc": "1.0.0-*",
-    "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-*",
+    "Microsoft.AspNetCore.Mvc.Core": "1.0.0-*",
+    "Microsoft.AspNetCore.Mvc.DataAnnotations": "1.0.0-*",
+    "Microsoft.AspNetCore.Mvc.Formatters.Json": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
     "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*"
   },
-  "commands": {
-    "web": "LargeStaticView"
-  },
   "frameworks": {
-    "net451": {},
     "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0-*"
+        },
+        "System.Console": "4.0.0-*"
+      },
       "imports": [
         "dnxcore50",
         "portable-net451+win8"
-      ],
-      "dependencies": {
-        "Microsoft.NETCore.App": {
-          "version": "1.0.0-*",
-          "type": "platform"
-        }
-      }
-    }
+      ]
+    },
+    "net451": { }
+  },
+  "commands": {
+    "web": "LargeJsonApi"
   },
   "runtimeOptions": {
     "configProperties": {

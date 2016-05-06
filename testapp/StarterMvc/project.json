@@ -1,14 +1,27 @@
 {
   "userSecretsId": "aspnet5-StarterMvc-a41e748d-679d-48cc-a9f2-81b486f3512c",
   "version": "1.0.0",
-  "compilationOptions": {
+  "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "copyToOutput": {
+      "include": [
+        "appsettings.json",
+        "Views"
+      ]
+    },
+    "compile": {
+      "exclude": [
+        "wwwroot",
+        "node_modules"
+      ]
+    }
   },
   "dependencies": {
     "Microsoft.EntityFrameworkCore.Commands": "1.0.0-*",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0-*",
     "Microsoft.AspNetCore.Authentication.Cookies": "1.0.0-*",
+    "Microsoft.AspNetCore.Diagnostics": "1.0.0-*",
     "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.0.0-*",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.0.0-*",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-*",
@@ -19,14 +32,17 @@
     "Microsoft.Extensions.Configuration.FileProviderExtensions": "1.0.0-*",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
     "Microsoft.Extensions.Configuration.UserSecrets": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
     "Microsoft.Extensions.Logging": "1.0.0-*",
     "Microsoft.Extensions.Logging.Console": "1.0.0-*",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-*",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-*",
     "Microsoft.NETCore.Platforms": "1.0.1-*",
-    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
-    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
-    "Microsoft.AspNetCore.Diagnostics": "1.0.0-*"
+    
+    "System.ComponentModel": "4.0.1-*",
+    "System.IO": "4.1.0-*",
+    "System.Runtime": "4.1.0-*"
   },
   "tools": {
     "dotnet-razor-tooling": {
@@ -42,25 +58,26 @@
     "ef": "Microsoft.EntityFrameworkCore.Commands"
   },
   "frameworks": {
-    "net451": { },
-    "netstandardapp1.5": {
-      "dependencies": {
-        "NETStandard.Library": "1.5.0-*"
-      },
+    "net451": {},
+    "netcoreapp1.0": {
       "imports": [
         "dnxcore50",
         "portable-net451+win8"
-      ]
+      ],
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
+      }
     }
   },
-  "exclude": [
-    "wwwroot",
-    "node_modules"
-  ],
-  "publishExclude": [
-    "**.user",
-    "**.vspscc"
-  ],
+  "publishOptions": {
+    "exclude": [
+      "**.user",
+      "**.vspscc"
+    ]
+  },
   "scripts": {
     "prepublish": [
       "npm install",
@@ -69,10 +86,6 @@
       "gulp min"
     ]
   },
-  "content": [
-    "appsettings.json",
-    "Views"
-  ],
   "runtimeOptions": {
     "configProperties": {
       "System.GC.Server": true

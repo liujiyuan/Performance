@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace HelloWorldMvc
 {
@@ -23,8 +24,9 @@ namespace HelloWorldMvc
         public static void Main(string[] args)
         {
             var config = new ConfigurationBuilder()
-                   .AddCommandLine(args)
-                   .Build();
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .Build();
 
             var host = new WebHostBuilder()
                 .UseKestrel()

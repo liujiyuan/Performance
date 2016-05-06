@@ -97,8 +97,10 @@ namespace StarterMvc
         public static void Main(string[] args)
         {
             var config = new ConfigurationBuilder()
-                   .AddCommandLine(args)
-                   .Build();
+                .AddJsonFile("hosting.json", optional: true)
+                .AddEnvironmentVariables(prefix: "ASPNETCORE_")
+                .AddCommandLine(args)
+                .Build();
 
             var host = new WebHostBuilder()
                 .UseKestrel()

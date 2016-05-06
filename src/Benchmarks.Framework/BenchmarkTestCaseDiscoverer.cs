@@ -11,6 +11,7 @@ using XunitDiagnosticMessage = Xunit.DiagnosticMessage;
 
 namespace Benchmarks.Framework
 {
+
     public class BenchmarkTestCaseDiscoverer : IXunitTestCaseDiscoverer
     {
         private readonly IMessageSink _diagnosticMessageSink;
@@ -25,60 +26,69 @@ namespace Benchmarks.Framework
             ITestMethod testMethod,
             IAttributeInfo factAttribute)
         {
-            var skipReason = EvaluateSkipConditions(testMethod);
-
-            if(skipReason != null)
+            try
             {
-                _diagnosticMessageSink.OnMessage(
-                        new XunitDiagnosticMessage($"Skipping { testMethod.Method.Name }{ Environment.NewLine }Reason: { skipReason }"));
-                return new List<IXunitTestCase>();
-            }
+                var skipReason = EvaluateSkipConditions(testMethod);
 
-            var variations = testMethod.Method
-                .GetCustomAttributes(typeof(BenchmarkVariationAttribute))
-                .Select(a => new
+                if (skipReason != null)
                 {
-                    Name = a.GetNamedArgument<string>(nameof(BenchmarkVariationAttribute.VariationName)),
-                    TestMethodArguments = a.GetNamedArgument<object[]>(nameof(BenchmarkVariationAttribute.Data)),
-                    Framework = a.GetNamedArgument<string>(nameof(BenchmarkVariationAttribute.Framework))
-                })
-                .ToList();
-
-            if (!variations.Any())
-            {
-                variations.Add(new
-                {
-                    Name = "Default",
-                    TestMethodArguments = new object[0],
-                    Framework = (string)null
-                });
-            }
-
-            var tests = new List<IXunitTestCase>();
-            foreach (var variation in variations)
-            {
-                if (BenchmarkConfig.Instance.RunIterations)
-                {
-                    tests.Add(new BenchmarkTestCase(
-                        factAttribute.GetNamedArgument<int>(nameof(BenchmarkAttribute.Iterations)),
-                        factAttribute.GetNamedArgument<int>(nameof(BenchmarkAttribute.WarmupIterations)),
-                        variation.Framework,
-                        variation.Name,
-                        _diagnosticMessageSink,
-                        testMethod,
-                        variation.TestMethodArguments));
+                    _diagnosticMessageSink.OnMessage(
+                            new XunitDiagnosticMessage($"Skipping { testMethod.Method.Name }{ Environment.NewLine }Reason: { skipReason }"));
+                    return new List<IXunitTestCase>();
                 }
-                else
-                {
-                    tests.Add(new NonCollectingBenchmarkTestCase(
-                        variation.Name,
-                        _diagnosticMessageSink,
-                        testMethod,
-                        variation.TestMethodArguments));
-                }
-            }
 
-            return tests;
+                var variations = testMethod.Method
+                    .GetCustomAttributes(typeof(BenchmarkVariationAttribute))
+                    .Select(a => new
+                    {
+                        Name = a.GetNamedArgument<string>(nameof(BenchmarkVariationAttribute.VariationName)),
+                        TestMethodArguments = a.GetNamedArgument<object[]>(nameof(BenchmarkVariationAttribute.Data)),
+                        Framework = a.GetNamedArgument<string>(nameof(BenchmarkVariationAttribute.Framework))
+                    })
+                    .ToList();
+
+                if (!variations.Any())
+                {
+                    variations.Add(new
+                    {
+                        Name = "Default",
+                        TestMethodArguments = new object[0],
+                        Framework = (string)null
+                    });
+                }
+
+                var tests = new List<IXunitTestCase>();
+                foreach (var variation in variations)
+                {
+                    if (BenchmarkConfig.Instance.RunIterations)
+                    {
+                        tests.Add(new BenchmarkTestCase(
+                            factAttribute.GetNamedArgument<int>(nameof(BenchmarkAttribute.Iterations)),
+                            factAttribute.GetNamedArgument<int>(nameof(BenchmarkAttribute.WarmupIterations)),
+                            variation.Framework,
+                            variation.Name,
+                            _diagnosticMessageSink,
+                            testMethod,
+                            variation.TestMethodArguments));
+                    }
+                    else
+                    {
+                        tests.Add(new NonCollectingBenchmarkTestCase(
+                            variation.Name,
+                            _diagnosticMessageSink,
+                            testMethod,
+                            variation.TestMethodArguments));
+                    }
+                }
+                return tests;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine(e.StackTrace);
+                throw;
+            }
         }
 
         private string EvaluateSkipConditions(ITestMethod testMethod)

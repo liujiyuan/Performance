@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "Benchmarks.Framework": "1.0.0-*",
-    "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
+    "Microsoft.NETCore.Platforms": "1.0.1-*",
     "Microsoft.AspNetCore.Hosting": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
     "Microsoft.AspNetCore.Server.WebListener": "0.1.0-*",
@@ -13,36 +13,46 @@
     "System.IO": "4.1.0-*",
     "System.Reflection": "4.1.0-*",
     "System.Runtime": "4.1.0-*",
-    "System.Threading": "4.0.11-*"
+    "System.Threading": "4.0.11-*",
+    "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
+    "xunit": "2.1.0",
+    "dotnet-test-xunit": "1.0.0-*"
   },
   "testRunner": "xunit",
-  "commands": {
-    "test": "xunit.runner.aspnet"
-  },
-  "compilationOptions": {
+  "buildOptions": {
     "preserveCompilationContext": true
   },
   "frameworks": {
-    "netstandardapp1.5": {
+    "netcoreapp1.0": {
       "dependencies": {
-        "dotnet-test-xunit": "1.0.0-dev-*"
+        "Microsoft.NETCore.App": {
+          "version": "1.0.0-*",
+          "type": "platform"
+        }
       },
       "imports": [
         "dnxcore50",
-        "portable-net451+win8"
+        "portable-net451+win8",
+        "netstandardapp1.5"
       ]
     },
-    "net451": {},
-    "dnx451": {
-      "dependencies": {
-        "xunit.runner.aspnet": "2.0.0-aspnet-*"
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Runtime": ""
       }
-    }
+	}
   },
   "tools": {
-    "dotnet-razor-tooling": "1.0.0-*"
+    "dotnet-razor-tooling": {
+      "version": "1.0.0-*",
+      "imports":["portable-net40+sl5+win8+wp8+wpa81"]
+    }
   },
-  "content": [
-    "config.json"
-  ]
+  "publishOptions": {
+    "include": [
+      "config.json"
+    ]
+  }
 }
