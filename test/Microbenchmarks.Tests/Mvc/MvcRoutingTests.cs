@@ -19,7 +19,6 @@ namespace Microbenchmarks.Tests.Mvc
         public async Task RouteToAction()
         {
             var contentRoot = PlatformServices.Default.Application.ApplicationBasePath;
-            contentRoot = Path.GetFullPath(Path.Combine(contentRoot, "..", "..", "..", ".."));
 
             var builder = new WebHostBuilder()
                 .Configure(app => app.UseMvcWithDefaultRoute())
