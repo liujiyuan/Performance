@@ -38,6 +38,7 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0-*",
     "Microsoft.Extensions.Logging.Debug": "1.0.0-*",
     "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-*",
+    "Microsoft.NETCore.Platforms": "1.0.1-*",
     
     "System.ComponentModel": "4.0.1-*",
     "System.IO": "4.1.0-*",
@@ -51,7 +52,7 @@
         "portable-net451+win8"
       ]
     }
-   },
+  },
   "commands": {
     "web": "StarterMvc",
     "ef": "Microsoft.EntityFrameworkCore.Commands"

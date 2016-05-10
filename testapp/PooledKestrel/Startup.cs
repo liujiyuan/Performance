@@ -37,6 +37,7 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.LowAlloc
         public static void Main(string[] args)
         {
             _configuration = new ConfigurationBuilder()
+                .AddCommandLine(args)
                 .AddJsonFile("hosting.json", optional: true)
                 .AddEnvironmentVariables(prefix: "ASPNETCORE_")
                 .AddCommandLine(args)

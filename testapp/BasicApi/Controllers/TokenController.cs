@@ -55,6 +55,13 @@ namespace BasicApi.Controllers
             }
 
             var handler = _options.SecurityTokenValidators.OfType<JwtSecurityTokenHandler>().First();
+            var tokenDescriptor = new SecurityTokenDescriptor()
+            {
+                Issuer = _options.TokenValidationParameters.ValidIssuer,
+                Audience = _options.TokenValidationParameters.ValidAudience,
+                SigningCredentials = _credentials,
+                Subject = identity
+            };
 
             var securityToken = handler.CreateJwtSecurityToken(
                 issuer: _options.TokenValidationParameters.ValidIssuer,

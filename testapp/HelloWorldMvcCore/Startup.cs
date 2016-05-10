@@ -30,7 +30,7 @@ namespace HelloWorldMvcCore
                     throw;
                 }
             });
-            
+
             app.UseMvcWithDefaultRoute();
         }
 
