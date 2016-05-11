@@ -11,7 +11,7 @@ namespace Benchmarks.Utility.Helpers
     public class DotnetHelper
     {
         private static readonly DotnetHelper _default = new DotnetHelper();
-        private readonly string _executablePath = "dotnet";
+        private readonly string _dotnetAppName = "dotnet";
 
         public static DotnetHelper GetDefaultInstance() => _default;
 
@@ -75,26 +75,22 @@ namespace Benchmarks.Utility.Helpers
 
         public string GetDotnetPath()
         {
-            string path;
+            string path = null;
             var envDotnetHomeVariable = Environment.GetEnvironmentVariable("DOTNET_INSTALL_DIR");
             if (envDotnetHomeVariable != null && Directory.Exists(path = Environment.ExpandEnvironmentVariables(envDotnetHomeVariable)))
             {
                 return path;
             }
-
-
-            path = Path.Combine("~", ".dotnet");
-            if(Directory.Exists(path))
+            var envHome = Environment.GetEnvironmentVariable("HOME");
+            if (envHome != null && Directory.Exists(path = Path.Combine(envHome, ".dotnet")))
             {
                 return path;
             }
-            
             var envLocalAppData = Environment.GetEnvironmentVariable("LocalAppData");
             if (envLocalAppData != null && Directory.Exists(path = Path.Combine(envLocalAppData, "Microsoft", "dotnet")))
             {
                 return path;
             }
-            
             return null;
         }
 
@@ -103,9 +99,9 @@ namespace Benchmarks.Utility.Helpers
             var dotnetPath = GetDotnetPath();
             if (dotnetPath != null)
             {
-                return Path.Combine(dotnetPath, _executablePath);
+                return Path.Combine(dotnetPath, _dotnetAppName);
             }
-            return null;
+            return _dotnetAppName;
         }
 
         public string BuildGlobalJson()

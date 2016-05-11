@@ -98,11 +98,6 @@ namespace Benchmarks.Utility.Helpers
                 throw new Exception($"Cannot determine the location of '{nugetConfigFileName}' from base path '{PlatformServices.Default.Application.ApplicationBasePath}'");
             }
 
-            private void CopyNugetConfigToSamplePath(string samplePath)
-            {
-                CommandLineRunner.GetDefaultInstance().Execute($"robocopy \"{_pathToNugetConfig}\" \"{samplePath}\" NuGet.config");
-            }
-
             private RestoredSample(string name) : base(name) { }
 
             public static RestoredSample Create(string name) => new RestoredSample(name);
@@ -115,11 +110,27 @@ namespace Benchmarks.Utility.Helpers
                     return false;
                 }
 
-                var target = Path.Combine(PathHelper.GetNewTempFolder(), Name);
+                var tempFolder = PathHelper.GetNewTempFolder();
+                Directory.CreateDirectory(tempFolder); // workaround for Linux
+                var target = Path.Combine(tempFolder, Name);
                 Directory.CreateDirectory(target);
 
-                CommandLineRunner.GetDefaultInstance().Execute($"robocopy \"{SourcePath}\" \"{target}\" /E /S /XD node_modules /XF project.lock.json");
-                CopyNugetConfigToSamplePath(target);
+                string copyCommand, copySampleParameters, copyNugetConfigParameters;
+                if (PlatformServices.Default.Runtime.OperatingSystem == "Windows")
+                {
+                    copyCommand = "robocopy";
+                    copySampleParameters = $"\"{SourcePath}\" \"{target}\" /E /S /XD node_modules /XF project.lock.json";
+                    copyNugetConfigParameters = $"\"{_pathToNugetConfig}\" \"{target}\" NuGet.config";
+                }
+                else
+                {
+                    copyCommand = "rsync";
+                    copySampleParameters = $"--recursive --exclude=node_modules --exclude=project.lock.json \"{SourcePath}/\" \"{target}/\"";
+                    copyNugetConfigParameters = $"\"{_pathToNugetConfig}/NuGet.config\" \"{target}/NuGet.config\"";
+                }
+                var runner = new CommandLineRunner(copyCommand);
+                runner.Execute(copySampleParameters);
+                runner.Execute(copyNugetConfigParameters);
                 if (!DotnetHelper.GetDefaultInstance().Restore(target, quiet: true))
                 {
                     Directory.Delete(target, recursive: true);
