@@ -97,7 +97,7 @@ namespace Benchmarks.Utility.Helpers
                 var target = Path.Combine(PathHelper.GetNewTempFolder(), Name);
                 Directory.CreateDirectory(target);
 
-                CommandLineRunner.GetDefaultInstance().Execute($"robocopy {SourcePath} {target} /E /S /XD node_modules /XF project.lock.json");
+                CommandLineRunner.GetDefaultInstance().Execute($"robocopy \"{SourcePath}\" \"{target}\" /E /S /XD node_modules /XF project.lock.json");
                 if (!DotnetHelper.GetDefaultInstance().Restore(target, quiet: true))
                 {
                     Directory.Delete(target, recursive: true);

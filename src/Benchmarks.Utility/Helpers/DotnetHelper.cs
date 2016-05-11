@@ -52,7 +52,7 @@ namespace Benchmarks.Utility.Helpers
         {
             var psi = new ProcessStartInfo(GetDotnetExecutable())
             {
-                Arguments = $"publish --output {outputDir}",
+                Arguments = $"publish --output \"{outputDir}\"",
                 WorkingDirectory = workingDir,
                 UseShellExecute = false
             };

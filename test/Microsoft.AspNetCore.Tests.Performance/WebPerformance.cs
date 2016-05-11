@@ -75,7 +75,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
                 startInfo = new ProcessStartInfo(DotnetHelper.GetDefaultInstance().GetDotnetExecutable())
                 {
                     UseShellExecute = false,
-                    Arguments = Path.Combine(testProject, $"{sampleName}.dll")
+                    Arguments = "\"" + Path.Combine(testProject, $"{sampleName}.dll") + "\""
                 };
             }
             RunStartup(5000, logger, startInfo);
@@ -94,36 +94,34 @@ namespace Microsoft.AspNetCore.Tests.Performance
             Assert.True(testProject != null, $"Fail to set up test project.");
             logger.LogInformation($"Test project is set up at {testProject}");
 
-            ProcessStartInfo startInfo;
-            if (File.Exists(Path.Combine(testProject, $"{sampleName}.exe")))
+            string processPath = Path.Combine(testProject, $"{sampleName}.exe");
+            string processArguments = string.Empty;
+            if (!File.Exists(processPath))
             {
-                startInfo = new ProcessStartInfo(Path.Combine(testProject, $"{sampleName}.exe"))
-                {
-                    UseShellExecute = false,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
+                processPath = DotnetHelper.GetDefaultInstance().GetDotnetExecutable();
+                processArguments = "\"" + Path.Combine(testProject, $"{sampleName}.dll") + "\"";
             }
-            else
+            var startInfo = new ProcessStartInfo(processPath)
             {
-                startInfo = new ProcessStartInfo(DotnetHelper.GetDefaultInstance().GetDotnetExecutable())
-                {
-                    UseShellExecute = false,
-                    RedirectStandardInput = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true,
-                    Arguments = Path.Combine(testProject, $"{sampleName}.dll")
-                };
-            }
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                Arguments = processArguments
+            };
             var process = Process.Start(startInfo);
 
-            var client = new HttpClient();
-            client.GetAsync("http://localhost:5000/").Result.EnsureSuccessStatusCode();
-
-            if(process != null && !process.HasExited)
+            try
             {
-                process.KillTree();
+                var client = new HttpClient();
+                client.GetAsync("http://localhost:5000/").Result.EnsureSuccessStatusCode();
+            }
+            finally
+            {
+                if(process != null && !process.HasExited)
+                {
+                    process.KillTree();
+                }
             }
         }
 
