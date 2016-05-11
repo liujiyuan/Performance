@@ -5,7 +5,6 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using System.Text;
 using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
