@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Benchmarks.Utility.Helpers
 {
@@ -12,16 +13,10 @@ namespace Benchmarks.Utility.Helpers
     {
         private readonly Dictionary<Type, List<SampleEntry>> _samples = new Dictionary<Type, List<SampleEntry>>();
 
-        public string GetUnrestoredSample(string name)
-        {
-            throw new NotImplementedException();
-        }
-
         public string GetRestoredSample(string name)
         {
             var sample = GetOrAdd(name, RestoredSample.Create);
             sample.Initialize();
-
             return sample.Valid ? sample.SamplePath : null;
         }
 
@@ -29,7 +24,6 @@ namespace Benchmarks.Utility.Helpers
         {
             var sample = GetOrAdd(DotNetPublishedSample.GetUniqueName(name, framework), DotNetPublishedSample.Create);
             sample.Initialize();
-
             return sample.Valid ? sample.SamplePath : null;
         }
 
@@ -82,6 +76,33 @@ namespace Benchmarks.Utility.Helpers
 
         private class RestoredSample : SampleEntry
         {
+            private static readonly string _pathToNugetConfig = GetPathToNugetConfig();
+
+            private static string GetPathToNugetConfig()
+            {
+                // This is a non-exhaustive search for the directory where NuGet.config resides.
+                // Typically, it'll be found at ..\..\NuGet.config, but it may vary depending on execution preferences.
+                const string nugetConfigFileName = "NuGet.config";
+                const int maxRelativeFolderTraversalDepth = 10; // how many ".." will we attempt adding looking for NuGet.config?
+                var appbase = PlatformServices.Default.Application.ApplicationBasePath;
+                var relativePath = nugetConfigFileName;
+                for (int i = 1; i < maxRelativeFolderTraversalDepth; i++)
+                {
+                    var currentTry = Path.GetFullPath(Path.Combine(appbase, relativePath));
+                    if (File.Exists(currentTry))
+                    {
+                        return Path.GetDirectoryName(currentTry);
+                    }
+                    relativePath = Path.Combine("..", relativePath);
+                }
+                throw new Exception($"Cannot determine the location of '{nugetConfigFileName}' from base path '{PlatformServices.Default.Application.ApplicationBasePath}'");
+            }
+
+            private void CopyNugetConfigToSamplePath(string samplePath)
+            {
+                CommandLineRunner.GetDefaultInstance().Execute($"robocopy \"{_pathToNugetConfig}\" \"{samplePath}\" NuGet.config");
+            }
+
             private RestoredSample(string name) : base(name) { }
 
             public static RestoredSample Create(string name) => new RestoredSample(name);
@@ -98,6 +119,7 @@ namespace Benchmarks.Utility.Helpers
                 Directory.CreateDirectory(target);
 
                 CommandLineRunner.GetDefaultInstance().Execute($"robocopy \"{SourcePath}\" \"{target}\" /E /S /XD node_modules /XF project.lock.json");
+                CopyNugetConfigToSamplePath(target);
                 if (!DotnetHelper.GetDefaultInstance().Restore(target, quiet: true))
                 {
                     Directory.Delete(target, recursive: true);
@@ -142,7 +164,7 @@ namespace Benchmarks.Utility.Helpers
                     Directory.Delete(target, recursive: true);
                     return false;
                 }
-                
+
                 SamplePath = target;
                 return true;
             }
