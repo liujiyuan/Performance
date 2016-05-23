@@ -62,22 +62,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
             Assert.True(testProject != null, $"Fail to set up test project.");
             logger.LogInformation($"Test project is set up at {testProject}");
 
-            ProcessStartInfo startInfo;
-            if (File.Exists(Path.Combine(testProject, $"{sampleName}.exe")))
-            {
-                startInfo = new ProcessStartInfo(Path.Combine(testProject, $"{sampleName}.exe"))
-                {
-                    UseShellExecute = false
-                };
-            }
-            else
-            {
-                startInfo = new ProcessStartInfo(DotnetHelper.GetDefaultInstance().GetDotnetExecutable())
-                {
-                    UseShellExecute = false,
-                    Arguments = "\"" + Path.Combine(testProject, $"{sampleName}.dll") + "\""
-                };
-            }
+            var startInfo = GetStartInfo(testProject, sampleName);
             RunStartup(5000, logger, startInfo);
         }
 
@@ -87,40 +72,61 @@ namespace Microsoft.AspNetCore.Tests.Performance
         {
             var framework = PlatformServices.Default.Runtime.RuntimeType;
             var appliationFramework = GetFrameworkName(framework);
-            var testName = $"{sampleName}.{framework}.{nameof(Production_DotNet_Startup)}";
+            var testName = $"{sampleName}.{framework}.{nameof(GracefulExit)}";
             var logger = LogUtility.LoggerFactory.CreateLogger(testName);
 
             var testProject = _sampleManager.GetDotNetPublishedSample(sampleName, appliationFramework);
             Assert.True(testProject != null, $"Fail to set up test project.");
             logger.LogInformation($"Test project is set up at {testProject}");
 
-            string processPath = Path.Combine(testProject, $"{sampleName}.exe");
-            string processArguments = string.Empty;
-            if (!File.Exists(processPath))
-            {
-                processPath = DotnetHelper.GetDefaultInstance().GetDotnetExecutable();
-                processArguments = "\"" + Path.Combine(testProject, $"{sampleName}.dll") + "\"";
-            }
-            var startInfo = new ProcessStartInfo(processPath)
-            {
-                UseShellExecute = false,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                Arguments = processArguments
-            };
+            var startInfo = GetStartInfo(testProject, sampleName);
             var process = Process.Start(startInfo);
+            HttpResponseMessage response = null;
 
             try
             {
-                var client = new HttpClient();
-                client.GetAsync("http://localhost:5000/").Result.EnsureSuccessStatusCode();
+                Task<HttpResponseMessage> webtask = null;
+                var url = "http://localhost:5000/";
+                var responseRetrived = false;
+                using (var client = new HttpClient())
+                {
+                    for (int i = 0; i < _retry; ++i)
+                    {
+                        try
+                        {
+                            webtask = client.GetAsync(url);
+                            if (webtask.Wait(_timeout))
+                            {
+                                responseRetrived = true;
+                                break;
+                            }
+                            else
+                            {
+                                logger.LogError("Http client timeout.");
+                                break;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            continue;
+                        }
+                    }
+                }
+                if (responseRetrived)
+                {
+                    response = webtask.Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
             finally
             {
                 if(process != null && !process.HasExited)
                 {
                     process.KillTree();
+                }
+                if (response != null)
+                {
+                    response.Dispose();
                 }
             }
         }
@@ -171,6 +177,25 @@ namespace Microsoft.AspNetCore.Tests.Performance
 
             RunStartup(5000, logger, testAppStartInfo);
         }
+        
+        private ProcessStartInfo GetStartInfo(string testProject, string sampleName)
+        {
+            string processPath = Path.Combine(testProject, $"{sampleName}.exe");
+            string processArguments = string.Empty;
+            if (!File.Exists(processPath))
+            {
+                processPath = DotnetHelper.GetDefaultInstance().GetDotnetExecutable();
+                processArguments = "\"" + Path.Combine(testProject, $"{sampleName}.dll") + "\"";
+            }
+            return new ProcessStartInfo(processPath)
+            {
+                UseShellExecute = false,
+                RedirectStandardInput = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                Arguments = processArguments
+            };
+        }
 
         private static string GetFrameworkName(string runtimeType)
         {
@@ -190,33 +215,35 @@ namespace Microsoft.AspNetCore.Tests.Performance
         {
             Task<HttpResponseMessage> webtask = null;
             Process process = null;
+            HttpResponseMessage response = null;
             var responseRetrived = false;
             var url = $"http://localhost:{port}/";
 
-            var client = new HttpClient();
-            using (Collector.StartCollection())
+            using (var client = new HttpClient())
             {
-                process = Process.Start(testAppStartInfo);
-                for (int i = 0; i < _retry; ++i)
+                using (Collector.StartCollection())
                 {
-                    try
+                    process = Process.Start(testAppStartInfo);
+                    for (int i = 0; i < _retry; ++i)
                     {
-                        webtask = client.GetAsync(url);
-
-                        if (webtask.Wait(_timeout))
+                        try
                         {
-                            responseRetrived = true;
-                            break;
+                            webtask = client.GetAsync(url);
+                            if (webtask.Wait(_timeout))
+                            {
+                                responseRetrived = true;
+                                break;
+                            }
+                            else
+                            {
+                                logger.LogError("Http client timeout.");
+                                break;
+                            }
                         }
-                        else
+                        catch (Exception)
                         {
-                            logger.LogError("Http client timeout.");
-                            break;
+                            continue;
                         }
-                    }
-                    catch (Exception)
-                    {
-                        continue;
                     }
                 }
             }
@@ -229,9 +256,16 @@ namespace Microsoft.AspNetCore.Tests.Performance
 
             if (responseRetrived)
             {
-                var response = webtask.Result;
+                response = webtask.Result;
                 logger.LogInformation($"Response {response.StatusCode}");
-                response.EnsureSuccessStatusCode();
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                finally
+                {
+                    response.Dispose();
+                }
             }
         }
     }
