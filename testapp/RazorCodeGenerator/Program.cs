@@ -4,12 +4,23 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.IO;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Hosting.Internal;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.Razor.Directives;
-using Microsoft.AspNetCore.Razor;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.CommandLineUtils;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.ObjectPool;
+using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.AspNetCore.Razor;
+using Microsoft.Extensions.DependencyModel;
+using System.Reflection;
 
 namespace RazorCodeGenerator
 {
@@ -17,100 +28,262 @@ namespace RazorCodeGenerator
     {
         public static int Main(string[] args)
         {
-            if (args.Length == 0)
+            var application = new CommandLineApplication(throwOnUnexpectedArg: true)
             {
-                Usage();
+                Name = "RazorCodeGenerator",
+                FullName = "Razor Code Generation Perf Testing Tool",
+                Description = "Supports focused testing of Razor code generation and compilation",
+            };
+
+            application.HelpOption("-?|-h|--help");
+            var basePathOption = application.Option("-b|--base-path", "base path for resolving views", CommandOptionType.SingleValue);
+            var coldOption = application.Option("-c|--cold", "skip warmup - include warmup in timings data", CommandOptionType.NoValue);
+            var dumpOption = application.Option("-d|--dump", "output generated code files", CommandOptionType.NoValue);
+            var iterationsOption = application.Option("-i|--iterations", "number of iterations", CommandOptionType.SingleValue);
+            var nonInteractiveOption = application.Option("-n|--non-interactive", "run code generation without prompting", CommandOptionType.NoValue);
+            var viewEngineOption = application.Option("-v|--view-engine", "use view engine (compile and load)", CommandOptionType.NoValue);
+            var sourcesArgument = application.Argument("sources", "source .cshtml files", multipleValues: true);
+
+            application.OnExecute(() =>
+            {
+
+                string basePath;
+                if (basePathOption.HasValue())
+                {
+                    basePath = Path.GetFullPath(basePathOption.Value());
+                    if (!Directory.Exists(basePath))
+                    {
+                        application.ShowHelp();
+                        Console.WriteLine(" ");
+                        Console.WriteLine($"Error: Could not find directory {basePath}");
+
+                        return -10;
+                    }
+                }
+                else
+                {
+                    basePath = Directory.GetCurrentDirectory();
+                }
+
+                var cold = coldOption.HasValue();
+                var dump = dumpOption.HasValue();
+
+                int iterations;
+                if (iterationsOption.HasValue())
+                {
+                    if (!int.TryParse(iterationsOption.Value(), out iterations))
+                    {
+                        application.ShowHelp();
+                        Console.WriteLine(" ");
+                        Console.WriteLine($"Error: Could not parse {iterations}");
+
+                        return -20;
+                    }
+                }
+                else
+                {
+                    iterations = 100;
+                }
+
+                var nonInteractive = nonInteractiveOption.HasValue();
+
+                var sources = new List<string>();
+                if (sourcesArgument.Values.Count == 0)
+                {
+                    application.ShowHelp();
+                    Console.WriteLine(" ");
+                    Console.WriteLine($"Error: No sources provided");
+
+                    return -30;
+                }
+
+                foreach (var sourceValue in sourcesArgument.Values)
+                {
+                    var source = Path.GetFullPath(sourceValue);
+                    if (!File.Exists(source))
+                    {
+                        application.ShowHelp();
+                        Console.WriteLine(" ");
+                        Console.WriteLine($"Error: Could not find file {source}");
+
+                        return -40;
+                    }
+
+                    sources.Add(source);
+                }
+
+                var useViewEngine = viewEngineOption.HasValue();
+
+                return new Program(basePath).Run(sources, useViewEngine, iterations, cold, dump, nonInteractive);
+            });
+
+            return application.Execute(args);
+        }
+
+        public Program(string basePath)
+        {
+            BasePath = basePath;
+
+            var services = ConfigureDefaultServices(basePath);
+            ViewEngine = services.GetRequiredService<IRazorViewEngine>();
+            var host = (MvcRazorHost)services.GetRequiredService<IMvcRazorHost>();
+            TemplateEngine = new RazorTemplateEngine(host);
+        }
+
+        private string BasePath { get; }
+
+        private RazorTemplateEngine TemplateEngine { get; }
+
+        private IRazorViewEngine ViewEngine { get; }
+
+        public int Run(List<string> sources, bool useViewEngine, int iterations, bool cold, bool dump, bool nonInteractive)
+        {
+            Console.WriteLine($"Generating code for {string.Join(", ", sources)} x{iterations}");
+
+            if (!cold)
+            {
+                Console.WriteLine("Doing warmup.");
+                if (!GenerateCode(sources, useViewEngine, iterations: 1))
+                {
+                    return -1;
+                }
+            }
+
+            if (!nonInteractive)
+            {
+                Console.WriteLine("Press the ANY key to start.");
+                Console.ReadLine();
+            }
+
+            var timer = Stopwatch.StartNew();
+            Console.WriteLine();
+            Console.WriteLine("Starting...");
+
+            if (!GenerateCode(sources, useViewEngine, iterations))
+            {
                 return -1;
             }
 
-            var files = new List<string>();
-            var iterations = 100;
-            var dump = false;
+            Console.WriteLine($"Completed after {timer.Elapsed}");
+            Console.WriteLine();
+            Console.WriteLine();
 
-            foreach (var arg in args)
+            if (!nonInteractive)
             {
-                if (arg == "--dump")
-                {
-                    dump = true;
-                    break;
-                }
-
-                int parsed;
-                if (int.TryParse(arg, out parsed))
-                {
-                    iterations = parsed;
-                    continue;
-                }
-
-                files.Add(arg);
+                Console.WriteLine("Press the ANY key to exit.");
+                Console.ReadLine();
             }
 
-            if (files.Count == 0)
+            if (dump)
             {
-                Usage();
-                return -2;
+                GenerateCode(sources, useViewEngine: false, iterations: 1, dump: true);
             }
 
-            for (var i = 0; i < files.Count; i++)
-            {
-                files[i] = Path.GetFullPath(files[i]);
-            }
-
-            var basePath = Directory.GetCurrentDirectory();
-
-            Console.WriteLine("Press the ANY key to start.");
-            Console.ReadLine();
-
-            GenerateCodeFile(basePath, files.ToArray(), iterations, dump);
-
-            Console.WriteLine("Press the ANY key to exit.");
-            Console.ReadLine();
             return 0;
         }
 
-        private static void Usage()
+        private bool GenerateCode(IList<string> sources, bool useViewEngine, int iterations, bool dump = false)
         {
-            Console.WriteLine("usage: dotnet run <file1.cshtml> <file2.cshtml> <iterations = 100> <--dump?>");
-        }
-
-        private static void GenerateCodeFile(string basePath, string[] files, int iterations, bool dump)
-        {
-            var codeLang = new CSharpRazorCodeLanguage();
-
-            var host = new MvcRazorHost(
-                new DefaultChunkTreeCache(new PhysicalFileProvider(basePath)),
-                new TagHelperDescriptorResolver(new TagHelperTypeResolver(), new TagHelperDescriptorFactory(designTime: false)));
-            var engine = new RazorTemplateEngine(host);
-
-            Console.WriteLine($"Warm Starting Code Generation: {string.Join(", ", files)}");
-            var timer = Stopwatch.StartNew();
-
-            for (var i = 0; i < iterations; i++)
+            if (useViewEngine)
             {
-                for (var j = 0; j < files.Length; j++)
+                for (var i = 0; i < sources.Count; i++)
                 {
-                    var file = files[j];
-                    var fileName = Path.GetFileName(file);
-                    var fileNameNoExtension = Path.GetFileNameWithoutExtension(fileName);
+                    var source = sources[i];
 
-                    using (var fileStream = File.OpenText(file))
+                    var relativePath = source.Substring(BasePath.Length).Replace('\\', '/');
+
+                    Console.WriteLine($"Creating view {relativePath}");
+
+                    for (var j = 0; j < iterations; j++)
                     {
-                        var code = engine.GenerateCode(
-                            input: fileStream,
-                            className: fileNameNoExtension,
-                            rootNamespace: "Test",
-                            sourceFileName: fileName);
+                        var view = ViewEngine.GetView(null, relativePath, isMainPage: true);
+                        view.EnsureSuccessful(new string[0]);
+                        GC.KeepAlive(view.View);
 
-                        if (dump)
+                        if (j > 0 && j % 10 == 0)
                         {
-                            File.WriteAllText(Path.ChangeExtension(file, ".cs"), code.GeneratedCode);
+                            Console.WriteLine($"Completed iteration {j}");
                         }
                     }
                 }
-                Console.WriteLine("Completed iteration: " + (i + 1));
+            }
+            else
+            {
+                for (var i = 0; i < sources.Count; i++)
+                {
+                    var source = sources[i];
+
+                    var fileName = Path.GetFileName(source);
+                    var fileNameNoExtension = Path.GetFileNameWithoutExtension(source);
+
+                    Console.WriteLine($"Generating {source}");
+
+                    using (var stream = new FileStream(source, FileMode.Open))
+                    {
+                        for (var j = 0; j < iterations; j++)
+                        {
+                            var result = TemplateEngine.GenerateCode(
+                                stream,
+                                className: fileNameNoExtension,
+                                rootNamespace: "Test",
+                                sourceFileName: fileName);
+
+                            if (!result.Success)
+                            {
+                                Console.WriteLine($"Code generation failed for {source}");
+                                foreach (var error in result.ParserErrors)
+                                {
+                                    Console.WriteLine("\t" + error);
+                                }
+
+                                return false;
+                            }
+
+                            if (j > 0 && j % 10 == 0)
+                            {
+                                Console.WriteLine($"Completed iteration {j}");
+                            }
+
+                            if (dump && j == iterations - 1)
+                            {
+                                var output = Path.ChangeExtension(source, ".cs");
+                                Console.WriteLine($"Dumping generated code to {output}");
+                                File.WriteAllText(output, result.GeneratedCode);
+                            }
+                        }
+
+                        stream.Seek(0L, SeekOrigin.Begin);
+                    }
+                }
             }
 
-            Console.WriteLine($"Completed after {timer.Elapsed}");
+            return true;
+        }
+
+        private static IServiceProvider ConfigureDefaultServices(string basePath)
+        {
+            var services = new ServiceCollection();
+
+            var applicationEnvironment = PlatformServices.Default.Application;
+            services.AddSingleton(PlatformServices.Default.Application);
+            services.AddSingleton<IHostingEnvironment>(new HostingEnvironment
+            {
+                ApplicationName = "RazorCodeGenerator",
+                WebRootFileProvider = new PhysicalFileProvider(basePath)
+            });
+            services.Configure<RazorViewEngineOptions>(options =>
+            {
+                options.FileProviders.Clear();
+                options.FileProviders.Add(new PhysicalFileProvider(basePath));
+            });
+            var diagnosticSource = new DiagnosticListener("Microsoft.AspNetCore");
+            services.AddSingleton<DiagnosticSource>(diagnosticSource);
+            services.AddLogging();
+            services.AddMvc();
+
+            services.AddSingleton<ObjectPoolProvider>(new DefaultObjectPoolProvider());
+
+            return services.BuildServiceProvider();
         }
     }
 }
