@@ -12,6 +12,10 @@
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-*",
     "Microsoft.AspNetCore.Mvc": "1.0.0-*",
     "Microsoft.AspNetCore.Mvc.TagHelpers": "1.0.0-*",
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.0.0-*",
+      "type": "build"
+    },
     "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-*",
     "Microsoft.AspNetCore.StaticFiles": "1.0.0-*",
     "Microsoft.Extensions.Configuration.FileProviderExtensions": "1.0.0-*",
@@ -30,7 +34,6 @@
     "web": "PerformanceDashboard"
   },
   "frameworks": {
-    "dnx451": {},
     "netcoreapp1.0": {
       "imports": [
         "portable-dnxcore50+net45+win8+wp8+wpa81",
@@ -45,9 +48,9 @@
     }
   },
   "tools": {
-    "dotnet-razor-tooling": {
+    "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-*",
-      "imports":["portable-net40+sl5+win8+wp8+wpa81"]
+      "imports":["portable-net45+win8+dnxcore50"]
     }
   },
   "exclude": [

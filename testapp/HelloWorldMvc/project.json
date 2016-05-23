@@ -31,15 +31,16 @@
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-*",
     "Microsoft.Extensions.Configuration.Json": "1.0.0-*",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
-    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*"
+    "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.0.0-*",
+      "type": "build"
+    }
   },
   "tools": {
-    "dotnet-razor-tooling": {
+    "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-*",
-      "imports": [
-        "dnxcore50",
-        "portable-net451+win8"
-      ]
+      "imports":["portable-net45+win8+dnxcore50"]
     }
    },
   "commands": {

@@ -18,7 +18,11 @@
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-*",
     "Microsoft.Extensions.Configuration.CommandLine": "1.0.0-*",
     "xunit": "2.1.0",
-    "dotnet-test-xunit": "1.0.0-*"
+    "dotnet-test-xunit": "1.0.0-*",
+    "Microsoft.AspNetCore.Razor.Tools": {
+      "version": "1.0.0-*",
+      "type": "build"
+    }
   },
   "testRunner": "xunit",
   "buildOptions": {
@@ -48,9 +52,9 @@
 	}
   },
   "tools": {
-    "dotnet-razor-tooling": {
+    "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-*",
-      "imports":["portable-net40+sl5+win8+wp8+wpa81"]
+      "imports":["portable-net45+win8+dnxcore50"]
     }
   }
 }
