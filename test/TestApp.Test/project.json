@@ -17,6 +17,13 @@
             ]
         }
     },
+    "publishOptions": {
+        "include": [
+            "appsettings.json",
+            "seed.sql",
+            "config.json"
+        ]
+    },
     "runtimeOptions": {
         "configProperties": {
             "System.GC.Server": true,

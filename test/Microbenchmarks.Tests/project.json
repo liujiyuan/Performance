@@ -28,8 +28,17 @@
   "buildOptions": {
     "preserveCompilationContext": true,
     "copyToOutput": {
-      "include": ["config.json", "Mvc/Views"]
+      "include": [
+        "config.json",
+        "Mvc/Views"
+      ]
     }
+  },
+  "publishOptions": {
+    "include": [
+      "config.json",
+      "Mvc/Views"
+    ]
   },
   "frameworks": {
     "netcoreapp1.0": {

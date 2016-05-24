@@ -83,6 +83,10 @@
     "exclude": [
       "**.user",
       "**.vspscc"
+    ],
+    "include": [
+      "appsettings.json",
+      "Views"
     ]
   },
   "scripts": {

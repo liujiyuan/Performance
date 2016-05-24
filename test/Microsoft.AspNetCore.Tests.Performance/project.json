@@ -7,6 +7,11 @@
       ]
     }
   },
+  "publishOptions": {
+    "include": [
+      "config.json"
+    ]
+  },
   "dependencies": {
     "Benchmarks.Utility": "1.0.0-*",
     "Microsoft.NETCore.Platforms": "1.0.1-*",

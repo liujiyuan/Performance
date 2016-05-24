@@ -9,6 +9,11 @@
       ]
     }
   },
+  "publishOptions": {
+    "include": [
+      "Views"
+    ]
+  },
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [

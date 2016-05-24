@@ -58,6 +58,10 @@
       "**.xproj",
       "**.user",
       "**.vspscc"
+    ],
+    "include": [
+      "Views",
+      "appsettings.json"
     ]
   },
   "runtimeOptions": {

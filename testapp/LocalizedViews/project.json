@@ -62,6 +62,9 @@
       "**.xproj",
       "**.user",
       "**.vspscc"
+    ],
+    "include": [
+      "Views"
     ]
   },
   "runtimeOptions": {
