@@ -12,7 +12,8 @@
         "copyToOutput": {
             "include": [
                 "appsettings.json",
-                "seed.sql"
+                "seed.sql",
+                "config.json"
             ]
         }
     },
@@ -31,6 +32,7 @@
         "LocalizedViews": "1.0.0-*",
         "RazorCodeGenerator": "1.0.0-*",
 
+        "Benchmarks.Utility": "1.0.0-*",
         "Microsoft.AspNetCore.Testing": "1.0.0-*",
         "Microsoft.AspNetCore.TestHost": "1.0.0-*",
         "Microsoft.Extensions.Configuration": "1.0.0-*",
@@ -61,7 +63,7 @@
 				"portable-net451+win8",
 				"netstandardapp1.5"
 			]
-		},
+		}
     },
     "testRunner": "xunit"
 }

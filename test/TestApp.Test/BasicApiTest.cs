@@ -1,12 +1,14 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Benchmarks.Framework;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Testing.xunit;
 using Microsoft.AspNetCore.TestHost;
 using Xunit;
 
@@ -46,11 +48,19 @@ namespace MvcBenchmarks.InMemory
 
         static BasicApiTest()
         {
-            var builder = new WebHostBuilder();
-            builder.UseStartup<BasicApi.Startup>();
-            builder.UseProjectOf<BasicApi.Startup>();
-            Server = new TestServer(builder);
-            Client = Server.CreateClient();
+            try
+            {
+                var builder = new WebHostBuilder();
+                builder.UseStartup<BasicApi.Startup>();
+                builder.UseProjectOf<BasicApi.Startup>();
+                Server = new TestServer(builder);
+                Client = Server.CreateClient();
+            }
+            catch (System.Reflection.TargetInvocationException)
+            {
+                // ignore platform not supported exception, as we're skipping those platforms
+                // silently with OSSkipCondition attributes
+            }
         }
         
         public async Task<string> GetAuthorizationToken()
@@ -63,7 +73,9 @@ namespace MvcBenchmarks.InMemory
             return await response.Content.ReadAsStringAsync();
         }
 
-        [Fact]
+        [OSSkipCondition(OperatingSystems.MacOSX)]
+        [OSSkipCondition(OperatingSystems.Linux)]
+        [Benchmark(Iterations = 1, WarmupIterations = 0)]
         public async Task BasicApi()
         {
             var authToken = await GetAuthorizationToken();
