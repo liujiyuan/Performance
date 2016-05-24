@@ -35,6 +35,7 @@ namespace Microbenchmarks.Tests
                 
                 var builder = new WebHostBuilder()
                     .UseConfiguration(config)
+                    .UseKestrel()
                     .UseStartup(typeof(TestStartup))
                     .ConfigureServices(ConfigureTestServices);
 
