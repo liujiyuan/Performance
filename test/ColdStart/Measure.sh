@@ -10,7 +10,7 @@ RunScenario () {
     fi
 
     local startTime=`date +%s%N | cut -b1-13`
-    ~/.dotnet/dotnet ${appLocation}/${targetApp}.dll server.urls=http://+:$port/ &
+    ~/.dotnet/dotnet ${appLocation}/${targetApp}.dll urls=http://+:$port/ &
 
     local elapsedTime=0
     while [[ $elapsedTime -lt 15000 ]]; do

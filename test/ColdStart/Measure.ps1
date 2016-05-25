@@ -43,7 +43,7 @@ function RunScenario {
     try {
         ## Provide fullpath to AppDLL
         $appDllLocation = Join-Path $appLocation "${global:targetApp}.dll"
-        $process = Start-Process "dotnet" -ArgumentList "$appDllLocation server.urls=http://+:$port/" -PassThru -WorkingDirectory $appLocation
+        $process = Start-Process "dotnet" -ArgumentList "$appDllLocation urls=http://+:$port/" -PassThru -WorkingDirectory $appLocation
 
         Write-Host Process started with PID $process.Id
 
