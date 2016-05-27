@@ -25,20 +25,20 @@ namespace Benchmarks.Utility.Helpers
             var psi = new ProcessStartInfo(dotnetPath, argument)
             {
                 WorkingDirectory = appbasePath,
-                UseShellExecute = false
+                UseShellExecute = _dotnetAppName.Equals(dotnetPath)
             };
 
             return psi;
         }
 
-        public bool Restore(string workingDir, bool quiet = false)
+        public bool Restore(string workingDir, bool quiet = false, bool useShellExecute = false)
         {
             var dotnet = GetDotnetExecutable();
             var psi = new ProcessStartInfo(dotnet)
             {
-                Arguments = "restore" + (quiet ? " --quiet" : ""),
+                Arguments = "restore --infer-runtimes" + (quiet ? " --verbosity Error" : ""),
                 WorkingDirectory = workingDir,
-                UseShellExecute = false
+                UseShellExecute = useShellExecute
             };
 
             var proc = Process.Start(psi);
@@ -48,13 +48,13 @@ namespace Benchmarks.Utility.Helpers
             return exited && proc.ExitCode == 0;
         }
 
-        public bool Publish(string workingDir, string outputDir, string framework)
+        public bool Publish(string workingDir, string outputDir, string framework, bool useShellExecute = false)
         {
             var psi = new ProcessStartInfo(GetDotnetExecutable())
             {
                 Arguments = $"publish --output \"{outputDir}\"",
                 WorkingDirectory = workingDir,
-                UseShellExecute = false
+                UseShellExecute = useShellExecute
             };
 
             if (!string.IsNullOrEmpty(framework))

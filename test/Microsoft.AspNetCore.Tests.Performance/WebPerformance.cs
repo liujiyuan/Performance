@@ -145,7 +145,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
 
             var testAppStartInfo = DotnetHelper.GetDefaultInstance().BuildStartInfo(testProject, "run");
             var process = Process.Start(testAppStartInfo);
-            Thread.Sleep(1000);
+            Thread.Sleep(5000);
             process.KillTree();
             logger.LogInformation("Run server before updating");
 
@@ -190,9 +190,9 @@ namespace Microsoft.AspNetCore.Tests.Performance
             return new ProcessStartInfo(processPath)
             {
                 UseShellExecute = false,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
+                RedirectStandardInput = false,
+                RedirectStandardOutput = false,
+                RedirectStandardError = false,
                 Arguments = processArguments
             };
         }

@@ -24,6 +24,8 @@ namespace Benchmarks.Utility.Helpers
             Timeout = TimeSpan.FromMinutes(1);
         }
 
+        public bool UseShellExecute { get; set; } = false;
+
         public bool RedirectOutput { get; set; }
 
         public string LastOutput { get; set; }
@@ -41,7 +43,7 @@ namespace Benchmarks.Utility.Helpers
         {
             var startinfo = new ProcessStartInfo(_command, ProcessArguments(arguments))
             {
-                UseShellExecute = false,
+                UseShellExecute = UseShellExecute,
                 RedirectStandardOutput = RedirectOutput,
                 WorkingDirectory = workingDirectory ?? Directory.GetCurrentDirectory()
             };
@@ -51,7 +53,7 @@ namespace Benchmarks.Utility.Helpers
 
             LastExitCode = proc.ExitCode;
 
-            if (RedirectOutput)
+            if (!UseShellExecute && RedirectOutput)
             {
                 LastOutput = proc.StandardOutput.ReadToEnd();
             }
