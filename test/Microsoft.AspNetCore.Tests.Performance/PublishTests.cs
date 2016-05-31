@@ -4,7 +4,6 @@
 using System.IO;
 using Benchmarks.Framework;
 using Benchmarks.Utility.Helpers;
-using Microsoft.Extensions.PlatformAbstractions;
 using Xunit;
 
 namespace Microsoft.AspNetCore.Tests.Performance
@@ -23,7 +22,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
         [BenchmarkVariation("DotnetPublish_StarterMvc", "StarterMvc")]
         public void DotnetPublish(string sampleName)
         {
-            var framework = PlatformServices.Default.Runtime.RuntimeType;
+            var framework = Microsoft.Extensions.Internal.RuntimeEnvironment.RuntimeType;
             var testName = $"{sampleName}.{framework}.{nameof(DotnetPublish)}";
             var testProject = _sampleManager.GetRestoredSample(sampleName);
             Assert.True(testProject != null, $"Fail to set up test project.");

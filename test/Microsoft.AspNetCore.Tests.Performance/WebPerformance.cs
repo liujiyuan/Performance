@@ -12,7 +12,6 @@ using Benchmarks.Utility.Helpers;
 using Benchmarks.Utility.Logging;
 using Microsoft.Extensions.Internal;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 using Xunit;
 using System.Threading;
 
@@ -36,7 +35,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
         [BenchmarkVariation("StarterMvc_DevelopmentScenario", "StarterMvc")]
         public void Development_Startup(string sampleName)
         {
-            var framework = PlatformServices.Default.Runtime.RuntimeType;
+            var framework = Microsoft.Extensions.Internal.RuntimeEnvironment.RuntimeType;
             var testName = $"{sampleName}.{framework}.{nameof(Development_Startup)}";
             var logger = LogUtility.LoggerFactory.CreateLogger(testName);
 
@@ -53,7 +52,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
         [BenchmarkVariation("BasicKestrel_DotNet_ProductionScenario", "BasicKestrel")]
         public void Production_DotNet_Startup(string sampleName)
         {
-            var framework = PlatformServices.Default.Runtime.RuntimeType;
+            var framework = Microsoft.Extensions.Internal.RuntimeEnvironment.RuntimeType;
             var appliationFramework = GetFrameworkName(framework);
             var testName = $"{sampleName}.{framework}.{nameof(Production_DotNet_Startup)}";
             var logger = LogUtility.LoggerFactory.CreateLogger(testName);
@@ -70,7 +69,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
         [BenchmarkVariation("BasicKestrel_DotNet_ProductionScenario", "BasicKestrel")]
         public void GracefulExit(string sampleName)
         {
-            var framework = PlatformServices.Default.Runtime.RuntimeType;
+            var framework = Microsoft.Extensions.Internal.RuntimeEnvironment.RuntimeType;
             var appliationFramework = GetFrameworkName(framework);
             var testName = $"{sampleName}.{framework}.{nameof(GracefulExit)}";
             var logger = LogUtility.LoggerFactory.CreateLogger(testName);
@@ -135,7 +134,7 @@ namespace Microsoft.AspNetCore.Tests.Performance
         [BenchmarkVariation("BasicKestrel_DevelopmentScenario", "BasicKestrel")]
         public void Development_Update_Startup(string sampleName)
         {
-            var framework = PlatformServices.Default.Runtime.RuntimeType;
+            var framework = Microsoft.Extensions.Internal.RuntimeEnvironment.RuntimeType;
             var testName = $"{sampleName}.{framework}.{nameof(Development_Startup)}";
             var logger = LogUtility.LoggerFactory.CreateLogger(testName);
 

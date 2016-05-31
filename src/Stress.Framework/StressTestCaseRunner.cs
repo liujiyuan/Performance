@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.PlatformAbstractions;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 using XunitDiagnosticMessage = Xunit.DiagnosticMessage;
@@ -130,8 +129,7 @@ namespace Stress.Framework
 
         private static string GetFramework()
         {
-            var env = PlatformServices.Default.Runtime;
-            return "DNX." + env.RuntimeType;
+            return "DNX." + Microsoft.Extensions.Internal.RuntimeEnvironment.RuntimeType;
         }
 
         private static string GetMachineName()

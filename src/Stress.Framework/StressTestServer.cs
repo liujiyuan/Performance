@@ -9,7 +9,6 @@ using Benchmarks.Utility.Helpers;
 using Benchmarks.Utility.Logging;
 using Microsoft.AspNetCore.Server.Testing;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Stress.Framework
 {
@@ -40,7 +39,7 @@ namespace Stress.Framework
 
         public async Task<StressTestServerStartResult> StartAsync()
         {
-            var framework = PlatformServices.Default.Runtime.RuntimeType;
+            var framework = Microsoft.Extensions.Internal.RuntimeEnvironment.RuntimeType;
             var fullTestName = $"{_testMethodName}.{_testName}.{framework}";
             fullTestName = fullTestName.Replace('_', '.');
 
@@ -69,7 +68,7 @@ namespace Stress.Framework
             var deploymentResult = _applicationDeployer.Deploy();
             baseAddress = deploymentResult.ApplicationBaseUri;
 
-            _logger.LogInformation($"Test project is set up at {deploymentResult.WebRootLocation}");
+            _logger.LogInformation($"Test project is set up at {deploymentResult.ContentRoot}");
 
             var result = new StressTestServerStartResult
             {

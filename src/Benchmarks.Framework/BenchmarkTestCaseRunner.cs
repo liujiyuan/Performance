@@ -3,7 +3,6 @@
 
 using Benchmarks.Framework.BenchmarkPersistence;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -127,8 +126,7 @@ namespace Benchmarks.Framework
 
         private static string GetFramework()
         {
-            var env = PlatformServices.Default.Runtime;
-            return "DNX." + env.RuntimeType;
+            return "DNX." + Microsoft.Extensions.Internal.RuntimeEnvironment.RuntimeType;
         }
 
         private static string GetMachineName()

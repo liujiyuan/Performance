@@ -22,6 +22,10 @@
       "type": "build",
       "version": "1.0.0-*"
     },
+    "Microsoft.Extensions.RuntimeEnvironment.Sources": {
+      "version": "1.0.0-*",
+      "type": "build"
+    },
     "xunit": "2.1.0",
     "dotnet-test-xunit": "1.0.0-*"
   },

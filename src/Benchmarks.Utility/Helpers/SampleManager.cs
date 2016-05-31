@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Benchmarks.Utility.Helpers
@@ -116,7 +117,7 @@ namespace Benchmarks.Utility.Helpers
                 Directory.CreateDirectory(target);
 
                 string copyCommand, copySampleParameters, copyNugetConfigParameters;
-                if (PlatformServices.Default.Runtime.OperatingSystem == "Windows")
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
                     copyCommand = "robocopy";
                     copySampleParameters = $"\"{SourcePath}\" \"{target}\" /E /S /XD node_modules /XF project.lock.json";
