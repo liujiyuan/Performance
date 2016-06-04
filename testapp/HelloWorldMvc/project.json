@@ -9,7 +9,7 @@
         "wwwroot"
       ]
     }
-  },
+  },  
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
@@ -35,6 +35,13 @@
   },
   "commands": {
     "web": "HelloWorldMvc"
+  },
+  "publishOptions": {
+    "include": [
+      "Views",
+      "web.config",
+      "wwwroot"
+    ]
   },
   "runtimeOptions": {
     "configProperties": {

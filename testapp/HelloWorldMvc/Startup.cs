@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.IO;
 using System.Runtime;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,6 +21,7 @@ namespace HelloWorldMvc
 
         public void Configure(IApplicationBuilder app)
         {
+            //app.UseDeveloperExceptionPage();
             app.UseMvcWithDefaultRoute();
         }
 
@@ -31,6 +33,7 @@ namespace HelloWorldMvc
                 .Build();
                 
             var host = new WebHostBuilder()
+                .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseKestrel()
                 .UseUrls("http://+:5000")
                 .UseConfiguration(config)

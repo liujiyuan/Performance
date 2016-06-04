@@ -34,8 +34,9 @@ namespace Microsoft.AspNetCore.Test.Perf.WebFx.Apps.HelloWorld
                 .AddCommandLine(args)
                 .Build();
                 
-            var host = new WebHostBuilder()
+            var host = new WebHostBuilder()                 
                 .UseKestrel()
+                .UseUrls("http://+:5000")
                 .UseConfiguration(config)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
