@@ -1,3 +1,8 @@
+param (
+    $targetApp = "HelloWorldMvc",
+    $framework = "netcoreapp1.0"
+)
+
 $repoRoot = $(git rev-parse --show-toplevel)
 
 ## run "build pre-clean" to ensure we have the lastest dotnet
@@ -5,11 +10,6 @@ $repoRoot = $(git rev-parse --show-toplevel)
 
 # Set targetApp name and workspace
 & (Join-Path $PSScriptRoot SetEnv.ps1)
-
-if (! (Test-Path variable:global:targetApp)) {
-    Write-Error "Target application is not set"
-    Exit -1
-}
 
 if (! (Test-Path variable:global:workspace)) {
     Write-Error "Workspace dir is not set"
@@ -26,7 +26,7 @@ if (! (Test-Path $global:workspace)) {
     Exit -1
 }
 
-$appLocation = [System.IO.Path]::Combine($repoRoot, "testapp" , $global:targetApp)
+$appLocation = [System.IO.Path]::Combine($repoRoot, "testapp" , $targetApp)
 
 if (! (Test-Path $appLocation) )
 {
@@ -44,5 +44,5 @@ if (Test-Path $publishLocation) {
     Remove-Item $publishLocation -Force -Recurse
 }
 
-dotnet publish -o (Join-Path $publishLocation ($global:targetApp)) --configuration Release
+dotnet publish -o (Join-Path $publishLocation ($targetApp)) --configuration Release -f $framework
 popd

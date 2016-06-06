@@ -57,7 +57,7 @@ fi
 
 coldSitePort=5001
 warmSitePort=5002
-warmNoCachePort = 5003
+warmNoCachePort=5003
 
 publishLocation="${workspace}/publish/${targetApp}"
 coldSiteLocation="${workspace}/publish/${targetApp}Cold"

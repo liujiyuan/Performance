@@ -1,7 +1,14 @@
 ﻿param (
+    $targetApp = "HelloWorldMvc",
+
+    $framework = "netcoreapp1.0",
+
     ## If -PerfView option is on, PerfView.exe needs to be in the tools folder specified by $global:toolsPath
     [switch]
-    $PerfView
+    $PerfView,
+
+    [switch]
+    $wpr
 )
 
 ## functions
@@ -33,17 +40,26 @@ function RunScenario {
 
     $timer = [System.Diagnostics.Stopwatch]::StartNew()
 
+    $profileTimestamp = Get-Date -Format yyyy-MM-dd-HH-mm-ss
+    $traceFile = Join-Path $outputFolder "${profileTimestamp}.etl"
     if ($PerfView) {
-        $PerfViewTimestamp = Get-Date -Format yyyy-MM-dd-HH-mm-ss
-        $perfviewStartLog = Join-Path $outputFolder "${PerfViewTimestamp}.start.log"
-        $perfviewTraceFile = Join-Path $outputFolder "${PerfViewTimestamp}.etl"
-        & $perfViewPath -AcceptEULA -NoGui -BufferSizeMB:1024 -clrEvents=default+GCSampledObjectAllocationHigh -KernelEvents=Default+FileIO+FileIOInit+ThreadTime -LogFile:$perfviewStartLog start $perfviewTraceFile
+        $perfviewStartLog = Join-Path $outputFolder "${profileTimestamp}.start.log"
+        & $perfViewPath -AcceptEULA -NoGui -BufferSizeMB:1024 -clrEvents=default+GCSampledObjectAllocationHigh -KernelEvents=Default+FileIO+FileIOInit+ThreadTime -LogFile:$perfviewStartLog start $traceFile
+    }
+    elseif ($wpr) {
+        & $wprPath -start DotNET
     }
 
     try {
-        ## Provide fullpath to AppDLL
-        $appDllLocation = Join-Path $appLocation "${global:targetApp}.dll"
-        $process = Start-Process "dotnet" -ArgumentList "$appDllLocation urls=http://+:$port/" -PassThru -WorkingDirectory $appLocation
+        if ($framework.ToLower() -eq 'net451') {
+            $appExeLocation = Join-Path $appLocation "${targetApp}.exe"
+            $process = Start-Process $appExeLocation -ArgumentList "urls=http://+:$port/" -PassThru -WorkingDirectory $appLocation
+        }
+        else {
+            ## Provide fullpath to AppDLL
+            $appDllLocation = Join-Path $appLocation "${targetApp}.dll"
+            $process = Start-Process "dotnet" -ArgumentList "$appDllLocation urls=http://+:$port/" -PassThru -WorkingDirectory $appLocation
+        }
 
         Write-Host Process started with PID $process.Id
 
@@ -69,8 +85,11 @@ function RunScenario {
     }
     finally {
         if ($PerfView) {
-            $perfviewStopLog = Join-Path $outputFolder "${PerfViewTimestamp}.stop.log"
+            $perfviewStopLog = Join-Path $outputFolder "${profileTimestamp}.stop.log"
             & $perfViewPath -AcceptEULA -LogFile:$perfviewStopLog -Zip:true -NoView -NoNGenRundown stop
+        }
+        elseif ($wpr) {
+            & $wprPath -stop $traceFile
         }
     }
 }
@@ -87,12 +106,14 @@ $timeoutPeriod = 1500
 
 $curlPath = EnsureTool "curl.exe" "Ensure you have curl on the path"
 if ($PerfView) {
-    $perfViewPath = EnsureTool "PerfView.exe" "Ensure you have perfview on the path or set $env:PERFTOOLS environment variable"
+    $perfViewPath = EnsureTool "PerfView.exe" "Ensure you have perfview on the path"
+}
+elseif ($wpr) {
+    $wprPath = EnsureTool "wpr" "Ensure you have wpr on the path"
 }
 
-if (! (Test-Path variable:global:targetApp)) {
-    Write-Error "Target application is not set"
-    Exit -1
+if (($PerfView -or $wpr) -and !([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "Please run profiling in elevated mode"
 }
 
 if (! (Test-Path variable:global:workspace)) {
@@ -122,10 +143,10 @@ $coldSitePort = 5001
 $warmSitePort = 5002
 $warmNoCachePort = 5003
 
-$publishLocation = [System.IO.Path]::Combine($global:workspace, "publish", $global:targetApp)
-$coldSiteLocation = [System.IO.Path]::Combine($global:workspace, "publish", $global:targetApp + "Cold")
-$warmSiteLocation = [System.IO.Path]::Combine($global:workspace, "publish", $global:targetApp + "WarmPkgCache")
-$warmNoCacheLocation = [System.IO.Path]::Combine($global:workspace, "publish", $global:targetApp + "WarmNoPkgCache")
+$publishLocation = [System.IO.Path]::Combine($global:workspace, "publish", $targetApp)
+$coldSiteLocation = [System.IO.Path]::Combine($global:workspace, "publish", $targetApp + "Cold")
+$warmSiteLocation = [System.IO.Path]::Combine($global:workspace, "publish", $targetApp + "WarmPkgCache")
+$warmNoCacheLocation = [System.IO.Path]::Combine($global:workspace, "publish", $targetApp + "WarmNoPkgCache")
 
 if ((! (Test-Path $publishLocation)) -and (! (Test-Path $coldSiteLocation))) {
     Write-Error "App does not exist in ${publishLocation}, did you run SetupPerfApp.ps1?"
@@ -152,13 +173,13 @@ try {
 
     $coldPID = RunScenario -appLocation $coldSiteLocation -port $coldSitePort
     [System.IO.File]::AppendAllText("$global:outputFile", ",", [System.Text.Encoding]::Unicode)
-    if ($PerfView) {
+    if ($PerfView -or $wpr) {
         Start-Sleep 120    # It takes a while to process the profile even after command finishs
     }
 
     $warmPID = RunScenario -appLocation $warmSiteLocation -port $warmSitePort
     [System.IO.File]::AppendAllText("$global:outputFile", ",", [System.Text.Encoding]::Unicode)
-    if ($PerfView) {
+    if ($PerfView -or $wpr) {
         Start-Sleep 120    # It takes a while to process the profile even after command finishs
     }
 
