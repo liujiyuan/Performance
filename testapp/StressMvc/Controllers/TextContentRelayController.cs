@@ -16,21 +16,38 @@ namespace StarterMvc
     /// </summary>
     public class TextContentRelayController : Controller
     {
+
+        public static bool UseSingletonClient = true;
+
+        private static HttpClient singletonTestClient = new HttpClient();
+        private List<IDisposable> _objsToDispose = new List<IDisposable>(); //Objects to be desposed when the request finishes
+        bool disposed = false;
+
         [HttpGet]
         public async Task<IActionResult> GetContent(int size, int timeoutMs)
         {
             var cancelTokeSource = new CancellationTokenSource();
-            HttpClient testClient = new HttpClient();
             cancelTokeSource.CancelAfter(timeoutMs);
             this.HttpContext.RequestAborted.Register(CancelCurrentRequest, cancelTokeSource);
             string nextUrl = this.Request.Scheme + "://" + this.Request.Host.ToString() + String.Format("/TextContent/GetContent?size={0}", size);
             try
             {
+                var testClient = GetHttpClient();
+                if (!UseSingletonClient)
+                    _objsToDispose.Add(testClient);
                 var response = await testClient.GetAsync(nextUrl, cancelTokeSource.Token);
+                _objsToDispose.Add(response);
                 if (response.IsSuccessStatusCode)
-                    return new FileStreamResult(await response.Content.ReadAsStreamAsync(), "text/plain");
+                {
+                    var tmpStream = await response.Content.ReadAsStreamAsync();
+                    _objsToDispose.Add(tmpStream);
+                    return new FileStreamResult(tmpStream, "text/plain");
+                }
                 else
+                {
                     return new StatusCodeResult((int)response.StatusCode);
+                }
+
             }
             catch (TaskCanceledException)
             {
@@ -40,6 +57,7 @@ namespace StarterMvc
             {
                 //Ignore the Http request exception
             }
+
             cancelTokeSource.Dispose();
             //Since we don't care about business logic, let's always return success even if the request is cancelled
             //So client expects and verifies the same status code
@@ -57,7 +75,6 @@ namespace StarterMvc
         {
             var cancelTokeSource = new CancellationTokenSource();
 
-            HttpClient testClient = new HttpClient();
             HttpContent newContent = await GetNewRelayPostRequestContent();
 
             string nextUrl = this.Request.Scheme + "://" + this.Request.Host.ToString() + "/TextContent/AddContent" + this.Request.QueryString;
@@ -66,7 +83,11 @@ namespace StarterMvc
             this.HttpContext.RequestAborted.Register(CancelCurrentRequest, cancelTokeSource);
             try
             {
+                var testClient = GetHttpClient();
+                if (!UseSingletonClient)
+                    _objsToDispose.Add(testClient);
                 var response = await testClient.PostAsync(nextUrl, newContent, cancelTokeSource.Token);
+                _objsToDispose.Add(response);
                 if (response.IsSuccessStatusCode)
                 {
                     return new StatusCodeResult(201);
@@ -84,6 +105,7 @@ namespace StarterMvc
             {
                 //Ignore the Http request exception
             }
+
             cancelTokeSource.Dispose();
             //Since we don't care about business logic, let's always return success even if the request is cancelled
             //So client expects and verifies the same status code
@@ -94,7 +116,6 @@ namespace StarterMvc
         public async Task<IActionResult> GetContentChained(int size, int timeoutMs, int numReqChained)
         {
             var cancelTokeSource = new CancellationTokenSource();
-            HttpClient testClient = new HttpClient();
             cancelTokeSource.CancelAfter(timeoutMs);
             this.HttpContext.RequestAborted.Register(CancelCurrentRequest, cancelTokeSource);
             string nextUrl = this.Request.Scheme + "://" + this.Request.Host.ToString();
@@ -106,13 +127,24 @@ namespace StarterMvc
             {
                 nextUrl = nextUrl + String.Format("/TextContent/GetContent?size={0}", size);
             }
+
             try
             {
+                var testClient = GetHttpClient();
+                if (!UseSingletonClient)
+                    _objsToDispose.Add(testClient);
                 var response = await testClient.GetAsync(nextUrl, cancelTokeSource.Token);
+                _objsToDispose.Add(response);
                 if (response.IsSuccessStatusCode)
+                {
+                    var tmpStream = await response.Content.ReadAsStreamAsync();
+                    _objsToDispose.Add(tmpStream);
                     return new FileStreamResult(await response.Content.ReadAsStreamAsync(), "text/plain");
+                }
                 else
+                {
                     return new StatusCodeResult((int)response.StatusCode);
+                }
             }
             catch (TaskCanceledException)
             {
@@ -122,6 +154,7 @@ namespace StarterMvc
             {
                 //Ignore the Http request exception
             }
+
             cancelTokeSource.Dispose();
             //Since we don't care about business logic, let's always return success even if the request is cancelled
             //So client expects and verifies the same status code
@@ -140,7 +173,6 @@ namespace StarterMvc
         public async Task<IActionResult> AddContentChained(string content, int timeoutMs, int numReqChained)
         {
             var cancelTokeSource = new CancellationTokenSource();
-            HttpClient testClient = new HttpClient();
             cancelTokeSource.CancelAfter(timeoutMs);
             this.HttpContext.RequestAborted.Register(CancelCurrentRequest, cancelTokeSource);
             string nextUrl = this.Request.Scheme + "://" + this.Request.Host.ToString();
@@ -162,9 +194,14 @@ namespace StarterMvc
             }
             var newContent = await GetNewRelayPostRequestContent();
             cancelTokeSource.CancelAfter(timeoutMs);
+
             try
             {
+                var testClient = GetHttpClient();
+                if (!UseSingletonClient)
+                    _objsToDispose.Add(testClient);
                 var response = await testClient.PostAsync(nextUrl, newContent, cancelTokeSource.Token);
+                _objsToDispose.Add(response);
                 if (response.IsSuccessStatusCode)
                 {
                     return new StatusCodeResult(201);
@@ -187,6 +224,24 @@ namespace StarterMvc
             //So client expects and verifies the same status code
             return new StatusCodeResult(201);
         }
+
+        #region DISPOSE
+        protected override void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+            if (disposing)
+            {
+                foreach (var tmpObj in _objsToDispose)
+                {
+                    tmpObj.Dispose();
+                }
+                _objsToDispose.Clear();
+            }
+            disposed = true;
+            base.Dispose(disposing);
+        }
+        #endregion DISPOSE
 
         #region HELPERS
         private async Task<HttpContent> GetNewRelayPostRequestContent()
@@ -239,6 +294,15 @@ namespace StarterMvc
             {
                 //Suppress any error on cancellation
             }
+        }
+        private HttpClient GetHttpClient()
+        {
+            HttpClient testClient = null;
+            if (UseSingletonClient)
+                testClient = singletonTestClient;
+            else
+                testClient = new HttpClient();
+            return testClient;
         }
         #endregion HELPERS
     }

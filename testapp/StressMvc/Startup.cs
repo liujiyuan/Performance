@@ -92,6 +92,8 @@ namespace StarterMvc
                     name: "api",
                     template: "{controller}/{id?}");
             });
+
+            TextContentRelayController.UseSingletonClient = Boolean.Parse(Configuration["TextContentRelayControllerOptions:UseSingletonClient"]);
         }
 
         public static void Main(string[] args)
