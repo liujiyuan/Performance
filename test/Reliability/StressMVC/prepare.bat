@@ -58,15 +58,15 @@ SET TESTDATA_CONTENT=%TESTDATA_CONTENT%+%TESTDATA_CONTENT%
 GOTO :PREPARE_INITDATA
 
 REM generate test data file
-REM About 4KB for small file, and 20MB for large file
-REM For multipart form large data, it's 5 sections with about 4MB on average for each section; for small data, it's 100 sections with about 40KB on average for each section.
+REM About 40KB for small file, and 4MB for large file (form value threshold on server is 4MB)
+REM For multipart form large data, it's 5 sections with 400K-4MB for each section; for small data, it's 100 sections with about 1B-80KB for each section.
 :START_GEN
 CALL :GenerateTestTextData 10 %TEST_DATA_SMALL_FILE%
-CALL :GenerateTestTextData 5000 %TEST_DATA_LARGE_FILE%
+CALL :GenerateTestTextData 1000 %TEST_DATA_LARGE_FILE%
 CALL :GenerateTestDataJson 10 %TEST_JSON_SMALL_FILE%
-CALL :GenerateTestDataJson 5000 %TEST_JSON_LARGE_FILE%
-CALL :GenerateTestDataMultiPartForm 5 1000 %TEST_MULTIPART_FORM_FILE%
-CALL :GenerateTestDataMultiPartForm 100 10 %TEST_MULTIPART_FORM_SMALL_FILE%
+CALL :GenerateTestDataJson 1000 %TEST_JSON_LARGE_FILE%
+CALL :GenerateTestDataMultiPartForm 5 100 1000 %TEST_MULTIPART_FORM_FILE%
+CALL :GenerateTestDataMultiPartForm 100 0 20 %TEST_MULTIPART_FORM_SMALL_FILE%
 
 GOTO :EOF
 
@@ -122,23 +122,23 @@ ECHO ] >> %2
 GOTO :EOF
 
 
-:GenerateTestDataMultiPartForm REM %1=LOOPCOUNT %2=BLOCKLOOPCOUNT %3=FILENAME
+:GenerateTestDataMultiPartForm REM %1=LOOPCOUNT %2=MINBLOCKLOOPCOUNT %3=MAXBLOCKLOOPCOUNT %4=FILENAME
 
 SET /A LOOPIDX=0
 SET /A LOOPCOUNT=%1
 :GENFILELOOP_MULTIPART_FORM
-ECHO --%NEW_MULTIPART_FORM_BOUNDARY%>>%3
+ECHO --%NEW_MULTIPART_FORM_BOUNDARY%>>%4
 if %LOOPIDX%==0 (
-    ECHO Content-Disposition: form-data; name="content">> %3
+    ECHO Content-Disposition: form-data; name="content">> %4
 ) else (
-    ECHO Content-Disposition: form-data; name="content%LOOPIDX%">> %3
+    ECHO Content-Disposition: form-data; name="content%LOOPIDX%">> %4
 )
-ECHO.>> %3
+ECHO.>> %4
 
 SET /A BLOCKLOOPIDX=0
-SET /A BLOCKLOOPCOUNT=%RANDOM% * %2 * 2 / 32768 + 1
+SET /A BLOCKLOOPCOUNT=%2 + %RANDOM% * (%3 - %2) / 32768 + 1
 :GEN_SECTIONBLOCK
-ECHO %TESTDATA_CONTENT% >>%3
+ECHO %TESTDATA_CONTENT% >>%4
 SET /A BLOCKLOOPIDX=BLOCKLOOPIDX+1
 if %BLOCKLOOPIDX% GEQ %BLOCKLOOPCOUNT% goto :END_GEN_SECTIONBLOCK
 goto :GEN_SECTIONBLOCK
@@ -149,7 +149,7 @@ if %LOOPIDX% GEQ %LOOPCOUNT% goto :END_GEN_MULTIPART_FORM
 GOTO :GENFILELOOP_MULTIPART_FORM
 
 :END_GEN_MULTIPART_FORM
-ECHO --%NEW_MULTIPART_FORM_BOUNDARY%-->> %3
+ECHO --%NEW_MULTIPART_FORM_BOUNDARY%-->> %4
 GOTO :EOF
 
 
