@@ -1,14 +1,8 @@
 ﻿param (
-    $targetApp = "HelloWorldMvc",
-
-    $framework = "netcoreapp1.0",
-
-    ## If -PerfView option is on, PerfView.exe needs to be in the tools folder specified by $global:toolsPath
-    [switch]
-    $PerfView,
-
-    [switch]
-    $wpr
+    [Alias("t")]$targetApp = "HelloWorldMvc",
+    [Alias("f")]$framework = "netcoreapp1.0",
+    [switch]$PerfView,
+    [switch]$wpr
 )
 
 ## functions
@@ -32,7 +26,7 @@ function EnsureTool {
 function RunScenario {
     param($appLocation, $port)
 
-    $portQuery = netstat -an | findstr ":$port "
+    $portQuery = netstat -an | findstr ":$port[^0-9:]"
     if (![System.String]::IsNullOrEmpty($portQuery)) {
         Write-Error "$port is in use."
         Exit -1
@@ -66,10 +60,18 @@ function RunScenario {
         $timer.Start()
         $success = $false
         ForEach ($ping in 1..$timeoutPeriod) {
-            $r = &($curlPath) -s -f "http://localhost:$port"
-            if (![System.String]::IsNullOrEmpty($r)) {
+            $status = &($curlPath) --write-out '%{http_code}' --silent --output /dev/null -f "http://localhost:$port"
+            $status = [System.Int32]::Parse($status)
+            if ($status -eq 0) {
+                ## somehow service is not started yet, wait
+            }
+            elseif ($status -eq 200) {
                 $success = $true
                 break
+            }
+            else {
+                Write-Host "Unexpected HTTP Status: ${status}"
+                Exit -1
             }
             Start-Sleep -s $curlInterval | Out-Null
         }

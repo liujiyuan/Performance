@@ -1,6 +1,6 @@
 param (
-    $targetApp = "HelloWorldMvc",
-    $framework = "netcoreapp1.0"
+    [Alias("t")]$targetApp = "HelloWorldMvc",
+    [Alias("f")]$framework = "netcoreapp1.0"
 )
 
 $repoRoot = $(git rev-parse --show-toplevel)
