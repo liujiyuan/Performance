@@ -42,4 +42,4 @@ If you'd like to run it manually, you can:
 If you want the client to hit the Baseline project, start the website and obtain the URL where it's exposed. If, for example, your baseline website is published under `http://localhost:28070/` you can then run the client with the following command:
   1. Go to folder `MultipartPOSTClient`
   2. Execute: `dotnet restore`
-  3. Execute: `dotnet run http://localhost:28070/`
+  3. Execute: `dotnet run -u http://localhost:28070/`

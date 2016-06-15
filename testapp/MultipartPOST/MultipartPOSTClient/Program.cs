@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.CommandLineUtils;
 
 namespace MultipartPostClient
 {
@@ -17,66 +18,127 @@ namespace MultipartPostClient
         private const long OneGigabyte = OneMegabyte * 1024;
 
         private static string _apiEndpoint = "http://localhost:5000/";
+        private static int _iterations = 10;
 
         private static readonly Random Random = new Random(DateTime.UtcNow.Millisecond);
 
-        public static void Main(string[] args)
+        public static int Main(string[] args)
         {
-            if (args?.Length > 0)
-            {
-                _apiEndpoint = args[0];
-            }
-
             var bits = IntPtr.Size * 8;
             PrintLine($"Running in { bits } bits");
-            PrintLine($"Target endpoint is { _apiEndpoint }");
 
-            PrintLine("Start");
-            try
+            var app = new CommandLineApplication
             {
-                var program = new Program();
-                program.WarmupConnection().Wait();
+                Name = "Multipart POST Client",
+                Description = "Client application to test large multipart POST against ASP.NET"
+            };
+            app.HelpOption("-h|--help");
+            var serverUriOption = app.Option("--uri|-u", $"The URI to target, defaults to {_apiEndpoint}", CommandOptionType.SingleValue);
+            var iterationCountOption = app.Option("--iterations|-i", $"The amount of sequential times to execute the test, defaults to {_iterations}, must be a positive int", CommandOptionType.SingleValue);
+            var veryLargeFilesOnlyOption = app.Option("--largefilestest|-l", "Indicates to run exclusively the Large Files test. This test doesn't run in unless specified by this flag", CommandOptionType.NoValue);
 
-                for (var i = 1; i < 10; ++i)
+            app.OnExecute(() =>
+            {
+                if (serverUriOption.HasValue())
                 {
-                    PrintLine($"Iteration { i }");
-
-                    // Scenario 1: Small text part + large text part: 10MB/100MB/1GB [5:3:1]
-                    PrintLine("Scenario 1");
-                    program.SendLoad(program.Scenario1FileContentGenerator).Wait();
-
-                    // Scenario 2: Small text part + large binary part: 10MB/100MB/1GB [5:3:1]
-                    PrintLine("Scenario 2");
-                    program.SendLoad(program.Scenario2FileContentGenerator).Wait();
-
-                    if (bits >= 64)
+                    var serverUriString = serverUriOption.Value();
+                    if (serverUriString == null)
                     {
-                        // Scenario 3: A number of large parts: text/binary [2:1] totalling more than 4GB (to test 32-bit limit)
-                        PrintLine("Scenario 3");
-                        program.SendLoad(program.Scenario3FileContentGenerator, 4).Wait();
+                        app.ShowHelp();
+                        return 1;
+                    }
+                    _apiEndpoint = serverUriString;
+                }
+                if (iterationCountOption.HasValue())
+                {
+                    if (!int.TryParse(iterationCountOption.Value(), out _iterations) || _iterations < 0)
+                    {
+                        app.ShowHelp();
+                        return 2;
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine(e.Message);
-            }
-            PrintLine("Done.");
-        }
-
-        private async Task WarmupConnection()
-        {
-            PrintLine("Hitting home");
-            using (var client = new HttpClient())
-            {
-                var response = await client.GetAsync(_apiEndpoint);
-                if (!response.IsSuccessStatusCode)
+                var runLargeFilesOnly = veryLargeFilesOnlyOption.HasValue();
+                PrintLine($"Target endpoint is { _apiEndpoint } with { _iterations } iterations");
+                PrintLine("Start");
+                try
                 {
-                    var errorMessage = "Request failed: " + (int) response.StatusCode + " " + response.ReasonPhrase;
-                    throw new Exception(errorMessage + Environment.NewLine + await response.Content.ReadAsStringAsync());
+                    var program = new Program();
+
+                    if (runLargeFilesOnly)
+                    {
+                        if (bits >= 64)
+                        {
+                            for (var i = 1; i < _iterations; ++i)
+                            {
+                                // Large file scenario: Small text part + 1024 large parts (2 MB each) of text/binary [2:1]
+                                program.SendLoad((fileName) =>
+                                    {
+                                        return program.TwoToOnceChanceOfTextVersusBinary(fileName, 2 * OneMegabyte);
+                                    }, 1024).Wait();
+                            }
+                        }
+                        else
+                        {
+                            // This message isn't entirely true, we could be running in 48-bits and things would be just as groovy
+                            Console.Error.WriteLine("The Large Files test requires the binary to be running in 64-bit or higher addressable memory space");
+                        }
+                    }
+                    else
+                    {
+                        for (var i = 1; i < _iterations; ++i)
+                        {
+                            PrintLine($"Iteration { i }");
+
+                            // Scenario 1: Small text part + large text part: 10MB/100MB/1GB [5:3:1]
+                            PrintLine("Scenario 1");
+                            program.SendLoad((fileName) =>
+                                {
+                                    return program.FiveThreeOneChanceOfTenMegHundredMegOneGig(fileName, DataGenerationType.Text);
+                                }).Wait();
+
+                            // Scenario 2: Small text part + large binary part: 10MB/100MB/1GB [5:3:1]
+                            PrintLine("Scenario 2");
+                            program.SendLoad((fileName) =>
+                                {
+                                    return program.FiveThreeOneChanceOfTenMegHundredMegOneGig(fileName, DataGenerationType.Binary);
+                                }).Wait();
+
+                            if (bits >= 64)
+                            {
+                                // Scenario 3: A number of large parts: text/binary [2:1] totalling more than 4GB (to test 32-bit limit)
+                                PrintLine("Scenario 3");
+                                program.SendLoad((fileName) =>
+                                    {
+                                        return program.TwoToOnceChanceOfTextVersusBinary(fileName, OneGigabyte);
+                                    }, 4).Wait();
+                            }
+                        }
+                    }
                 }
-            }
-            PrintLine("Success");
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine($"{e.GetType()} {e.Message}");
+                    Console.Error.WriteLine($"{e.StackTrace}");
+                    if (e is AggregateException)
+                    {
+                        var a = (AggregateException) e;
+                        foreach (var ie in a.InnerExceptions)
+                        {
+                            Console.Error.WriteLine($"{ie.GetType()} {ie.Message}");
+                            Console.Error.WriteLine($"{ie.StackTrace}");
+                        }
+                    }
+                    else if (e.InnerException != null)
+                    {
+                        Console.Error.WriteLine($"{e.InnerException.GetType()} {e.InnerException.Message}");
+                        Console.Error.WriteLine($"{e.InnerException.StackTrace}");
+                    }
+                }
+                PrintLine("Done.");
+                return 0;
+            });
+
+            return app.Execute(args);
         }
 
         public async Task SendLoad(Func<string, RandomDataStreamContent> contentGenerator, int filesToAdd = 1)
@@ -102,24 +164,6 @@ namespace MultipartPostClient
                     }
                 }
             }
-        }
-
-        // Scenario 1: Small text part + large text part: 10MB/100MB/1GB [5:3:1]
-        private RandomDataStreamContent Scenario1FileContentGenerator(string fileName)
-        {
-            return FiveThreeOneChanceOfTenMegHundredMegOneGig(fileName, DataGenerationType.Text);
-        }
-
-        // Scenario 2: Small text part + large binary part: 10MB/100MB/1GB [5:3:1]
-        private RandomDataStreamContent Scenario2FileContentGenerator(string fileName)
-        {
-            return FiveThreeOneChanceOfTenMegHundredMegOneGig(fileName, DataGenerationType.Binary);
-        }
-
-        // Scenario 3: A number of large parts: text/binary [2:1] totalling more than 4GB (to test 32-bit limit)
-        private RandomDataStreamContent Scenario3FileContentGenerator(string fileName)
-        {
-            return TwoToOnceChanceOfTextVersusBinary(fileName, OneGigabyte);
         }
 
         // 10MB/100MB/1GB [5:3:1]
@@ -167,7 +211,7 @@ namespace MultipartPostClient
 
         private RandomDataStreamContent GenerateFileContent(string fileName, long fileSize, DataGenerationType type)
         {
-            var fileContent = new RandomDataStreamContent(type, fileSize);
+            var fileContent = new RandomDataStreamContent(type, fileSize, fileName);
             fileContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
             {
                 Name = "\"files\"",

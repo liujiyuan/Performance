@@ -6,18 +6,44 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Server.Kestrel;
 
 namespace MultipartPost
 {
     public class Startup
     {
+        private const long OneByte = 1;
+        private const long OneKilobyte = OneByte * 1024;
+        private const long OneMegabyte = OneKilobyte * 1024;
+        private const long OneGigabyte = OneMegabyte * 1024;
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = OneGigabyte; //let's enable uploads of up to 1 GB per part
+            });
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.MaxRequestBufferSize = 4 * OneKilobyte; //let's customize the max buffer size per request
+            });
             services.AddMvc();
         }
 
         public void Configure(IApplicationBuilder app)
-        {            
+        {
+            app.Use(next => async (context) =>
+            {
+                try
+                {
+                    await next(context);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                    throw;
+                }
+            });
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

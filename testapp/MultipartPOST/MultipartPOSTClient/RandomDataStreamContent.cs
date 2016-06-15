@@ -6,8 +6,6 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
-using System.Security.Authentication.ExtendedProtection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,24 +40,41 @@ namespace MultipartPostClient
 
         private sealed class RandomUtf8TextDataGenerator : IDataGenerator
         {
-            private readonly byte[] _textSeed;
+            private static readonly byte[] _textSeed;
             private int _currentByte;
+
+            static RandomUtf8TextDataGenerator()
+            {
+                _textSeed =
+                    Encoding.UTF8.GetBytes(
+                        "I'm afraid I still don't understand, sir.\r\n Mr. Crusher, ready a collision course with the Borg ship.\r\n Congratulations - you just destroyed the Enterprise.\r\n They were just sucked into space.\r\n Smooth as an android's bottom, eh, Data?\r\n Our neural pathways have become accustomed to your sensory input patterns.\r\n That might've been one of the shortest assignments in the history of Starfleet.\r\n You bet I'm agitated!\r\n I may be surrounded by insanity, but I am not insane.\r\n Some days you get the bear, and some days the bear gets you.\r\n Maybe if we felt any human loss as keenly as we feel one of those close to us, human history would be far less bloody.\r\n This is not about revenge. This is about justice.\r\n Is it my imagination, or have tempers become a little frayed on the ship lately?\r\n Well, I'll say this for him - he's sure of himself.\r\n Damage report!\r\n I recommend you don't fire until you're within 40,000 kilometers.\r\n Well, that's certainly good to know.\r\n The game's not big enough unless it scares you a little.\r\n Besides, you look good in a dress.\r\n What's a knock-out like you doing in a computer-generated gin joint like this?\r\n And blowing into maximum warp speed, you appeared for an instant to be in two places at once.\r\n");
+            }
             public RandomUtf8TextDataGenerator()
             {
 
-                _textSeed =
-                    Encoding.UTF8.GetBytes(
-                        "I'm afraid I still don't understand, sir. Mr. Crusher, ready a collision course with the Borg ship. Congratulations - you just destroyed the Enterprise. They were just sucked into space. Smooth as an android's bottom, eh, Data? Our neural pathways have become accustomed to your sensory input patterns. That might've been one of the shortest assignments in the history of Starfleet. You bet I'm agitated! I may be surrounded by insanity, but I am not insane. Some days you get the bear, and some days the bear gets you. Maybe if we felt any human loss as keenly as we feel one of those close to us, human history would be far less bloody. This is not about revenge. This is about justice. Is it my imagination, or have tempers become a little frayed on the ship lately? Well, I'll say this for him - he's sure of himself. Damage report! I recommend you don't fire until you're within 40,000 kilometers. Well, that's certainly good to know. The game's not big enough unless it scares you a little. Besides, you look good in a dress. What's a knock-out like you doing in a computer-generated gin joint like this? And blowing into maximum warp speed, you appeared for an instant to be in two places at once.");
                 _currentByte = 0;
             }
             public int Read(byte[] buffer, int offset, int count)
             {
-                for (var iter = 0; iter < buffer.Length; ++iter)
+                var requestedBytes = count;
+                try
                 {
-                    buffer[iter] = _textSeed[_currentByte];
-                    _currentByte = (_currentByte + 1) % _textSeed.Length;
+                    while(count > 0)
+                    {
+                        int currentCount = _textSeed.Length - _currentByte;
+                        if (currentCount > count) currentCount = count;
+                        Array.Copy(_textSeed, _currentByte, buffer, offset, currentCount);
+                        _currentByte += currentCount;
+                        if (_currentByte >= _textSeed.Length) _currentByte = 0;
+                        count -= currentCount;
+                    }
                 }
-                return count;
+                catch (System.Exception e)
+                {
+                    Console.Error.WriteLine($"{e.GetType()} {e.Message}");
+                    Console.Error.WriteLine($"{e.StackTrace}");
+                }
+                return requestedBytes - count;
             }
         }
 
@@ -83,13 +98,14 @@ namespace MultipartPostClient
         
         private readonly int _bufferSize;
         private readonly long _desiredLength;
+        private readonly string _fileName;
         private readonly Action<long> _progressUpdater;
         private readonly IDataGenerator _generator;
 
-        public RandomDataStreamContent(DataGenerationType dataGenerationType, long desiredLength, Action<long> progressUpdater = null) :
-            this(dataGenerationType, desiredLength, DefaultBufferSize, progressUpdater) { }
+        public RandomDataStreamContent(DataGenerationType dataGenerationType, long desiredLength, string fileName, Action<long> progressUpdater = null) :
+            this(dataGenerationType, desiredLength, DefaultBufferSize, fileName, progressUpdater) { }
 
-        public RandomDataStreamContent(DataGenerationType dataGenerationType, long desiredLength, int bufferSize, Action<long> progressUpdater = null)
+        public RandomDataStreamContent(DataGenerationType dataGenerationType, long desiredLength, int bufferSize, string fileName, Action<long> progressUpdater = null)
         {
             if (bufferSize <= 0)
             {
@@ -97,6 +113,7 @@ namespace MultipartPostClient
             }
             
             _bufferSize = bufferSize;
+            _fileName = fileName;
             _progressUpdater = progressUpdater;
             _desiredLength = desiredLength;
             _generator = DataGeneratorFactory.GetNewDataGenerator(dataGenerationType);
@@ -108,25 +125,33 @@ namespace MultipartPostClient
             {
                 PrintLine("Serializing data");
                 var buffer = new byte[_bufferSize];
-                var uploaded = 0;
-                
-                while (uploaded < _desiredLength)
+                var uploaded = 0L;
+                try
                 {
-                    var length = _generator.Read(buffer, 0, buffer.Length);
-                    if (length <= 0) break;
-
-                    uploaded += length;
-                    if (uploaded > _desiredLength)
+                    while (uploaded < _desiredLength)
                     {
-                        var delta = (int)(uploaded - _desiredLength);
-                        uploaded -= delta;
-                        length -= delta;
-                    }
+                        var length = _generator.Read(buffer, 0, buffer.Length);
+                        if (length <= 0) break;
 
-                    stream.Write(buffer, 0, length);
-                    _progressUpdater?.Invoke(uploaded);
+                        uploaded += length;
+                        if (uploaded > _desiredLength)
+                        {
+                            var delta = (int)(uploaded - _desiredLength);
+                            uploaded -= delta;
+                            length -= delta;
+                        }
+
+                        stream.Write(buffer, 0, length);
+                        _progressUpdater?.Invoke(uploaded);
+                    }
                 }
-                PrintLine($"Serialized { _desiredLength } bytes");
+                catch (System.Exception e)
+                {
+                    Console.Error.WriteLine($"{e.GetType()} {e.Message}");
+                    Console.Error.WriteLine($"{e.StackTrace}");
+                    throw;
+                }
+                PrintLine($"Serialized { uploaded } bytes of { _desiredLength } requested [{ _fileName }]");
             });
         }
 
