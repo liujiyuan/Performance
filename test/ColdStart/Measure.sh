@@ -1,5 +1,26 @@
 #!/bin/bash
 
+targetApp="HelloWorldMvc"
+framework="netcoreapp1.0"
+
+while getopts ":t:f:m:" opt; do
+    case $opt in
+        t) targetApp="$OPTARG"
+        ;;
+        f) framework="$OPTARG"
+        ;;
+        m) echo "TODO: implement the perf measurement hook (perfcollect)"
+        ;;
+        \?) echo "Invalid option -$OPTARG" >&2
+        ;;
+    esac
+done
+
+if [[ $framework -eq "net451" ]]; then
+    echo "We do not currently test $framework scenario"
+    return
+fi
+
 RunScenario () {
     local appLocation=$1
     local port=$2
@@ -14,13 +35,21 @@ RunScenario () {
 
     local elapsedTime=0
     while [[ $elapsedTime -lt 15000 ]]; do
-        local response=`curl -s -f "http://localhost:${port}"`
+        local response=`curl --write-out '%{http_code}' --silent --output /dev/null -f "http://localhost:${port}"`
         currentTime=`date +%s%N | cut -b1-13`
         elapsedTime=`expr $currentTime - $startTime`
         sleep 0.01
-        if [[ $response ]]; then
+        case $response in
+            0) ## Do nothing, service is not started yet
+            ;;
+            200)
             break
-        fi
+            ;;
+            \?)
+            echo "Invalid response code $response"
+            return
+            ;;
+        esac
     done
 
     echo -n "$elapsedTime" >> $outputFile

@@ -1,10 +1,31 @@
 #!/bin/bash
 
+## clean up
+rm -rf ~/.nuget
+rm -rf ~/.dotnet
+rm -rf ~/.local
+
+git clean -xdf
+
+targetApp="HelloWorldMvc"
+framework="netcoreapp1.0"
+
+while getopts ":t:f:" opt; do
+    case $opt in
+        t) targetApp="$OPTARG"
+        ;;
+        f) framework="$OPTARG"
+        ;;
+        \?) echo "Invalid option -$OPTARG" >&2
+        ;;
+    esac
+done
+
 repoRoot=`git rev-parse --show-toplevel`
 
 ## run "build pre-clean" to ensure we have the lastest dotnet
 ## currently this line is not work, need to fix it
-## $repoRoot/build.sh pre-clean
+$repoRoot/build.sh pre-clean
 
 # Set targetApp name and workspace
 scriptRoot="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -43,6 +64,6 @@ pushd $appLocation
 publishLocation="$workspace/publish"
 rm -rf $publishLocation
 publishAppLocation=${publishLocation}/${targetApp}
-~/.dotnet/dotnet publish -o $publishAppLocation --configuration release
+~/.dotnet/dotnet publish -o $publishAppLocation --configuration release --framework $framework
 popd
 
