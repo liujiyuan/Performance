@@ -9,7 +9,24 @@ $curlInterval = 0.01
 $timeoutPeriod = 1500
 
 $timer = [System.Diagnostics.Stopwatch]::StartNew();
-$curlPath = Join-Path $global:toolsPath curl.exe
+
+function EnsureTool {
+    param($toolExe, $errorMsg)
+    $toolPath = where.exe $toolExe
+
+    if (! $toolPath ) {
+        Write-Error $errorMsg
+        Exit -1
+    }
+
+    if ($toolPath -is [object[]]) {
+        $toolPath = $toolPath[0]
+    }
+
+    return $toolPath
+}
+
+$curlPath = EnsureTool "curl.exe" "Ensure you have curl on the path"
 
 $timer.Start()
 $success = $false

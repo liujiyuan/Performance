@@ -1,4 +1,3 @@
-$global:targetApp = "HelloWorldMvc"
 $global:workspace = [System.IO.Path]::Combine($env:USERPROFILE, "aspnet", "tests", "workspace")
 
 if (! (Test-Path $global:workspace)) {

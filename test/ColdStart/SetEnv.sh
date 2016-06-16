@@ -1,6 +1,4 @@
 #!/bin/bash
-
-export targetApp=HelloWorldMvc
 export workspace="${HOME}/aspnet/tests/workspace"
 
 if [ ! -d $workspace ]; then
