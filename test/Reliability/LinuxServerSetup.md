@@ -44,14 +44,13 @@ This setup is intended for reliability & performance tests for Kestrel and ASP.N
             sudo rm -rf /usr/local/src/libuv-1.8.0 && cd ~/
             sudo ldconfig
     - sudo apt-get install nginx
-    - cp test/reliability/scripts/nginx-perfserver /etc/nginx/sites-available/
+    - cp test/Reliability/Artifacts/nginx-perfserver /etc/nginx/sites-available/
         - Update error logfile location to central file share 
-    - cp test/reliability/scripts/nginx.conf /etc/nginx/nginx.conf
+    - cp test/Reliability/Artifacts/nginx.conf /etc/nginx/nginx.conf
     - sudo ln -s /etc/nginx/sites-available/nginx-perfserver /etc/nginx/sites-enabled/nginx-perfserver
     - sudo /etc/init.d/apache2 stop 
     - sudo service nginx restart
     - Verify: On another machine, test the site with a browser (http://serverName:8080)
-      
 
 # Monitor Server machines
 

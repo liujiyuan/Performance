@@ -1,3 +1,5 @@
+## Set up environments for the test to run
+
 $global:workspace = [System.IO.Path]::Combine($env:USERPROFILE, "aspnet", "tests", "workspace")
 
 if (! (Test-Path $global:workspace)) {
@@ -23,4 +25,6 @@ if ([System.String]::IsNullOrEmpty($global:outputFile)) {
     $global:outputFile = (Join-Path $outputDir "Results-${runId}.csv")
 }
 
-Write-Host "Tests will be recorded in file: $outputFile"
+$global:publishLocation  = [System.IO.Path]::Combine($global:workspace, "publish")
+
+Write-Host "[SetEnv] Output file: $outputFile"

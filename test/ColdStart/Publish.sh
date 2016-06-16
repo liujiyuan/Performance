@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## Build and publish the application into workspace
+
 ## clean up
 rm -rf ~/.nuget
 rm -rf ~/.dotnet
@@ -10,11 +12,13 @@ git clean -xdf
 targetApp="HelloWorldMvc"
 framework="netcoreapp1.0"
 
-while getopts ":t:f:" opt; do
+while getopts ":t:f:d:" opt; do
     case $opt in
         t) targetApp="$OPTARG"
         ;;
         f) framework="$OPTARG"
+        ;;
+        d) appDir="$OPTARG"
         ;;
         \?) echo "Invalid option -$OPTARG" >&2
         ;;
@@ -33,37 +37,45 @@ source $scriptRoot/SetEnv.sh
 
 if [ -z "$targetApp" ]; then
     echo "Target application is not set"
-    return
+    exit -1
 fi
 
 if [ -z "$workspace" ]; then
     echo "Workspace dir is not set"
-    return
+    exit -1
 fi
 
 if [ -z "$outputFile" ]; then
     echo "Output file is not set"
-    return
+    exit -1
 fi
 
 if [ ! -d "$workspace" ]; then
     echo "Workspace $workspace does not exist"
-    return
+    exit -1
 fi
 
 appLocation="$repoRoot/testapp/$targetApp"
 
 if [ ! -d "$appLocation" ]; then
-    echo "$appLocation is not a valid performance app"
-    return
+    if [ -d "$appDir" ]; then
+        appLocation=$appDir
+    else
+        echo "$appLocation is not a valid performance app"
+        exit -1
+    fi
 fi
 
 ## publish targeted application
 pushd $appLocation
 ~/.dotnet/dotnet restore --infer-runtimes
-publishLocation="$workspace/publish"
 rm -rf $publishLocation
-publishAppLocation=${publishLocation}/${targetApp}
-~/.dotnet/dotnet publish -o $publishAppLocation --configuration release --framework $framework
+appPublishLocation=${publishLocation}/${targetApp}
+~/.dotnet/dotnet publish -o $appPublishLocation --configuration release --framework $framework
+
+## archive the lock.json file for record because desktop app does not have .deps.json
+outputDir=$(dirname "${outputFile}")
+cp -R ${appPublishLocation} ${outputDir}
+
 popd
 

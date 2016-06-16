@@ -1,3 +1,6 @@
+## linux helper script, it perform 1 iteration of test and record the profile
+## This script need to be converted into a feature of Measure.ps1
+
 #!/bin/bash
 
 RunScenario () {

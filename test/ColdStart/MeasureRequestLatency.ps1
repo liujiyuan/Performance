@@ -1,3 +1,6 @@
+## This script measures the latency of a request to given url,
+## If the return code was not 200, the test will fail and exit with eror code -1
+
 param (
     [Parameter(Mandatory=$true)]
     $url
@@ -29,26 +32,12 @@ function EnsureTool {
 $curlPath = EnsureTool "curl.exe" "Ensure you have curl on the path"
 
 $timer.Start()
-$success = $false
-ForEach ($ping in 1..$timeoutPeriod) {
-    $r = &($curlPath) -s -f $url
-    if (![System.String]::IsNullOrEmpty($r)) {
-        $success = $true
-        break
-    }
-    Start-Sleep -s $curlInterval | Out-Null
+$status = &($curlPath) --write-out '%{http_code}' --silent --output /dev/null -f $url
+$status = [System.Int32]::Parse($status)
+if ($status -ne 200) {
+    Write-Host "Unexpected HTTP Status: ${status}"
+    Exit -1
 }
-
 $timer.Stop()
-
-if (!$success) {
-    Write-Error "Unable to connect to service"
-    Exit -1
-}
-
-if (!$success) {
-    Write-Error "Unable to connect to service"
-    Exit -1
-}
 
 $timer.ElapsedMilliseconds

@@ -1,4 +1,8 @@
-﻿param (
+﻿## This script performs 1 iteration of cold start measurement
+## and write a line of result to the file
+## User must call Publish before calling this script
+
+param (
     [Alias("t")]$targetApp = "HelloWorldMvc",
     [Alias("f")]$framework = "netcoreapp1.0",
     [switch]$PerfView,
