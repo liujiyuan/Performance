@@ -16,7 +16,7 @@ namespace BigViews
             // Create a few unique users.
             var jobIndex = 0;
             var pastJobCount = 0;
-            for (var i = 0; i < 10; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 var user = new User
                 {
@@ -55,6 +55,13 @@ namespace BigViews
         }
 
         public IActionResult IndexWithTagHelpers()
+        {
+            // In a more realistic scenario, may have many more users. But would likely display details of only 10 or
+            // so at once.
+            return View(_users.Values.ToArray());
+        }
+
+        public IActionResult TestIndexWithTagHelpers()
         {
             // In a more realistic scenario, may have many more users. But would likely display details of only 10 or
             // so at once.

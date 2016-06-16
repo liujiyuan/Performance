@@ -1,0 +1,79 @@
+﻿@using BigViews
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model IList<User>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Simple Template Renderer sample.</title>
+    <style>
+        .contact-card {
+            border: 1px solid #000000;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Index</h2>
+    <p>
+        <a asp-action="Create">Create New1</a>
+    </p>
+
+    @if (Model != null)
+    {
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model[0].HomePhone)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model[0].FirstName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model[0].LastName)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model[0].Mobile)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model[0].MailId)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+        {
+
+                    <tr>
+                        <td>
+                            @item.HomePhone
+                        </td>
+                        <td>
+                            @item.FirstName
+                        </td>
+                        <td>
+                            @item.LastName
+                        </td>
+                        <td>
+                            @item.Mobile
+                        </td>
+                        <td>
+                            @item.MailId
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-controller="Home" asp-route-id="@item.MailId">Edit</a>
+                            <a asp-action="Edit" asp-controller="Home" asp-route-id="@item.MailId">Details</a>
+                            <a asp-action="Edit" asp-controller="Home" asp-route-id="@item.MailId">Delete</a>
+                        </td>
+                    </tr>
+        }
+            </tbody>
+        </table>
+    }
+
+    This is a simple View.
+</body>
+</html>

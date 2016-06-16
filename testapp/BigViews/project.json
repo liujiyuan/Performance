@@ -30,7 +30,7 @@
     "web": "BigViews"
   },
   "frameworks": {
-    "net451": {},
+    
     "netcoreapp1.0": {
       "imports": [
         "dnxcore50",
@@ -45,13 +45,7 @@
     }
   },
   "tools": {
-    "dotnet-razor-tooling": {
-      "version": "1.0.0-*",
-      "imports": [
-        "dnxcore50",
-        "portable-net451+win8"
-      ]
-    }
+    
   },
   "publishOptions": {
     "publishExclude": [
