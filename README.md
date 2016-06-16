@@ -42,6 +42,7 @@ If you run into the "Cannot handle address family xxxxx" error, please refer to 
   * gulp: `npm install -g gulp`
   * bower: `npm install -g bower`
   * loadtest: `npm install -g loadtest`
+  * openssl: `brew install openssl` followed by `brew link --force openssl` (details [here](https://github.com/dotnet/coreclr/blob/master/Documentation/building/osx-instructions.md#openssl))
   * [Mono](http://www.mono-project.com/docs/getting-started/install/mac/)
 
 To build, execute `./build.sh`.
