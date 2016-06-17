@@ -1,11 +1,11 @@
 {
-  "version": "1.0.0-*",
+  "version": "1.1.0-*",
   "dependencies": {
-    "Benchmarks.Utility": "1.0.0-*",
+    "Benchmarks.Utility": "1.1.0-*",
     "Microsoft.NETCore.Platforms": "1.0.1-*",
-    "Microsoft.Extensions.Logging": "1.0.0-*",
-    "Microsoft.Extensions.Logging.Console": "1.0.0-*",
-    "Stress.Framework": "1.0.0-*",
+    "Microsoft.Extensions.Logging": "1.1.0-*",
+    "Microsoft.Extensions.Logging.Console": "1.1.0-*",
+    "Stress.Framework": "1.1.0-*",
     "xunit": "2.1.0",
     "dotnet-test-xunit": "1.0.0-*"
   },
