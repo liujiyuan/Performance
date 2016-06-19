@@ -116,7 +116,17 @@ namespace StarterMvc
                     //options.ThreadCount = 4;
                     //options.NoDelay = true;
                     //options.UseConnectionLogging();
-                    options.UseHttps(_httpsCertFile, _httpsCertPwd);
+                    try
+                    {
+                        if (Boolean.Parse(config["SecurityOption:EnableHTTPS"]) == true)
+                        {
+                            Console.WriteLine("Enabled HTTPS");
+                            options.UseHttps(_httpsCertFile, _httpsCertPwd);
+                        }
+                    }
+                    catch (Exception) //Ignore if the option is not provided.
+                    {
+                    }
                 })
                 .UseConfiguration(config)
                 .UseIISIntegration()
