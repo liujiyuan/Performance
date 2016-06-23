@@ -1,6 +1,9 @@
+## Build and publish the application into workspace
+
 param (
     [Alias("t")]$targetApp = "HelloWorldMvc",
-    [Alias("f")]$framework = "netcoreapp1.0"
+    [Alias("f")]$framework = "netcoreapp1.0",
+    [Alias("d")]$appDir
 )
 
 ## cleaning package caches, we are doing this because we are close to release
@@ -41,19 +44,29 @@ $appLocation = [System.IO.Path]::Combine($repoRoot, "testapp" , $targetApp)
 
 if (! (Test-Path $appLocation) )
 {
-    Write-Error "$appLocation is not a valid performance app"
-    Exit -1
+    if (Test-Path $appDir) {
+        $appLocation = $appDir
+    }
+    else {
+        Write-Error "$appLocation is not a valid performance app"
+        Exit -1
+    }
 }
 
 ## publish targeted application
 pushd $appLocation
 dotnet restore --infer-runtimes
-$publishLocation = [System.IO.Path]::Combine($global:workspace, "publish")
 
-if (Test-Path $publishLocation) {
-    Write-Host "Clearing publish directory ${publishLocation}..."
-    Remove-Item $publishLocation -Force -Recurse
+if (Test-Path $global:publishLocation) {
+    Write-Host "Clearing publish directory ${global:publishLocation}..."
+    Remove-Item $global:publishLocation -Force -Recurse
 }
 
-dotnet publish -o (Join-Path $publishLocation ($targetApp)) --configuration Release -f $framework
+$appPublishLocation = Join-Path $global:publishLocation ($targetApp)
+dotnet publish -o $appPublishLocation --configuration Release -f $framework
+
+## archive the lock.json file for record because desktop app does not have .deps.json
+$outputDir = Split-Path $global:outputFile
+cp -r $appPublishLocation $outputDir
+
 popd

@@ -6,3 +6,5 @@
 Run Publish.psh/Publish.sh to build and publish the application
 
 Run Measure.ps1/Measure.sh to perform 1 iteration if test. Measure scripts should be run on a fresh reboot
+
+After desired number of runs, run Archive.ps1/Archive.sh to archive the test results

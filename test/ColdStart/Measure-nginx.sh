@@ -4,6 +4,14 @@
 ## and write a line of result to the file
 ## User must call Publish before calling this script
 
+
+if [[ ! -f /etc/nginx/sites-available/nginx-coldstart-services ]]; then
+    cp ./Artifacts/nginx-coldstart-services /etc/nginx/sites-available
+    ln -s /etc/nginx/sites-available/nginx-coldstart-services /etc/nginx/sites-enabled/nginx-coldstart-services
+fi
+
+sudo service nginx restart
+
 targetApp="HelloWorldMvc"
 framework="netcoreapp1.0"
 
@@ -20,7 +28,7 @@ while getopts ":t:f:m:" opt; do
     esac
 done
 
-if [[ "${framework}" == "net451" ]]; then
+if [[ "$framework" == "net451" ]]; then
     echo "We do not currently test $framework scenario"
     exit -1
 fi
@@ -39,7 +47,9 @@ RunScenario () {
 
     local elapsedTime=0
     while [[ $elapsedTime -lt 15000 ]]; do
-        local response=`curl --write-out '%{http_code}' --silent --output /dev/null -f "http://localhost:${port}"`
+        local portShifted=`expr ${port} + 3080`
+        local url="http://localhost:${portShifted}"
+        local response=`curl --write-out '%{http_code}' --silent --output /dev/null -f $url`
         currentTime=`date +%s%N | cut -b1-13`
         elapsedTime=`expr $currentTime - $startTime`
         sleep 0.01

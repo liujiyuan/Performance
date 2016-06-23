@@ -1,4 +1,6 @@
 #!/bin/bash
+## Set up environments for the test to run
+
 export workspace="${HOME}/aspnet/tests/workspace"
 
 if [ ! -d $workspace ]; then
@@ -23,7 +25,9 @@ else
     echo "Output file ${outputFile} exists, results will be appended to it."
 fi
 
-echo "Tests will be recorded in file: $outputFile"
+export publishLocation="${workspace}/publish"
+
+echo "[SetEnv] Output file: ${outputFile}"
 
 export outputFile
 
