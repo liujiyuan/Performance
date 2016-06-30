@@ -21,6 +21,7 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.AspNetCore.Razor;
 using Microsoft.Extensions.DependencyModel;
 using System.Reflection;
+using System.Text;
 
 namespace RazorCodeGenerator
 {
@@ -97,19 +98,33 @@ namespace RazorCodeGenerator
                     return -30;
                 }
 
-                foreach (var sourceValue in sourcesArgument.Values)
+                if (sourcesArgument.Values.Count == 1 && sourcesArgument.Values[0] == "*")
                 {
-                    var source = Path.GetFullPath(sourceValue);
-                    if (!File.Exists(source))
+                    sources.AddRange(Directory.EnumerateFiles(basePath, "*.cshtml", SearchOption.AllDirectories));
+                    if (sources.Count == 0)
                     {
-                        application.ShowHelp();
                         Console.WriteLine(" ");
-                        Console.WriteLine($"Error: Could not find file {source}");
+                        Console.WriteLine($"Error: No sources found");
 
-                        return -40;
+                        return -35;
                     }
+                }
+                else
+                {
+                    foreach (var sourceValue in sourcesArgument.Values)
+                    {
+                        var source = Path.GetFullPath(sourceValue);
+                        if (!File.Exists(source))
+                        {
+                            application.ShowHelp();
+                            Console.WriteLine(" ");
+                            Console.WriteLine($"Error: Could not find file {source}");
 
-                    sources.Add(source);
+                            return -40;
+                        }
+
+                        sources.Add(source);
+                    }
                 }
 
                 var useViewEngine = viewEngineOption.HasValue();
@@ -212,8 +227,7 @@ namespace RazorCodeGenerator
                 for (var i = 0; i < sources.Count; i++)
                 {
                     var source = sources[i];
-
-                    var fileName = Path.GetFileName(source);
+                    
                     var fileNameNoExtension = Path.GetFileNameWithoutExtension(source);
 
                     Console.WriteLine($"Generating {source}");
@@ -225,8 +239,8 @@ namespace RazorCodeGenerator
                             var result = TemplateEngine.GenerateCode(
                                 stream,
                                 className: fileNameNoExtension,
-                                rootNamespace: "Test",
-                                sourceFileName: fileName);
+                                rootNamespace: ManglePath(BasePath, Path.GetDirectoryName(source)),
+                                sourceFileName: source.Substring(BasePath.Length));
 
                             if (!result.Success)
                             {
@@ -284,6 +298,27 @@ namespace RazorCodeGenerator
             services.AddSingleton<ObjectPoolProvider>(new DefaultObjectPoolProvider());
 
             return services.BuildServiceProvider();
+        }
+
+        private static string ManglePath(string basePath, string path)
+        {
+            if (!path.StartsWith(basePath))
+            {
+                return "Test";
+            }
+
+            var projectName = Path.GetFileName(basePath);
+
+            var @namespace = new StringBuilder(projectName);
+
+            var tokens = path.Substring(basePath.Length).Split(new[] { Path.DirectorySeparatorChar }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var token in tokens)
+            {
+                @namespace.Append('.');
+                @namespace.Append(token);
+            }
+
+            return @namespace.ToString();
         }
     }
 }
