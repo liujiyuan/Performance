@@ -54,8 +54,7 @@
         "System.Threading": "4.0.11-*",
 		
         "Microsoft.NETCore.Platforms": "1.0.1-*",
-        "xunit": "2.1.0",
-        "dotnet-test-xunit": "1.0.0-*"
+        "dotnet-test-xunit" : "2.2.0-*"
     },
     "frameworks": {
         "netcoreapp1.0": {
