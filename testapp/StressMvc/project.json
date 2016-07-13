@@ -41,11 +41,12 @@
     "Microsoft.Extensions.Configuration.CommandLine": "1.1.0-*",
     "Microsoft.Extensions.Logging": "1.1.0-*",
     "Microsoft.Extensions.Logging.Console": "1.1.0-*",
-    "Microsoft.Extensions.Logging.Debug": "1.1.0-*"
+    "Microsoft.Extensions.Logging.Debug": "1.1.0-*",
+    "Microsoft.AspNetCore.Server.WebListener": "0.2.0-*"
   },
   "commands": {
-    "web": "StressMvc",
-    "ef": "Microsoft.EntityFrameworkCore.Commands"
+    "kestrel": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.Kestrel --server.urls http://localhost:5000",
+    "weblistener": "Microsoft.AspNet.Hosting --server WebListener --server.urls http://localhost:5000"
   },
   "frameworks": {
     "netcoreapp1.0": {

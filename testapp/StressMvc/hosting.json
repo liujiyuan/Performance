@@ -1,5 +1,6 @@
 ﻿{
   "SecurityOption": {
     "EnableHTTPS": false
-  }
+  },
+  "server": "WebListener"
 }

@@ -18,6 +18,8 @@ using System.IO;
 using Microsoft.AspNetCore.Server.Kestrel.Filter;
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime;
+using Microsoft.AspNetCore.Server.WebListener;
+using Microsoft.Net.Http.Server;
 
 namespace StarterMvc
 {
@@ -109,26 +111,57 @@ namespace StarterMvc
                 .AddEnvironmentVariables(prefix: "ASPNETCORE_")
                 .AddCommandLine(args)
                 .Build();
-
-            var host = new WebHostBuilder()
-                .UseKestrel(options =>
+            bool hostingInWebListener = false;
+            bool useHttps = false;
+            try
+            {
+                if (config["server"].ToLower() != "weblistener")
                 {
-                    //options.ThreadCount = 4;
-                    //options.NoDelay = true;
-                    //options.UseConnectionLogging();
-                    try
-                    {
-                        if (Boolean.Parse(config["SecurityOption:EnableHTTPS"]) == true)
-                        {
-                            Console.WriteLine("Enabled HTTPS");
-                            options.UseHttps(_httpsCertFile, _httpsCertPwd);
-                        }
-                    }
-                    catch (Exception) //Ignore if the option is not provided.
-                    {
-                    }
-                })
-                .UseConfiguration(config)
+                    Console.WriteLine("Host is Kestrel");
+                    hostingInWebListener = false;
+                }
+                else
+                {
+                    Console.WriteLine("Host is WebListener");
+                    hostingInWebListener = true;
+                }
+            }
+            catch (Exception) //Ignore if the option is not provided.
+            {
+            }
+
+            try
+            {
+                if (Boolean.Parse(config["SecurityOption:EnableHTTPS"]) == true)
+                {
+                    useHttps = true;
+                    Console.WriteLine("Enabled HTTPS");
+                }
+            }
+            catch (Exception) //Ignore if the option is not provided.
+            {
+            }
+
+            var hostBuilder = new WebHostBuilder();
+            if (hostingInWebListener) {
+                hostBuilder.UseWebListener(options =>
+                {
+                    options.Listener.AuthenticationManager.AuthenticationSchemes = AuthenticationSchemes.AllowAnonymous;
+                });
+            }
+            else
+            {
+                hostBuilder.UseKestrel(options =>
+                 {
+                     //options.ThreadCount = 4;
+                     //options.NoDelay = true;
+                     //options.UseConnectionLogging();
+                     if (useHttps)
+                         options.UseHttps(_httpsCertFile, _httpsCertPwd);
+                 });
+
+            }
+            var host = hostBuilder.UseConfiguration(config)
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
