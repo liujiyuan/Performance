@@ -3,13 +3,12 @@
   "buildOptions": {
     "emitEntryPoint": true,
     "compile": {
-      "include": ["../Shared/**/*.cs"]
+      "include": [ "../Shared/**/*.cs" ]
     }
   },
   "dependencies": {
-    "Newtonsoft.Json": "8.0.3",
     "Microsoft.Extensions.CommandLineUtils": "1.1.0-*",
-    "System.Net.Http": "4.0.1-*"
+    "Newtonsoft.Json": "9.0.1"
   },
   "frameworks": {
     "netcoreapp1.0": {
@@ -25,7 +24,7 @@
         "portable-net451+win8"
       ]
     },
-    "net451": { }
+    "net451": {}
   },
   "commands": {
     "run": "LargeJsonApiClient"

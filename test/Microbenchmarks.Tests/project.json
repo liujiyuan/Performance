@@ -1,27 +1,21 @@
 {
   "dependencies": {
     "Benchmarks.Framework": "1.1.0-*",
-    "Microsoft.NETCore.Platforms": "1.0.1-*",
+    "dotnet-test-xunit": "2.2.0-*",
     "Microsoft.AspNetCore.Hosting": "1.1.0-*",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0-*",
-    "Microsoft.AspNetCore.Server.WebListener": "0.2.0-*",
     "Microsoft.AspNetCore.Mvc": "1.1.0-*",
-    "Microsoft.AspNetCore.Mvc.TagHelpers": "1.1.0-*",
-    "Microsoft.AspNetCore.TestHost": "1.1.0-*",
-    "Microsoft.AspNetCore.Testing": "1.1.0-*",
-    "System.Collections": "4.0.11-*",
-    "System.IO": "4.1.0-*",
-    "System.Reflection": "4.1.0-*",
-    "System.Runtime": "4.1.0-*",
-    "System.Threading": "4.0.11-*",
-    "Microsoft.Extensions.Configuration.Json": "1.1.0-*",
-    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0-*",
-    "Microsoft.Extensions.Configuration.CommandLine": "1.1.0-*",
-    "dotnet-test-xunit" : "2.2.0-*",
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-*",
       "type": "build"
-    }
+    },
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0-*",
+    "Microsoft.AspNetCore.Server.WebListener": "0.2.0-*",
+    "Microsoft.AspNetCore.TestHost": "1.1.0-*",
+    "Microsoft.AspNetCore.Testing": "1.1.0-*",
+    "Microsoft.Extensions.Configuration.CommandLine": "1.1.0-*",
+    "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0-*",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0-*",
+    "Microsoft.NETCore.Platforms": "1.0.1-*"
   },
   "testRunner": "xunit",
   "buildOptions": {
@@ -57,12 +51,12 @@
       "frameworkAssemblies": {
         "System.Runtime": ""
       }
-	}
+    }
   },
   "tools": {
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-*",
-      "imports":["portable-net45+win8+dnxcore50"]
+      "imports": [ "portable-net45+win8+dnxcore50" ]
     }
   }
 }

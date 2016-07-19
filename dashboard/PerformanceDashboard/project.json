@@ -6,26 +6,24 @@
     "preserveCompilationContext": true
   },
   "dependencies": {
-    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0-*",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0-*",
     "Microsoft.AspNetCore.Hosting": "1.1.0-*",
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0-*",
     "Microsoft.AspNetCore.Mvc": "1.1.0-*",
-    "Microsoft.AspNetCore.Mvc.TagHelpers": "1.1.0-*",
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-*",
       "type": "build"
     },
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0-*",
     "Microsoft.AspNetCore.StaticFiles": "1.1.0-*",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0-*",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.1.0-*",
     "Microsoft.Extensions.Configuration.Json": "1.1.0-*",
     "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0-*",
     "Microsoft.Extensions.Logging": "1.1.0-*",
     "Microsoft.Extensions.Logging.Console": "1.1.0-*",
     "Microsoft.Extensions.Logging.Debug": "1.1.0-*",
-    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-*",
-    "System.Runtime": "4.1.0-*"
+    "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-*"
   },
   "compile": "..\\..\\src\\Benchmarks.Framework\\Model\\*.cs",
   "content": "**/*",
@@ -36,7 +34,7 @@
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
-        "netcore50",
+        "dnxcore50",
         "portable-dnxcore50+net45+win8+wp8+wpa81",
         "portable-net451+win8"
       ],
@@ -51,7 +49,7 @@
   "tools": {
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-*",
-      "imports":["portable-net45+win8+dnxcore50"]
+      "imports": [ "portable-net45+win8+dnxcore50" ]
     }
   },
   "exclude": [
