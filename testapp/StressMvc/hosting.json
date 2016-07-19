@@ -2,5 +2,5 @@
   "SecurityOption": {
     "EnableHTTPS": false
   },
-  "server": "WebListener"
+  "server": "Kestrel"
 }
