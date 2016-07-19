@@ -19,6 +19,5 @@
         "netstandardapp1.5"
       ]
     }
-  },
-  "testRunner": "xunit"
+  }
 }
