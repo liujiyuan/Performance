@@ -4,9 +4,7 @@
     "emitEntryPoint": true
   },
   "dependencies": {
-    "Benchmarks.Framework": "1.1.0-*",
-    "System.Xml.XDocument": "4.0.11-*",
-    "System.Console": "4.0.0-*"
+    "Benchmarks.Framework": "1.1.0-*"
   },
   "commands": {
     "run": "ThroughputResultReporter"

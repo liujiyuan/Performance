@@ -3,10 +3,6 @@
   "buildOptions": {
     "emitEntryPoint": true
   },
-  "dependencies": {
-    "System.Xml.XDocument": "4.0.11-*",
-    "System.Linq": "4.0.1-*"
-  },
   "frameworks": {
     "netcoreapp1.0": {
       "imports": [
@@ -17,7 +13,8 @@
         "Microsoft.NETCore.App": {
           "version": "1.0.0-*",
           "type": "platform"
-        }
+        },
+        "System.Xml.XDocument": "4.0.11-*"
       }
     }
   },

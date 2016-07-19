@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{39290E57-4492-4F65-89D6-64C95DE73976}"
 EndProject
@@ -93,6 +93,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{5FA83898
 		testapp\LargeJsonApi\Shared\Model\Seasons.cs = testapp\LargeJsonApi\Shared\Model\Seasons.cs
 		testapp\LargeJsonApi\Shared\Model\Series.cs = testapp\LargeJsonApi\Shared\Model\Series.cs
 	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KestrelLargeStaticFile", "testapp\KestrelLargeStaticFile\KestrelLargeStaticFile.xproj", "{BC82991E-EA43-447D-BB7B-F5E2B0733306}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "KestrelShutdown", "testapp\KestrelShutdown\KestrelShutdown.xproj", "{2BFB3424-44CC-4E9C-A0BD-96299E9827EB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MultipartPOST", "MultipartPOST", "{4360A0FB-7357-4CB4-9B0F-ED71E71B1077}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MultipartPOST", "testapp\MultipartPOST\MultipartPOST\MultipartPOST.xproj", "{A046AE5B-B4CD-46C6-9B2C-44AB8647BE5C}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "MultipartPOSTClient", "testapp\MultipartPOST\MultipartPOSTClient\MultipartPOSTClient.xproj", "{B44BCA57-E0F1-494E-84A2-FA4D8491C9B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -216,6 +226,22 @@ Global
 		{DDE8C1F4-4E4B-40AF-B940-C2828385458C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDE8C1F4-4E4B-40AF-B940-C2828385458C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDE8C1F4-4E4B-40AF-B940-C2828385458C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC82991E-EA43-447D-BB7B-F5E2B0733306}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC82991E-EA43-447D-BB7B-F5E2B0733306}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC82991E-EA43-447D-BB7B-F5E2B0733306}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC82991E-EA43-447D-BB7B-F5E2B0733306}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BFB3424-44CC-4E9C-A0BD-96299E9827EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BFB3424-44CC-4E9C-A0BD-96299E9827EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BFB3424-44CC-4E9C-A0BD-96299E9827EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BFB3424-44CC-4E9C-A0BD-96299E9827EB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A046AE5B-B4CD-46C6-9B2C-44AB8647BE5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A046AE5B-B4CD-46C6-9B2C-44AB8647BE5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A046AE5B-B4CD-46C6-9B2C-44AB8647BE5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A046AE5B-B4CD-46C6-9B2C-44AB8647BE5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B44BCA57-E0F1-494E-84A2-FA4D8491C9B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B44BCA57-E0F1-494E-84A2-FA4D8491C9B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B44BCA57-E0F1-494E-84A2-FA4D8491C9B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B44BCA57-E0F1-494E-84A2-FA4D8491C9B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -254,5 +280,10 @@ Global
 		{025E537C-B512-492C-97FE-C185FDB3BDA8} = {A6468B67-1ED9-461E-8926-2C5C8C8ECF58}
 		{1277A3EE-159C-43C0-9B58-DFA6EEBBF9FA} = {025E537C-B512-492C-97FE-C185FDB3BDA8}
 		{5FA83898-239E-4B1A-A86E-FBC95A9DA059} = {025E537C-B512-492C-97FE-C185FDB3BDA8}
+		{BC82991E-EA43-447D-BB7B-F5E2B0733306} = {93AB896C-D117-4DBB-9DB1-24903022E21B}
+		{2BFB3424-44CC-4E9C-A0BD-96299E9827EB} = {93AB896C-D117-4DBB-9DB1-24903022E21B}
+		{4360A0FB-7357-4CB4-9B0F-ED71E71B1077} = {93AB896C-D117-4DBB-9DB1-24903022E21B}
+		{A046AE5B-B4CD-46C6-9B2C-44AB8647BE5C} = {4360A0FB-7357-4CB4-9B0F-ED71E71B1077}
+		{B44BCA57-E0F1-494E-84A2-FA4D8491C9B1} = {4360A0FB-7357-4CB4-9B0F-ED71E71B1077}
 	EndGlobalSection
 EndGlobal
