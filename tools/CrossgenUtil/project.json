@@ -5,6 +5,9 @@
         "emitEntryPoint": true,
         "copyToOutput": [ "config.json" ]
     },
+    "publishOptions": {
+        "include": [ "config.json" ]
+    },
     "dependencies": {
         "Microsoft.Extensions.CommandLineUtils": "1.0.0-*",
         "Microsoft.DotNet.InternalAbstractions": "1.0.0-*",
