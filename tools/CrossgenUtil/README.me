@@ -1,0 +1,13 @@
+Usage: CrossGenHelper [options]
+
+Options:
+  -?|-h|--help  Show help information
+  --app-dir     Location of where the app should be crossgen'd (optional; default: current working directory)
+  --excludes    Modules to exclude during crossgen (optional; default: no exclusion)
+  --symbols     Generate symbols for native images (currently only works on Windows)
+
+This is a tool for crossgening an .NET core application. It would replace all dlls in the folder with its native image counterpart and improve startup performance.
+
+Currently cross platform crossgening is not supported. I.E. You need to be on Windows platform to crossgen Windows app. Ubuntu platform to crossgen Ubuntu app due to limitation of the underlying crossgen.exe tool.
+
+Symbol generation is only supported on Windows platform only.
