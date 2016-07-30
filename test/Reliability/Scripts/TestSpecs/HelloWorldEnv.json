@@ -1,0 +1,10 @@
+{
+    "server": "wincell1-win1.southcentralus.cloudapp.azure.com",
+    "client": "wincell1-win2.southcentralus.cloudapp.azure.com",
+    "shareUser": "fastshare",
+    "shareKey": "f9Qd9PRJOZzoNHJBZqJWnKb5CBxIxAMCfPNCggusjXcshogJPCuhves0Wv0yNpAeZbNib+ac/gj3uHKLyWnLdA==",
+    "buildPath": "x:\\build\\",
+    "appName" : "HelloWorldMvc",
+    "serverGC" : "true",
+    "specpath" : "https://raw.githubusercontent.com/aspnet/Performance/sivag/reliability/test/Reliability/Scripts/TestSpecs/"
+}
